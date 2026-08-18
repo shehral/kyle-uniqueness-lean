@@ -5,6 +5,7 @@ Authors: Mohammad Ali Shehral
 -/
 import KyleUniqueness.Statement
 import KyleUniqueness.Regularity
+import KyleUniqueness.PosteriorDeriv
 import KyleUniqueness.BeyondPaper
 import KyleUniqueness.IdentityTheoremSpike
 import KyleUniqueness.SteinInequality
@@ -159,3 +160,8 @@ open KyleUniqueness
 #print axioms continuous_gaussianSmoothing_deriv
 #print axioms deriv_gaussianSmoothing
 #print axioms continuous_deriv_gaussianSmoothing
+-- Node D1, C¹ legs (v3 Lemma 4.1, differentiation of n, p, and P) — session 2.
+#print axioms abs_mul_gaussianPDFReal_std_le_const
+#print axioms hasDerivAt_flowDensity
+#print axioms hasDerivAt_flowNumerator
+#print axioms hasDerivAt_inverseRegression

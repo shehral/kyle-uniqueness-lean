@@ -176,6 +176,22 @@ Deferred (logged, not blocked): Lemma 2.3's bookkeeping clause
 `F(φ(V)) = E[E[V∣Y]∣V]` a.s. — it is E2's input and belongs with the
 resampling file's condExp plumbing (E1), not with the analytic node.
 
+### Node D1, C¹ legs BANKED (same session, third unit)
+
+New file `KyleUniqueness/PosteriorDeriv.lean` (~180 LOC, imports
+`Regularity`): the differentiation-under-the-integral legs of v3 Lemma 4.1,
+all proved and axiom-clean —
+`abs_mul_gaussianPDFReal_std_le_const` (`|t|ϱ(t) ≤ 2e^{1/2}(√2π)⁻¹`,
+the uniform kernel bound), `hasDerivAt_flowDensity`
+(`p′(y) = −E[(y−φV)ϱ(y−φV)]`), `hasDerivAt_flowNumerator`
+(`n′(y) = −E[V(y−φV)ϱ(y−φV)]`), and `hasDerivAt_inverseRegression`
+(`P = n/p` differentiable, quotient formula; `p > 0` from Lemma 2.1).
+Dominants are constant resp. `|v|`-linear against the Gaussian prior —
+no ball-shifted majorant needed on this side. **D1's remaining
+obligations** (the covariance form `P′(y) = Cov_{π_y}(id, φ)`, its strict
+positivity, and D2) are gated on B2's strict monotonicity and the `π_y`
+statement review.
+
 ### Remaining campaign (frontier update)
 
 Critical path now: **B1/B2** (value function / FOC — NOTE: the

@@ -4,6 +4,7 @@ import KyleUniqueness.GaussianHelpers
 import KyleUniqueness.CondExpBridge
 import KyleUniqueness.Statement
 import KyleUniqueness.Regularity
+import KyleUniqueness.PosteriorDeriv
 import KyleUniqueness.BeyondPaper
 import KyleUniqueness.IdentityTheoremSpike
 import KyleUniqueness.SteinInequality
