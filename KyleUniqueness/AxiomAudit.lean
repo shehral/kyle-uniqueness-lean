@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mohammad Ali Shehral
 -/
 import KyleUniqueness.Statement
+import KyleUniqueness.Regularity
 import KyleUniqueness.BeyondPaper
 import KyleUniqueness.IdentityTheoremSpike
 import KyleUniqueness.SteinInequality
@@ -146,3 +147,15 @@ open KyleUniqueness
 #print axioms one_le_lintegral_sq_mul_lintegral_inv_sq
 #print axioms one_le_integral_sq_mul_integral_inv_sq
 #print axioms one_le_sqrt_integral_sq_mul_integral_inv_sq
+-- Node R2 (v3 Lemma 2.3, regularity: `F ∈ C¹` + eq. (5)) — session 2.
+#print axioms exp_mul_gaussianPDFReal_std
+#print axioms abs_mul_gaussianPDFReal_std_le
+#print axioms gaussianPDFReal_std_shift_le
+#print axioms abs_sub_mul_gaussianPDFReal_std_le
+#print axioms gaussianSmoothing_eq_convolution
+#print axioms integrable_gaussianSmoothing_deriv_kernel
+#print axioms hasDerivAt_gaussianSmoothing
+#print axioms deriv_gaussianSmoothing_eq_prob
+#print axioms continuous_gaussianSmoothing_deriv
+#print axioms deriv_gaussianSmoothing
+#print axioms continuous_deriv_gaussianSmoothing

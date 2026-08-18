@@ -3,6 +3,7 @@ import KyleUniqueness.Definitions
 import KyleUniqueness.GaussianHelpers
 import KyleUniqueness.CondExpBridge
 import KyleUniqueness.Statement
+import KyleUniqueness.Regularity
 import KyleUniqueness.BeyondPaper
 import KyleUniqueness.IdentityTheoremSpike
 import KyleUniqueness.SteinInequality

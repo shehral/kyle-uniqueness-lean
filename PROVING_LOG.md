@@ -154,14 +154,42 @@ Axiom audit: all nine new public declarations
   Hard-block census: 2 of the v3 plan's surviving hard blocks remain →
   **E2 and H1 only** (I-pipeline retired).
 
+### Node R2 CLOSED (same session, second unit)
+
+**v3 Lemma 2.3's regularity clause — `F ∈ C¹` + eq. (5) — is fully proved**
+in the new file `KyleUniqueness/Regularity.lean` (~330 LOC; imports
+`Statement` for R1/A2). All eleven public declarations audit to
+`[propext, Classical.choice, Quot.sound]`; file lint-clean.
+
+| Declaration | Content |
+|---|---|
+| `exp_mul_gaussianPDFReal_std` | the shift identity `e^{ct}ϱ(t) = e^{c²/2}ϱ(t−c)` (pure algebra) |
+| `abs_mul_gaussianPDFReal_std_le` | `\|t\|ϱ(t) ≤ e^{1/2}(ϱ(t−1)+ϱ(t+1))` via `\|t\| ≤ e^t + e^{−t}` — **no case split, no (1+\|y\|)e^{R\|y\|} bookkeeping**: the blueprint's planned shift-domination simplifies to two applications of the shift identity |
+| `gaussianPDFReal_std_shift_le` | `\|s\| ≤ 2 ⇒ ϱ(t−s) ≤ e²(ϱ(t−2)+ϱ(t+2))` |
+| `abs_sub_mul_gaussianPDFReal_std_le` | the locally-uniform majorant: `\|x−x₀\| ≤ 1 ⇒ \|y−x\|ϱ(y−x) ≤ 2e^{5/2}(ϱ(y−x₀−2)+ϱ(y−x₀+2))` |
+| `gaussianSmoothing_eq_convolution` | eq. (4): `F(x) = ∫ P(y)ϱ(y−x) dy` (via `integral_comp_add_gaussianReal`, banked session 1) |
+| `hasDerivAt_gaussianSmoothing` + `integrable_gaussianSmoothing_deriv_kernel` | eq. (5) first form: `hasDerivAt_integral_of_dominated_loc_of_deriv_le` at `𝕜 = ℝ` on `Metric.ball x₀ 1`, majorant integrable by **R1 at `x₀ ± 2`** — exactly the blueprint route, complex analysis nowhere |
+| `deriv_gaussianSmoothing_eq_prob` | eq. (5) second form `F′(x) = E[U·P(x+U)]` (translation invariance; hypothesis-free) |
+| `continuous_gaussianSmoothing_deriv`, `deriv_gaussianSmoothing`, `continuous_deriv_gaussianSmoothing` | `F′` continuous (`continuousAt_of_dominated`, same majorant) ⇒ `F ∈ C¹` |
+
+Deferred (logged, not blocked): Lemma 2.3's bookkeeping clause
+`F(φ(V)) = E[E[V∣Y]∣V]` a.s. — it is E2's input and belongs with the
+resampling file's condExp plumbing (E1), not with the analytic node.
+
 ### Remaining campaign (frontier update)
 
-Critical path now: **R2** (`F ∈ C¹`, majorant available from R1) →
-B1/B2 → D1/D2 → E1/**E2** → **H1** → J1/T3 → Theorem 3 → carrier #10 →
-location–scale → carrier #13. J1's Stein application is now fully
-unblocked on the I-side (consume
-`one_le_integral_sq_mul_integral_inv_sq` with `f := h`, the H1 signed
-root, under the `E[h²] = E[1/h′²] = 2Γ` dictionary).
+Critical path now: **B1/B2** (value function / FOC — NOTE: the
+attainment-form definition of `W` is a Lane-C statement-review item per
+`attack_order.md` §1; no review is on record, so the next session should
+either surface a proposed `W` definition for review or draft it with the
+review flagged) → D1/D2 → E1/**E2** → **H1** → J1/T3 → Theorem 3 →
+carrier #10 → location–scale → carrier #13. D1's `C¹`-legs
+(differentiation of `n`, `p` under the integral) are now cheap with the
+banked majorant toolkit (constant/linear dominants against the Gaussian
+prior suffice); D1's positivity leg and D2 wait on B2's strict
+monotonicity. J1's Stein application is fully unblocked on the I-side
+(consume `one_le_integral_sq_mul_integral_inv_sq` with `f := h`, the H1
+signed root, under the `E[h²] = E[1/h′²] = 2Γ` dictionary).
 
 ### Reproduction
 
