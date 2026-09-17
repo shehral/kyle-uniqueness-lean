@@ -14,10 +14,10 @@ import Mathlib.Tactic.FunProp
 /-!
 # The one-period Kyle model: definitions
 
-Formalization of the model of Monteiro & Tourky, *The one-period Gaussian
-Kyle model has exactly one equilibrium* (arXiv:2607.23585, **v3** of
-2026-08-10). This file contains only definitions and a handful of elementary
-lemmas; the paper's theorems are stated in `KyleUniqueness.Statement`.
+Formalization of the model of Monteiro & Tourky, *The one-period Kyle model
+has one equilibrium* (arXiv:2607.23585, **v4** of 2026-08-20). This file
+contains only definitions and a handful of elementary lemmas; the paper's
+theorems are stated in `KyleUniqueness.Statement` and `KyleUniqueness.Main`.
 
 ## Contents
 
@@ -27,28 +27,34 @@ lemmas; the paper's theorems are stated in `KyleUniqueness.Statement`.
   `KyleModel.orderFlow` (`Y_φ = φ(V) + U`), `KyleModel.IsPricingRule`
   (competitive pricing `P_φ(Y_φ) = E[V ∣ Y_φ]` a.s. — item 2 of §1's
   equilibrium definition), `KyleModel.expectedProfit` (the expectation in
-  the profit-maximisation condition), `KyleModel.IsEquilibrium` (**v3's
+  the profit-maximisation condition), `KyleModel.IsEquilibrium` (**v4's
   primary notion**: a (strategy, pricing-rule) *pair* is an equilibrium),
   `KyleModel.IsEquilibriumStrategy` (the derived `∃ P`-projection),
-  `KyleModel.kyleStrategy` (eq. (1)) and `KyleModel.kylePricingRule`
-  (eq. (2)).
+  `KyleModel.kyleStrategy` (eq. (1.1)) and `KyleModel.kylePricingRule`
+  (eq. (1.2)).
 
 * **The normalised model (paper §2).** `V`, `U` standard normal. The objects
   `flowDensity` (`p(y)`, Lemma 2.1), `inverseRegression` (`P`, the explicit
-  Bayes quotient by which v3 §2.2 *defines* the pricing rule — see the note
-  on the definition), `gaussianSmoothing` (`F`, eqs. (3)–(4)),
-  `noiseTraderLoss` (`Γ`, eq. (13) — the organising quantity of v3's proof),
-  `objective` and `IsGammaSolution` (whose `γ = 0` instance is the paper's
-  pointwise-maximisation condition (17) with value function (8)). `stdModel`
-  realises the normalised model as a `KyleModel` on the canonical space
-  `ℝ × ℝ`.
+  Bayes quotient by which v4 §2.2 *defines* the pricing rule — see the note
+  on the definition), `gaussianSmoothing` (`F`, eqs. (2.1)–(2.2)),
+  `noiseTraderLoss` (`Γ`, v4 §3.1 — the organising quantity of the proof;
+  v4 changed its definiens, see the note on `noiseTraderLoss`), `objective`
+  and `IsGammaSolution` (whose `γ = 0` instance is the paper's
+  pointwise-maximisation condition, untagged in v4, with the value function
+  `Π` of v4 §2.4 / Lemma 3.2). `stdModel` realises the normalised model as a
+  `KyleModel` on the canonical space `ℝ × ℝ`.
 
 The cubic-root layer (`betaGamma`, `lambdaGamma`) that supported v2's
 deleted quadratic-cost family now lives in `KyleUniqueness.BeyondPaper`.
 
 All section, equation and lemma numbers in this file refer to
-arXiv:2607.23585 **v3** (equations were renumbered from v2; the v2 ↔ v3 map
-is recorded in `STATEMENT_NOTES.md` and `V3_RECONCILIATION_PLAN.md`).
+arXiv:2607.23585 **v4**. Earlier sessions of this development were keyed to
+v3 (and, before that, v2): the v2 ↔ v3 map is recorded in
+`STATEMENT_NOTES.md` and `V3_RECONCILIATION_PLAN.md`, and the v3 → v4
+crosswalk in `V4_DELTA_REPORT_2026-09-16.md` §1 (repo policy:
+`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1). None of v3's flat
+equation numbers survives into v4's per-section numbering, so a bare v3
+number appearing below would be a bug, not a variant spelling.
 -/
 
 open MeasureTheory ProbabilityTheory
@@ -122,8 +128,9 @@ def flowSigma (φ : ℝ → ℝ) : MeasurableSpace Ω :=
 equilibrium definition — "competitive pricing"): a Borel `P_φ : ℝ → ℝ` with
 `P_φ(Y_φ) = E[V ∣ Y_φ]` almost surely. The conditional expectation is
 Mathlib's `condExp` with respect to `σ(Y_φ)`. This determines `P_φ` only up
-to null sets of the law of `Y_φ` (v3 states all pricing-rule uniqueness
-a.s. / up to Lebesgue-null modification accordingly). -/
+to null sets of the law of `Y_φ` (v4 states all pricing-rule uniqueness
+a.s. / up to Lebesgue-null modification accordingly). v4 renames this
+condition "market efficiency" (v3: "competitive pricing"). -/
 structure IsPricingRule (φ : ℝ → ℝ) (P : ℝ → ℝ) : Prop where
   /-- The pricing rule is Borel measurable. -/
   measurable : Measurable P
@@ -135,21 +142,26 @@ structure IsPricingRule (φ : ℝ → ℝ) (P : ℝ → ℝ) : Prop where
 market order `x` after observing `V = v`, with the pricing rule `P` held
 fixed — the two sides of the paper's §1 profit-maximisation condition.
 (Finiteness of this integral for any Borel version of the pricing rule, and
-its independence of the chosen version, are now *stated paper lemmas* — v3
+its independence of the chosen version, are *stated paper lemmas* — v4
 Lemmas 2.2 and 2.3 — so the Bochner integral is the honest expectation on
 the entire class the theorems quantify over.) -/
 noncomputable def expectedProfit (P : ℝ → ℝ) (v x : ℝ) : ℝ :=
   ∫ ω, (v - P (x + M.U ω)) * x ∂M.μ
 
-/-- **v3's primary equilibrium notion (§1, Theorem 1): the pair.**
+/-- **v4's primary equilibrium notion (§1, Theorem 1.1): the pair.**
 A pair `(φ, P)` is an equilibrium iff (i) `φ` is Borel, (ii) `P` is a
 pricing rule for `φ` (competitive pricing, item 2 of the definition), and
 (iii) the order `φ(v)` maximises the insider's expected profit against `P`
 at EVERY `v ∈ ℝ`:
 `E[(v − P(φ(v)+U)) φ(v)] ≥ E[(v − P(x+U)) x]` for every `v, x ∈ ℝ`
-(item 1). Note the quantifier: every `v`, not almost every `v` (v3 remarks
-that a.e.-maximisation suffices — Lemma 2.7 — but the primary definition is
-pointwise, and so is ours). -/
+(item 1). v4 names the two items "Profit maximisation" and "Market
+efficiency" (v3: "pointwise profit maximisation" / "competitive pricing").
+Note the quantifier: every `v`, not almost every `v`. v4 remarks in
+footnote 1 that a.e.-maximisation suffices and defers the quasi-equilibrium
+statement to Appendix B, Lemma B.1; v3 cited its own Lemma 2.7 at this
+point, which v4 DELETED (v4's Lemma 2.7 is the unrelated Cacoullos variance
+bound). The primary definition is pointwise, and so is ours — Appendix B is
+not formalized; see `KyleUniqueness.Main`. -/
 structure IsEquilibrium (φ P : ℝ → ℝ) : Prop where
   /-- The strategy is Borel measurable (§1: "Borel function `φ`"). -/
   measurable : Measurable φ
@@ -161,9 +173,9 @@ structure IsEquilibrium (φ P : ℝ → ℝ) : Prop where
 /-- Kyle's profit-maximisation equilibrium, strategy-only form: `φ` is an
 equilibrium strategy if it is Borel and profit-maximising against SOME
 pricing rule — the `∃ P`-projection of `IsEquilibrium`. (v2 took this as
-the primary notion; v3 promotes the pair. The two are interchangeable:
+the primary notion; v3 and v4 promote the pair. The two are interchangeable:
 whether the maximisation condition holds does not depend on the chosen
-version of the pricing rule — v3 Lemmas 2.2/2.3 — and quantifying
+version of the pricing rule — v4 Lemmas 2.2/2.3 — and quantifying
 existentially makes the equilibrium predicate weakest, hence the uniqueness
 theorem strongest. See `isEquilibriumStrategy_iff_exists`.) -/
 def IsEquilibriumStrategy (φ : ℝ → ℝ) : Prop :=
@@ -177,22 +189,23 @@ theorem IsEquilibrium.isEquilibriumStrategy {φ P : ℝ → ℝ}
     (h : M.IsEquilibrium φ P) : M.IsEquilibriumStrategy φ :=
   ⟨h.measurable, P, h.pricingRule, h.isMaxOn⟩
 
-/-- The strategy-only notion is exactly the `∃ P`-projection of v3's pair
+/-- The strategy-only notion is exactly the `∃ P`-projection of v4's pair
 notion. -/
 theorem isEquilibriumStrategy_iff_exists (φ : ℝ → ℝ) :
     M.IsEquilibriumStrategy φ ↔ ∃ P : ℝ → ℝ, M.IsEquilibrium φ P :=
   ⟨fun ⟨hφ, P, hPR, hmax⟩ => ⟨P, hφ, hPR, hmax⟩,
     fun ⟨_, h⟩ => h.isEquilibriumStrategy⟩
 
-/-- Kyle's affine strategy `φ(v) = (σ/τ)(v − μ₀)` (paper eq. (1)). -/
+/-- Kyle's affine strategy `φ(v) = (σ/τ)(v − μ₀)` (v4 eq. (1.1)). -/
 noncomputable def kyleStrategy : ℝ → ℝ := fun v => M.σ / M.τ * (v - M.μ₀)
 
-/-- Kyle's price-impact coefficient `λ = τ/(2σ)` (paper eq. (2); v3 also
-writes it as `Cov(V, Y_φ)/Var(Y_φ)`). -/
+/-- Kyle's price-impact coefficient `λ = τ/(2σ)` (v4 eq. (1.2); the
+`Cov(V, Y_φ)/Var(Y_φ)` reading, displayed inline in v3, survives in v4 only
+as Appendix B's eq. (B.2)). -/
 noncomputable def priceImpact : ℝ := M.τ / (2 * M.σ)
 
-/-- Kyle's affine pricing rule `P_φ(y) = μ₀ + λ y`, `λ = τ/(2σ)` (paper
-eq. (2), stated there a.s. along the flow: `P(Y_φ) = μ + λ Y_φ`). -/
+/-- Kyle's affine pricing rule `P_φ(y) = μ₀ + λ y`, `λ = τ/(2σ)` (v4
+eq. (1.2), stated there a.s. along the flow: `P(Y_φ) = μ + λ Y_φ`). -/
 noncomputable def kylePricingRule : ℝ → ℝ := fun y => M.μ₀ + M.priceImpact * y
 
 end KyleModel
@@ -203,13 +216,13 @@ end KyleModel
 denote the standard normal density. Throughout, fix a Borel function
 `φ : ℝ → ℝ` and set `Y = φ(V) + U`." (§2, opening.)
 
-v3 §2.2 *defines* the pricing rule `P` by the explicit Bayes quotient
+v4 §2.2 *defines* the pricing rule `P` by the explicit Bayes quotient
 (posterior mean) below — the modeling choice that v2 forced on us as a
-MATHLIB-GAP workaround is now paper-canonical. Mathlib (at pin `81a5d257`,
-tag v4.32.0) still has no posterior-density / Bayes-quotient API for
-`ProbabilityTheory.condDistrib`, so the definition remains explicit and the
-bridge back to `condExp` — that this explicit function IS a pricing rule in
-the sense of `KyleModel.IsPricingRule` (v3 Lemma 2.2) — is PROVED in
+MATHLIB-GAP workaround is paper-canonical from v3 on. Mathlib (at pin
+`81a5d257`, tag v4.32.0) still has no posterior-density / Bayes-quotient API
+for `ProbabilityTheory.condDistrib`, so the definition remains explicit and
+the bridge back to `condExp` — that this explicit function IS a pricing rule
+in the sense of `KyleModel.IsPricingRule` (v4 Lemma 2.2) — is PROVED in
 `KyleUniqueness.Statement` (`lemma21_isPricingRule`, the canary). -/
 
 /-- The standard normal density `ϱ` (§2). Equal to
@@ -224,8 +237,9 @@ noncomputable def flowDensity (φ : ℝ → ℝ) (y : ℝ) : ℝ :=
   ∫ v, stdNormalPDF (y - φ v) ∂gaussianReal 0 1
 
 /-- The inverse regression `P`, via the explicit Bayes posterior-mean formula
-by which v3 §2.2 defines the pricing rule: `P(y) = ∫ v π_y(dv)` (eq. (6))
-with posterior `π_y(dv) = ϱ(v)ϱ(y − φ(v)) dv / p(y)`. v3 Lemma 2.2 asserts
+by which v4 §2.2 defines the pricing rule: `P(y) = ∫ v π_y(dv)` (the last
+display of v4 §2.2; the tag v3 gave it, eq. (6), is gone) with posterior
+`π_y(dv) = ϱ(v)ϱ(y − φ(v)) dv / p(y)`. v4 Lemma 2.2 asserts
 `P` is continuous and `P(Y) = E[V ∣ Y] ∈ L²` a.s. — stated in
 `Statement.lean` (`lemma21_isPricingRule` proved, `lemma21_continuous`,
 `lemma22_memLp_two`). (Lean's convention `r/0 = 0` is harmless: the
@@ -235,22 +249,38 @@ noncomputable def inverseRegression (φ : ℝ → ℝ) (y : ℝ) : ℝ :=
   (∫ v, v * stdNormalPDF (y - φ v) ∂gaussianReal 0 1) / flowDensity φ y
 
 /-- The Gaussian smoothing `F(x) = E[P(x + U)]` of the inverse regression
-(eq. (3); eq. (4) is the convolution form `∫ P(y)ϱ(y − x) dy`): the
-insider's expected price at order size `x`. v3 Lemma 2.3 asserts `F ∈ C¹`
-with `F′(x) = ∫ u P(x + u) ϱ(u) du` (eq. (5)) — no analyticity claim
-remains anywhere in v3. -/
+(v4 eq. (2.1); v4 eq. (2.2) is the convolution form `∫ P(y)ϱ(y − x) dy`):
+the insider's expected price at order size `x`. v4 Lemma 2.3 asserts
+`F ∈ C¹` with `F′(x) = ∫ u P(x + u) ϱ(u) du`; v4 tags only the first line of
+that split display as (2.3), so this `u`-integral form carries no v4
+equation number of its own. No analyticity claim remains anywhere in v3 or
+v4. NOTE: v4's Lemma 2.3 is strictly STRONGER than v3's — it additionally
+asserts finiteness of the expectation in (2.1) and absolute convergence of
+the integrals in (2.2)/(2.3); see `KyleUniqueness.Regularity`. -/
 noncomputable def gaussianSmoothing (φ : ℝ → ℝ) (x : ℝ) : ℝ :=
   ∫ u, inverseRegression φ (x + u) ∂gaussianReal 0 1
 
-/-- The noise traders' expected loss `Γ := Cov(U, E[V ∣ Y])` (v3 eq. (13)) —
-the organising quantity of v3's proof — realised on the canonical
-normalised space `ℝ × ℝ` (coordinates `(V, U)` under the product of two
-standard Gaussians) through the explicit inverse regression:
-`Γ = E[U · P(Y)]`, `Y = φ(V) + U`. Since `E[U] = 0` and
-`P(Y) = E[V ∣ Y] ∈ L²` (v3 Lemma 2.2 = `lemma21_isPricingRule` +
-`lemma22_memLp_two`), this Bochner integral is the paper's covariance.
-Proposition 2's claims — `Γ` finite, `−1/2 ≤ Γ ≤ 1/2` (eq. (14)), equality
-iff `φ(v) = ±v + a` Lebesgue-a.e. (eq. (15)) — are stated in
+/-- The noise traders' expected loss `Γ` (v4 §3.1) — the organising quantity
+of the proof — realised on the canonical normalised space `ℝ × ℝ`
+(coordinates `(V, U)` under the product of two standard Gaussians) through
+the explicit inverse regression: `Γ = E[U · P(Y)]`, `Y = φ(V) + U`.
+
+**Definiens note (v3 → v4).** v3's eq. (13) *defined* `Γ := Cov(U, E[V ∣ Y])`;
+v4 §3.1 instead *defines* `Γ := E[U(P(Y) − V)]` and demotes the covariance
+form to a conclusion of its new Lemma 3.1. This Lean definition is the
+middle expression `E[U · P(Y)]`, and BOTH paper readings are proved equal to
+it in `KyleUniqueness.Loss`: `integral_noise_mul_sub_value_eq_noiseTraderLoss`
+(v4's definiens) and `covariance_noise_condExp_eq_noiseTraderLoss` (the
+covariance form). The equalities hold because `E[U] = 0` and
+`P(Y) = E[V ∣ Y] ∈ L²` (v4 Lemma 2.2 = `lemma21_isPricingRule` +
+`lemma22_memLp_two`).
+
+Finiteness of `Γ` belongs to v4 **Lemma 3.1**: v4's Proposition 4.1 dropped
+the "is finite and" that v3's Proposition 2 carried, so
+`integrable_noiseTraderLoss` in `Statement.lean` now discharges a clause of
+Lemma 3.1, not of Proposition 4.1. Proposition 4.1's own claims —
+`−1/2 ≤ Γ ≤ 1/2` (v4 eq. (4.1)) and equality iff `φ(v) = ±v + a`
+Lebesgue-a.e. (untagged in v4; v3 eq. (15)) — are also stated in
 `Statement.lean`. -/
 noncomputable def noiseTraderLoss (φ : ℝ → ℝ) : ℝ :=
   ∫ p, p.2 * inverseRegression φ (φ p.1 + p.2)
@@ -258,19 +288,23 @@ noncomputable def noiseTraderLoss (φ : ℝ → ℝ) : ℝ :=
 
 /-- The insider's objective in the normalised model with quadratic trading
 cost: `x(v − F(x)) − (γ/2)x²`. The case `γ = 0` is the paper's objective
-`x(v − F(x))` (the integrand of the value function, v3 eq. (8)); the
-`γ ≠ 0` readings are **beyond-paper** — the quadratic-cost family of v2's
-Definition 2.2 was dropped in v3 (see `KyleUniqueness.BeyondPaper`). -/
+`x(v − F(x))` — the integrand of the value function `Π` of v4 §2.4 /
+Lemma 3.2, untagged in v4 (v3 eq. (8)). The `γ ≠ 0` readings are
+**beyond-paper**: the quadratic-cost family of v2's Definition 2.2 was
+dropped in v3 and has not returned in v4 (see
+`KyleUniqueness.BeyondPaper`). -/
 noncomputable def objective (γ : ℝ) (φ : ℝ → ℝ) (v x : ℝ) : ℝ :=
   x * (v - gaussianSmoothing φ x) - γ / 2 * x ^ 2
 
 /-- Pointwise-maximisation solutions: a Borel `φ` with
 `φ(v) ∈ argmax_x {x(v − F(x)) − (γ/2)x²}` for every `v ∈ ℝ`, where `F` is
 the Gaussian smoothing built from `φ` itself. The instance `γ = 0` is
-exactly v3's condition (17) — `φ(v) ∈ argmax_x x(v − F(x))` for every
-`v` — the hypothesis of Theorems 3 and 4. The general-`γ` family is v2
-legacy, kept as a definition only (**beyond-paper** for `γ ≠ 0`; no v3
-theorem is stated about it — see `KyleUniqueness.BeyondPaper`). -/
+exactly the paper's pointwise-maximisation condition —
+`φ(v) ∈ argmax_x x(v − F(x))` for every `v`, which v3 tagged (17) and v4
+leaves untagged — the hypothesis of v4 Proposition 6.1 and Theorem 7.1
+(v3: Theorems 3 and 4). The general-`γ` family is v2 legacy, kept as a
+definition only (**beyond-paper** for `γ ≠ 0`; no v3 or v4 theorem is stated
+about it — see `KyleUniqueness.BeyondPaper`). -/
 def IsGammaSolution (γ : ℝ) (φ : ℝ → ℝ) : Prop :=
   Measurable φ ∧ ∀ v x : ℝ, objective γ φ v x ≤ objective γ φ v (φ v)
 
@@ -283,7 +317,8 @@ space `ℝ × ℝ`: `V` and `U` are the coordinates under the product of two
 standard Gaussians, `μ₀ = 0`, `τ = σ = 1`. This ties the normalised objects
 of §2 to the general equilibrium definition of §1 (see
 `equilibrium_iff_zeroSolution` in `Statement.lean`, the `σ = τ = 1` case of
-the location–scale standardisation in the proof of Theorem 1, v3 §3.1). -/
+the location–scale standardisation in the proof of Theorem 1.1 — v4 §7,
+v3 §3.1). -/
 noncomputable def stdModel : KyleModel (ℝ × ℝ) where
   μ := (gaussianReal 0 1).prod (gaussianReal 0 1)
   hprob := inferInstance

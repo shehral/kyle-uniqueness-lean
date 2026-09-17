@@ -10,10 +10,18 @@ import Mathlib.MeasureTheory.Measure.Prod
 /-!
 # Gaussian helper lemmas
 
-Mathlib-only support layer for the Kyle-uniqueness formalization
-(arXiv:2607.23585v2): the items recorded as MISSING in
+Mathlib-only support layer for the Kyle-uniqueness formalization of
+Monteiro & Tourky, *The one-period Kyle model has one equilibrium*
+(arXiv:2607.23585, **v4** of 2026-08-20): the items recorded as MISSING in
 `blueprint/mathlib_api_audit.md` §10 (items 1–4), plus the small Gaussian
 integral toolkit consumed by the pricing-rule bridge (`CondExpBridge.lean`).
+
+**Version note.** This module was written in the v2 session and re-keyed to
+v4 here; earlier sessions of the development were keyed to v3. Nothing in
+this file is paper content — every lemma is Mathlib-only — so the paper
+references below are provenance pointers, not claims. Crosswalk:
+`V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1.
 
 ## Audit §10 status at pin `81a5d257` (tag v4.32.0)
 
@@ -201,8 +209,12 @@ lemma nullSingletonClass_map_of_injective {α β : Type*} [MeasurableSpace α]
 
 /-- The diagonal of `ℝ × ℝ` is null for a product measure whose second
 factor is atomless (blueprint node D1's glue: the posterior product charges
-no diagonal). -/
-lemma measure_prod_diagonal_eq_zero {μ ν : Measure ℝ} [SFinite μ] [SFinite ν]
+no diagonal).
+
+The `[SFinite μ]` instance the statement originally carried was unused (the
+Batteries `unusedArguments` environment linter flagged it) and has been
+dropped; only `[SFinite ν]` is needed, by `Measure.prod_apply`. -/
+lemma measure_prod_diagonal_eq_zero {μ ν : Measure ℝ} [SFinite ν]
     [NullSingletonClass ν] : (μ.prod ν) (Set.diagonal ℝ) = 0 := by
   have hdiag : MeasurableSet (Set.diagonal ℝ) :=
     isClosed_diagonal.measurableSet
@@ -334,12 +346,15 @@ lemma integral_id_mul_gaussianPDFReal (m : ℝ) {v : ℝ≥0} (hv : v ≠ 0) :
 
 /-! ## The Kyle complete-the-square identity
 
-The bivariate Gaussian factorization behind eq. (3) of the paper: for the
-affine strategy with slope `c = σ/τ`, the product of the noise kernel and
-the prior density factorizes as (density of `N(0, 2σ²)` in `y`) × (density
-of the posterior `N(λy, τ²/2)` in the centred value `a`), where
-`λ = τ/(2σ)` is Kyle's price impact. This one identity is the entire
-computational content of the existence half of Theorem 1.1. -/
+The bivariate Gaussian factorization behind v4 eq. (1.2) (v2 eq. (3),
+v3 eq. (2)): for the affine strategy with slope `c = σ/τ`, the product of
+the noise kernel and the prior density factorizes as (density of `N(0, 2σ²)`
+in `y`) × (density of the posterior `N(λy, τ²/2)` in the centred value `a`),
+where `λ = τ/(2σ)` is Kyle's price impact. This one identity is the entire
+computational content of the existence half of **v4 Theorem 1.1** (the
+"Theorem 1.1" of the original v2-keyed comment here was v2's numbering; the
+two coincide by accident, and the v3 label for the same result was
+"Theorem 1"). -/
 
 /-- Complete-the-square: for `σ, τ > 0`, all `y a : ℝ`,
 `ϱ_{0,σ²}(y − (σ/τ)a) · ϱ_{0,τ²}(a) = ϱ_{0,2σ²}(y) · ϱ_{τy/(2σ), τ²/2}(a)`. -/
@@ -402,8 +417,9 @@ lemma ae_volume_of_ae_gaussianReal {μ : ℝ} {v : ℝ≥0} (hv : v ≠ 0)
   rw [gaussianPDF]
   exact (ENNReal.ofReal_pos.mpr (gaussianPDFReal_pos μ v x hv)).ne'
 
-/-- Gaussian complete-the-square for the `K_x` kernel (v3 App. A, proof of
-Lemma 2.3): `ϱ(y−x)·ϱ(y−a) = e^{(x−d)(a−d)} · ϱ(y−(x+a−d)) · ϱ(y−d)`. -/
+/-- Gaussian complete-the-square for the `K_x` kernel (v4 Appendix A,
+"Proofs of the preliminary lemmas", proof of Lemma 2.3):
+`ϱ(y−x)·ϱ(y−a) = e^{(x−d)(a−d)} · ϱ(y−(x+a−d)) · ϱ(y−d)`. -/
 lemma gaussianPDFReal_std_mul_eq_exp_mul (x a d y : ℝ) :
     gaussianPDFReal 0 1 (y - x) * gaussianPDFReal 0 1 (y - a)
       = Real.exp ((x - d) * (a - d))
@@ -431,8 +447,8 @@ lemma gaussianPDFReal_std_mul_eq_exp_mul (x a d y : ℝ) :
     * (Real.sqrt (2 * Real.pi))⁻¹ * Real.exp t) (by ring)
 
 /-- The `K_x` kernel against a shifted Gaussian denominator integrates to
-the completed square: `∫ ϱ(y−x)ϱ(y−a)/ϱ(y−d) dy = e^{(x−d)(a−d)}` (v3
-App. A, proof of Lemma 2.3). -/
+the completed square: `∫ ϱ(y−x)ϱ(y−a)/ϱ(y−d) dy = e^{(x−d)(a−d)}`
+(v4 Appendix A, proof of Lemma 2.3). -/
 lemma lintegral_gaussianPDFReal_std_mul_div (x a d : ℝ) :
     ∫⁻ y, ENNReal.ofReal (gaussianPDFReal 0 1 (y - x)
         * gaussianPDFReal 0 1 (y - a) / gaussianPDFReal 0 1 (y - d))

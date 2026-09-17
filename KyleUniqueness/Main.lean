@@ -10,18 +10,19 @@ import KyleUniqueness.SignedRoot
 # Main theorems (v4 Theorem 7.1 rigidity, Prop 6.1 saturation, Theorem 1.1 uniqueness)
 
 The top of the import DAG for the formalization of Monteiro & Tourky, *The
-one-period Gaussian Kyle model has exactly one equilibrium*
+one-period Kyle model has one equilibrium*
 (arXiv:2607.23585, **v4** of 2026-08-20). Everything below this file is
 either a definition, a lemma of §2–§6, or one of the two halves of the
 headline that do not need the §4–§6 machinery; this file assembles them.
 
 Numbering in this file is v4's (`blueprint/LANE_C_DECISIONS_2026-09-16.md`,
-decision D1); the six declarations *moved here from*
-`KyleUniqueness.Statement` keep their original v3-numbered docstrings
-verbatim, because they are catalogued under those numbers in
-`STATEMENT_NOTES.md`. The crosswalk is: v3 Theorem 3 = **v4 Prop 6.1**,
-v3 Theorem 4 = **v4 Theorem 7.1**, v3 Theorem 1 = **v4 Theorem 1.1**,
-v3 Proposition 2 = **v4 Prop 4.1**.
+decision D1). The whole Lean tree — `KyleUniqueness.Statement` and the other
+v3-session modules included — was re-keyed to v4 in the closeout wave, so
+the six declarations *moved here from* `KyleUniqueness.Statement` now carry
+v4 numbers too; `STATEMENT_NOTES.md` still catalogues them under v3 numbers.
+The crosswalk is: v3 Theorem 3 = **v4 Prop 6.1**, v3 Theorem 4 = **v4
+Theorem 7.1**, v3 Theorem 1 = **v4 Theorem 1.1**, v3 Proposition 2 = **v4
+Prop 4.1**; the full map is `V4_DELTA_REPORT_2026-09-16.md` §1.
 
 ## Main results
 
@@ -30,7 +31,7 @@ v3 Proposition 2 = **v4 Prop 4.1**.
   two halves are `one_le_two_mul_noiseTraderLoss` (node J1, `1 ≤ 2Γ`, from
   the signed root plus the one-sided Stein inequality) and
   `noiseTraderLoss_le_half` (v4 Prop 4.1, `|Γ| ≤ 1/2`).
-* `Monotone.eq_of_ae_eq_continuous` — the rigidity upgrade from
+* `monotone_eq_of_ae_eq_continuous` — the rigidity upgrade from
   Lebesgue-a.e. to everywhere for a monotone function.
 * `isGammaSolution_zero_iff` / `existsUnique_zeroSolution` — **v4 Theorem
   7.1** (v3 Theorem 4): the pointwise maximisation condition (17) holds iff
@@ -91,7 +92,7 @@ standard density squeeze: the agreement set has null complement, so it
 meets every nonempty open interval (`Real.volume_Ioo` is positive), and
 monotonicity sandwiches `φ v` between values of `g` at agreement points on
 either side of `v`, which converge to `g v` by continuity. -/
-theorem Monotone.eq_of_ae_eq_continuous {φ g : ℝ → ℝ} (hmono : Monotone φ)
+theorem monotone_eq_of_ae_eq_continuous {φ g : ℝ → ℝ} (hmono : Monotone φ)
     (hg : Continuous g) (hae : φ =ᵐ[(volume : Measure ℝ)] g) : φ = g := by
   -- The disagreement set is Lebesgue-null, so every nonempty open interval
   -- contains a point of agreement.
@@ -128,17 +129,20 @@ theorem Monotone.eq_of_ae_eq_continuous {φ g : ℝ → ℝ} (hmono : Monotone �
     rw [hxeq] at hmx
     linarith
 
-/-! ## Theorem 4: the pointwise-maximisation condition forces `φ = id`
+/-! ## Theorem 7.1: the pointwise-maximisation condition forces `φ = id`
 
-v3 promotes v2's Corollary 3.3 to a main theorem (v4 Theorem 7.1). The
-proof route is Theorem 3 (`Γ = 1/2` for any `φ` satisfying (17)) +
-Proposition 2's equality case (`φ = v + a` a.e.) + the Gaussian regression
-for affine strategies + the pointwise argmax comparison forcing `a = 0`. -/
+v3 promoted v2's Corollary 3.3 to a main theorem; v4 numbers it **Theorem
+7.1** (§7, "Rigidity"). The proof route is Proposition 6.1 (`Γ = 1/2` for
+any `φ` satisfying the pointwise-maximisation condition) + Proposition 4.1's
+equality case (`φ = v + a` a.e.) + the Gaussian regression for affine
+strategies + the pointwise argmax comparison forcing `a = 0`. -/
 
-/-- **Theorem 4**: `φ` satisfies `φ(v) ∈ argmax_x {x(v − F(x))}` for every
-`v ∈ ℝ` (condition (17), eq. (19)) iff `φ = id`. This is the primary
-rigidity statement; it carries the proof obligation directly (v2 derived it
-from the deleted general-`γ` classification). -/
+/-- **v4 Theorem 7.1** (v3 Theorem 4): `φ` satisfies
+`φ(v) ∈ argmax_x {x(v − F(x))}` for every `v ∈ ℝ` (the
+pointwise-maximisation condition, untagged in v4; v3 tagged it (17) with
+display (19)) iff `φ = id`. This is the primary rigidity statement; it
+carries the proof obligation directly (v2 derived it from the deleted
+general-`γ` classification). -/
 theorem isGammaSolution_zero_iff (φ : ℝ → ℝ) :
     IsGammaSolution 0 φ ↔ φ = id := by
   constructor
@@ -155,7 +159,8 @@ theorem isGammaSolution_zero_iff (φ : ℝ → ℝ) :
     intro h
     obtain ⟨a, ha⟩ := (noiseTraderLoss_eq_half_iff h.1).1 (gamma_eq_half h)
     have hφa : φ = fun v => v + a :=
-      Monotone.eq_of_ae_eq_continuous (monotone_of_isGammaSolution h) (by fun_prop) ha
+      monotone_eq_of_ae_eq_continuous (monotone_of_isGammaSolution h)
+        (by fun_prop) ha
     have ha0 : a = 0 := by
       -- Compare the objective at the admissible order `x = a/2` with its
       -- value at `x = φ 0 = a`: `a²/8 ≤ 0`.
@@ -175,14 +180,14 @@ theorem isGammaSolution_zero_iff (φ : ℝ → ℝ) :
     simp only [objective, gaussianSmoothing_id, id_eq]
     nlinarith [sq_nonneg (x - v)]
 
-/-- Theorem 4, `∃!`-packaging: exactly one Borel strategy satisfies the
-pointwise-maximisation condition (17). Assembled from
+/-- v4 Theorem 7.1, `∃!`-packaging: exactly one Borel strategy satisfies
+the pointwise-maximisation condition. Assembled from
 `isGammaSolution_zero_iff`; no `sorry` of its own. -/
 theorem existsUnique_zeroSolution : ∃! φ : ℝ → ℝ, IsGammaSolution 0 φ :=
   ⟨id, (isGammaSolution_zero_iff id).mpr rfl,
     fun ψ hψ => (isGammaSolution_zero_iff ψ).mp hψ⟩
 
-/-! ## Theorem 1: the strategy layer -/
+/-! ## Theorem 1.1: the strategy layer -/
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 
@@ -512,9 +517,9 @@ lemma expectedProfit_bayesPrice {φ : ℝ → ℝ} (hφ : Measurable φ) (v x : 
 
 end KyleModel
 
-/-- Uniqueness direction of **Theorem 1** (strategy half): every
+/-- Uniqueness direction of **v4 Theorem 1.1** (strategy half): every
 equilibrium strategy — Borel, with no regularity or moment assumption —
-equals Kyle's affine strategy (eq. (1)), exactly (at every `v`, not merely
+equals Kyle's affine strategy (eq. (1.1)), exactly (at every `v`, not merely
 a.e.). -/
 theorem isEquilibrium_eq_kyleStrategy (M : KyleModel Ω) (φ : ℝ → ℝ)
     (hφ : M.IsEquilibriumStrategy φ) : φ = M.kyleStrategy := by
@@ -548,9 +553,10 @@ theorem isEquilibrium_eq_kyleStrategy (M : KyleModel Ω) (φ : ℝ → ℝ)
   rw [hks, div_mul_eq_mul_div, eq_div_iff hτ]
   linear_combination h'
 
-/-- **Theorem 1**, strategy-only iff: for independent `V ~ N(μ₀, τ²)` and
-`U ~ N(0, σ²)` with `τ, σ > 0`, a Borel strategy is an equilibrium strategy
-iff it is Kyle's affine strategy `φ(v) = (σ/τ)(v − μ₀)` (eq. (1)).
+/-- **v4 Theorem 1.1**, strategy-only iff: for independent `V ~ N(μ₀, τ²)`
+and `U ~ N(0, σ²)` with `τ, σ > 0`, a Borel strategy is an equilibrium
+strategy iff it is Kyle's affine strategy `φ(v) = (σ/τ)(v − μ₀)`
+(eq. (1.1)).
 Assembled from the two halves above; no `sorry` of its own. -/
 theorem kyle_unique_equilibrium (M : KyleModel Ω) (φ : ℝ → ℝ) :
     M.IsEquilibriumStrategy φ ↔ φ = M.kyleStrategy :=
@@ -558,18 +564,18 @@ theorem kyle_unique_equilibrium (M : KyleModel Ω) (φ : ℝ → ℝ) :
     rintro rfl
     exact kyleStrategy_isEquilibrium M⟩
 
-/-- **Theorem 1**, `∃!`-form: the one-period Gaussian Kyle model has
-exactly one equilibrium strategy. Assembled; no `sorry` of its own. -/
+/-- **v4 Theorem 1.1**, `∃!`-form: the one-period Kyle model has one
+equilibrium strategy. Assembled; no `sorry` of its own. -/
 theorem kyle_existsUnique_equilibrium (M : KyleModel Ω) :
     ∃! φ : ℝ → ℝ, M.IsEquilibriumStrategy φ :=
   ⟨M.kyleStrategy, kyleStrategy_isEquilibrium M,
     fun ψ hψ => isEquilibrium_eq_kyleStrategy M ψ hψ⟩
 
-/-! ## Theorem 1: the pair form (v3's headline) -/
+/-! ## Theorem 1.1: the pair form (the headline) -/
 
-/-- **Theorem 1** (v3's headline, verbatim pair form): a pair `(φ, P)` is
-an equilibrium if and only if `φ` is Kyle's affine strategy (eq. (1)) and
-`P(Y_φ) = μ₀ + λ·Y_φ` almost surely (eq. (2)), `λ = τ/(2σ)`. Assembled
+/-- **v4 Theorem 1.1** (the headline, pair form): a pair `(φ, P)` is an
+equilibrium if and only if `φ` is Kyle's affine strategy (eq. (1.1)) and
+`P(Y_φ) = μ₀ + λ·Y_φ` almost surely (eq. (1.2)), `λ = τ/(2σ)`. Assembled
 from the strategy halves, the pricing characterisation and the
 version-independence lemmas; no `sorry` of its own. -/
 theorem kyle_equilibrium_pair_iff (M : KyleModel Ω) (φ P : ℝ → ℝ)

@@ -6,9 +6,26 @@ Authors: Mohammad Ali Shehral
 import KyleUniqueness.Regularity
 
 /-!
-# Posterior differentiation, `C¹` legs (blueprint node D1, part; v3 Lemma 4.1)
+# Posterior differentiation, `C¹` legs (blueprint node D1, part; v4 Lemma 2.5)
 
-The differentiation-under-the-integral legs of v3 Lemma 4.1: the flow
+Keyed to Monteiro & Tourky, *The one-period Kyle model has one equilibrium*
+(arXiv:2607.23585, **v4** of 2026-08-20). This module was written in the v3
+session against **v3 Lemma 4.1**, which v4 renumbered to **Lemma 2.5** and
+moved from §4 into §2.5 ("Monotonicity of the inverse regression and its
+smoothing"); its two displays are v4 eqs. (2.7) and (2.8). Crosswalk:
+`V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1.
+
+Two v4 changes beyond the number, neither of which touches what is proved
+here: v4 writes the former §4 standing hypothesis INTO the statement ("under
+the hypothesis of Lemma 2.4", i.e. `φ` strictly increasing), and it justifies
+strict positivity of `P′` by the score-covariance identity for exponential
+families rather than by a strict Chebyshev association inequality. The
+strict-monotonicity hypothesis is carried explicitly in
+`KyleUniqueness.Posterior` (`hmono : StrictMono φ`); the `C¹` legs below are
+hypothesis-free.
+
+The differentiation-under-the-integral legs of v4 Lemma 2.5: the flow
 density `p(y) = E[ϱ(y − φ(V))]` and the numerator
 `n(y) = E[V·ϱ(y − φ(V))]` are differentiable in `y` with the expected
 kernel derivatives, and hence the inverse regression `P = n/p` is
@@ -17,9 +34,10 @@ the Gaussian prior: `|t|ϱ(t) ≤ 2e^{1/2}(√(2π))⁻¹` uniformly
 (`abs_mul_gaussianPDFReal_std_le` + `gaussianPDFReal_le`), so the constant
 resp. `|v|`-linear majorants integrate against `N(0,1)`.
 
-**Not yet here** (the rest of D1 and D2, gated on B2's strict
-monotonicity): the covariance representation `P′(y) = Cov_{π_y}(id, φ)`,
-its strict positivity, and `F′ > 0`.
+**Not here** (the rest of D1 and D2, gated on B2's strict monotonicity):
+the covariance representation `P′(y) = Cov_{π_y}(id, φ)` (v4 eq. (2.7)), its
+strict positivity, and `F′ > 0` (v4 eq. (2.8)). All three were closed in
+Session 3 and live in `KyleUniqueness.Posterior`.
 -/
 
 open MeasureTheory ProbabilityTheory Real Filter Set

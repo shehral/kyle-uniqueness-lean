@@ -12,7 +12,52 @@ import Mathlib.MeasureTheory.Measure.Prod
 import Mathlib.Analysis.Calculus.Monotone
 
 /-!
-# The Stein pipeline (blueprint nodes I1–I3; v3 Lemma 2.5, eq. (7))
+# The Stein pipeline (blueprint nodes I1–I3; **v3** Lemma 2.5, **v3** eq. (7))
+
+Paper of record for the development: Monteiro & Tourky, *The one-period Kyle
+model has one equilibrium* (arXiv:2607.23585, **v4** of 2026-08-20). Every
+other module in this tree is keyed to v4; **this one deliberately is not**,
+and the reason is the single largest divergence between the artifact and the
+paper's current text, so it is stated here in full.
+
+## ⚠ This module formalizes a lemma that **v4 deleted**
+
+What is proved below is the **one-sided Gaussian (Stein-type) inequality of
+arXiv:2607.23585 v3, Lemma 2.5 (v3 §2.5, "A one-sided Gaussian
+inequality"), whose outer form is v3 eq. (7)**:
+
+`1 ≤ √(E[f(Z)²] · E[1/f′(Z)²])`  for monotone `f` with a.e. `f′ > 0`.
+
+**v4 removed that lemma.** It has no v4 counterpart and no v4 number. In its
+place v4 states a *different* lemma — v4 **Lemma 2.7**, Cacoullos's lower
+Gaussian variance bound `(E[f′(V)])² ≤ Var f(V)` for bounded Lipschitz `f` —
+and rebuilds the `Γ ≥ 1/2` step of its Proposition 6.1 around truncation plus
+two Cauchy–Schwarz chains. The two statements are not the same inequality, so
+**re-keying this file to "v4 Lemma 2.7" would be false**, and the v4 slot
+numbered 2.5 is occupied by a different result again (the monotonicity lemma,
+v3's Lemma 4.1). "Stein" survives in v4 only as a bibliography entry.
+
+## Why the file stays: it is OUR route, not the paper's (Lane-C decision D7)
+
+`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision **D7**, elects to close
+the step `1 ≤ 2Γ` (blueprint node J1) with the banked v3 inequality
+`one_le_sqrt_integral_sq_mul_integral_inv_sq` applied to the signed root,
+rather than to formalize v4's Cacoullos route. Consequences that any
+downstream claim, abstract or announcement must carry:
+
+* the formalized proof of **v4 Proposition 6.1** is **v3's proof**, not v4's;
+* this module is **our own lemma**, not "the paper's Lemma 2.5" — under v4
+  that phrase names a different result, so the older citation is not stale,
+  it is wrong;
+* nothing here may be described as formalized content of arXiv:2607.23585v4.
+
+The consumer is `KyleUniqueness.SignedRoot`
+(`one_le_two_mul_noiseTraderLoss`), whose docstrings record the same
+deviation. Crosswalk: `V4_DELTA_REPORT_2026-09-16.md` §1 and §6; the final
+audit records it as faithfulness item **F1**.
+
+All "Lemma 2.5" and "eq. (7)" references in this file are **v3** numbers and
+are marked as such.
 
 Mathlib-only file (zero project imports — the premier upstream candidate of
 the campaign, blueprint hard block 2). Three layers:
@@ -32,14 +77,15 @@ the campaign, blueprint hard block 2). Three layers:
   absolutely-continuous part is dominated by the whole measure
   (`withDensity_rnDeriv_le`) — the singular part is what the paper's BV
   citation discards.
-* **I3 — the Stein-type inequality** (v3 Lemma 2.5): for monotone `f` with
+* **I3 — the Stein-type inequality** (v3 Lemma 2.5; no v4 counterpart): for
+  monotone `f` with
   a.e. derivative `f' > 0`,
   `1 ≤ E[f(Z)²] · E[1/f'(Z)²]`
   (`one_le_lintegral_sq_mul_lintegral_inv_sq` in `ℝ≥0∞` with no
   integrability hypotheses; Bochner forms
   `one_le_integral_sq_mul_integral_inv_sq`,
   `one_le_sqrt_integral_sq_mul_integral_inv_sq` under `L²` hypotheses —
-  the outer form of eq. (7)). Proof: truncate `f` at `±N`; on
+  the outer form of v3 eq. (7)). Proof: truncate `f` at `±N`; on
   `{|f| < N}` the truncation has the same derivative; chain
   `γ{|f|<N} ≤ (∫ f'·1)^½·(∫ 1/f')^½` (Cauchy–Schwarz),
   `∫_{|f|<N} f' dγ ≤ ∫ ϱ dμ_{f_N} = E[Z f_N(Z)] ≤ √E[f_N²] ≤ √E[f²]`
@@ -183,8 +229,8 @@ private lemma pdf_le_bound (x : ℝ) :
 /-- **I1, Stieltjes form.** For a bounded Stieltjes function `s` with measure
 `μ_s`, `∫ ϱ dμ_s = E[Z·s(Z)]` where `Z ~ N(0,1)` and `ϱ` is the standard
 normal density. This is the Gaussian integration-by-parts identity for
-monotone right-continuous integrands (v3 Lemma 2.5's engine; upstream
-candidate). -/
+monotone right-continuous integrands (the engine of v3 Lemma 2.5, which v4
+deleted; upstream candidate on its own merits). -/
 theorem integral_gaussianPDFReal_stieltjesMeasure (s : StieltjesFunction ℝ)
     {C : ℝ} (hbd : ∀ x, |s x| ≤ C) :
     ∫ t, gaussianPDFReal 0 1 t ∂s.measure = ∫ z, z * s z ∂gaussianReal 0 1 := by
@@ -557,7 +603,7 @@ theorem ae_hasDerivAt_clamp_of_abs_lt {f f' : ℝ → ℝ}
       max_eq_right (le_of_lt (abs_lt.1 hy).1)]
   exact hev.hasDerivAt_iff.2 hx
 
-/-! ## I3 — the Stein-type inequality (v3 Lemma 2.5) -/
+/-! ## I3 — the Stein-type inequality (v3 Lemma 2.5; deleted in v4) -/
 
 private lemma integrable_pdf_of_finite (m : Measure ℝ) [IsFiniteMeasure m] :
     Integrable (fun t => gaussianPDFReal 0 1 t) m := by
@@ -805,7 +851,8 @@ private theorem stein_core {f f' : ℝ → ℝ} (hf : Monotone f)
     _ = (A * B) ^ (1:ℝ) := by norm_num
     _ = A * B := ENNReal.rpow_one _
 
-/-- **I3, `ℝ≥0∞` form** (v3 Lemma 2.5, hypothesis-free core): for monotone
+/-- **I3, `ℝ≥0∞` form** (v3 Lemma 2.5 — no v4 counterpart —
+hypothesis-free core): for monotone
 `f` with a.e. derivative `f' > 0` and `Z ~ N(0,1)`,
 `1 ≤ E[f(Z)²] · E[1/f'(Z)²]` in `ℝ≥0∞` — no integrability assumptions. -/
 theorem one_le_lintegral_sq_mul_lintegral_inv_sq {f f' : ℝ → ℝ}
@@ -836,8 +883,9 @@ theorem one_le_lintegral_sq_mul_lintegral_inv_sq {f f' : ℝ → ℝ}
     rw [hx]
   rwa [hBeq] at hcore
 
-/-- **I3, Bochner form** (v3 Lemma 2.5, squared outer form of eq. (7)):
-under `L²` hypotheses, `1 ≤ E[f(Z)²] · E[1/f'(Z)²]`. -/
+/-- **I3, Bochner form** (v3 Lemma 2.5, squared outer form of v3 eq. (7);
+no v4 counterpart): under `L²` hypotheses,
+`1 ≤ E[f(Z)²] · E[1/f'(Z)²]`. -/
 theorem one_le_integral_sq_mul_integral_inv_sq {f f' : ℝ → ℝ}
     (hf : Monotone f) (hf' : ∀ᵐ x ∂volume, HasDerivAt f (f' x) x)
     (hpos : ∀ᵐ x ∂volume, 0 < f' x)
@@ -853,7 +901,9 @@ theorem one_le_integral_sq_mul_integral_inv_sq {f f' : ℝ → ℝ}
     ← ENNReal.ofReal_mul (integral_nonneg fun x => sq_nonneg _)] at hcore
   exact ENNReal.one_le_ofReal.1 hcore
 
-/-- **I3, outer form** (v3 Lemma 2.5, eq. (7) verbatim):
+/-- **I3, outer form** (v3 Lemma 2.5, v3 eq. (7) verbatim; no v4
+counterpart — this is the statement `SignedRoot.lean` uses for `1 ≤ 2Γ`
+under Lane-C decision D7, in place of v4's Cacoullos Lemma 2.7):
 `1 ≤ √(E[f(Z)²] · E[1/f'(Z)²])`. -/
 theorem one_le_sqrt_integral_sq_mul_integral_inv_sq {f f' : ℝ → ℝ}
     (hf : Monotone f) (hf' : ∀ᵐ x ∂volume, HasDerivAt f (f' x) x)

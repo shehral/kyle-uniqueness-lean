@@ -1,5 +1,59 @@
 # Proof blueprint — Monteiro–Tourky, "The one-period Gaussian Kyle model has exactly one equilibrium"
 
+> ## ⬛ CAMPAIGN COMPLETE — 2026-09-16 (working tree, uncommitted on top of
+> commit `f975dbc`; figures below do not hold at that commit — re-pin the hash
+> once the closeout is committed)
+>
+> **Every node on this DAG is closed.** Session 1 (2026-08-12) and Session 2
+> (2026-08-18) cleared the early tiers and the Stein pipeline; Session 3
+> (2026-09-16) ran Waves 1–3 and finished the campaign. From-scratch
+> `lake build`: green, 3149 jobs, **0 `sorry`**, every audited declaration
+> `[propext, Classical.choice, Quot.sound]`. 19 files, 10,120 LOC.
+>
+> **This document is v3-keyed and is kept as the historical proof plan.** The
+> artifact is keyed to arXiv:2607.23585 **v4**; the crosswalk is
+> `../STATEMENT_NOTES.md` §1 and `../V4_DELTA_REPORT_2026-09-16.md` §1, and the
+> binding route decisions taken at the v4 re-baseline are
+> `LANE_C_DECISIONS_2026-09-16.md` (D1–D9). Where a node name below says
+> "Lemma 2.5" or "Proposition 6", read the crosswalk first.
+
+### Node census — every node, its file, and where it was closed
+
+| Node | Content (v3 name → v4 name) | File | Closed |
+|---|---|---|---|
+| N0 | model, pair predicate, `Γ`, `stdModel` | `Definitions.lean` | statement phase |
+| P1 | Bayes quotient ↔ `condExp` bridge | `CondExpBridge.lean` | canary phase |
+| A1 | `p` everywhere-positive density (Lemma 2.1) | `Statement.lean` | canary phase / Session 1 |
+| A1b | joint density of `(V,Y)` (Lemma 2.1) | `Posterior.lean` | Session 3, Wave 1 |
+| A2 | `P` continuous (Lemma 2.2) | `Statement.lean` | Session 1 |
+| A3 | uniqueness of the continuous version (auxiliary) | `Statement.lean` | Session 1 |
+| R1 | `P(x+U) ∈ L¹` (Lemma 2.3) | `Statement.lean` | Session 1 |
+| R2 | `F ∈ C¹`, eq. (5) → **(2.3)** | `Regularity.lean` | Session 2 |
+| R2b | tower clause `F(φ(V)) = E[E[V∣Y]∣V]` (Lemma 2.3) | `Resampling.lean` | Session 3, Wave 1 |
+| B1 | value function: real-valued, convex, `W′ = φ` a.e. | `ValueFunction.lean` | Session 3, Wave 1 |
+| B2 | FOC + strict monotonicity (Lemma 2.6 → **2.4**) | `ValueFunction.lean` | Session 3, Wave 1 |
+| D1 | `P ∈ C¹`, `P′ = Cov_{π_y} > 0` (Lemma 4.1 → **2.5**) | `PosteriorDeriv.lean` (C¹ legs) + `Posterior.lean` | Session 2 + Wave 1 |
+| D2 | `F′ > 0` by symmetrisation | `Posterior.lean` | Session 3, Wave 1 |
+| E1 | conditional resampling (Lemma 2.4 → **2.6**) | `Resampling.lean` | Session 3, Wave 1 |
+| — | `Γ = E[F′(φ(V))]`, definiens agreement (**Lemmas 3.1/3.2**, new in v4) | `Loss.lean` | Session 3, Wave 1 |
+| E2 | balance/accounting identity (Prop 5 → **Prop 5.1**) — *hard block 3* | `Accounting.lean` | Session 3, Wave 2 |
+| H1 | signed root (Prop 6 → unnumbered inside **Prop 6.1**) — *hard block 4b* | `SignedRoot.lean` | Session 3, Wave 2 |
+| I1–I3 | one-sided Gaussian/Stein inequality (v3 Lemma 2.5) — *hard block 2* | `SteinInequality.lean` | Session 2 |
+| J1 | `1 ≤ 2Γ` | `SignedRoot.lean` | Session 3, Wave 2 |
+| Q1 | `\|Γ\| ≤ 1/2` (Prop 2 → **Prop 4.1**) | `Statement.lean` | Session 1 |
+| Q2 | equality case `φ = ±v + a` a.e. | `Statement.lean` | Session 1 |
+| N1 | affine-strategy inverse regression | `Statement.lean` | Session 1 |
+| T3 | `Γ = 1/2` (Thm 3 → **Prop 6.1**) | `Main.lean` | Session 3, Wave 3 |
+| N2 | rigidity `φ = id` (Thm 4 → **Thm 7.1**) | `Main.lean` | Session 3, Wave 3 |
+| O1 | **Theorem 1 → 1.1**, location–scale + pair form | `Main.lean` | Session 3, Wave 3 |
+| M1 | cubic / `β_γ` layer (v2 only, off-DAG) | `BeyondPaper.lean` | v2 phase, fenced |
+| R3 | *optional*: a.e.-maximisation variant (v3 Lemma 2.7 → v4 **Appendix B**) | — | **NOT DONE** — deviation F11 |
+
+Hard-block census: **0 of 5 remain.** The twelve deviations from the paper's
+v4 text (F1–F12) are in `../STATEMENT_NOTES.md` §5; the one open completeness
+item is a general-parameter `KyleModel` inhabitant.
+
+
 **Source:** arXiv:2607.23585 **v3** (2026-08-10), fetched and diffed against v2
 in full on 2026-08-12 (`../V3_RECONCILIATION_PLAN.md` — the authoritative
 v2 → v3 delta; this blueprint is the post-reconciliation revision). All

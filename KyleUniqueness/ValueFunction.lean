@@ -12,8 +12,8 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 /-!
 # The insider's value function `W` (blueprint nodes B1 + B2; v4 Lemma 2.4)
 
-Formalization of **Lemma 2.4** of Monteiro & Tourky, *The one-period Gaussian
-Kyle model has exactly one equilibrium* (arXiv:2607.23585, **v4** of
+Formalization of **Lemma 2.4** of Monteiro & Tourky, *The one-period Kyle
+model has one equilibrium* (arXiv:2607.23585, **v4** of
 2026-08-20; = v3 Lemma 2.6), together with the subgradient inequality (A.1)
 from the appendix proof of that lemma.
 

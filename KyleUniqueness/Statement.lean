@@ -10,14 +10,21 @@ import Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 
 /-!
-# The one-period Gaussian Kyle model has exactly one equilibrium: statements
+# The one-period Kyle model has one equilibrium: statements
 
-Formal statements of the theorems of Monteiro & Tourky, *The one-period
-Gaussian Kyle model has exactly one equilibrium* (arXiv:2607.23585, **v3**
-of 2026-08-10), over the definitions in `KyleUniqueness.Definitions`. The
-statements themselves are the claimable artifact and are catalogued, with a
-paper-to-Lean map and a fidelity assessment, in `STATEMENT_NOTES.md` at the
-repository root. This file is `sorry`-free.
+Formal statements of the theorems of Monteiro & Tourky, *The one-period Kyle
+model has one equilibrium* (arXiv:2607.23585, **v4** of 2026-08-20), over the
+definitions in `KyleUniqueness.Definitions`. The statements themselves are
+the claimable artifact and are catalogued, with a paper-to-Lean map and a
+fidelity assessment, in `STATEMENT_NOTES.md` at the repository root. This
+file is `sorry`-free.
+
+**Version note.** This module was written in the v3 session (v3's title was
+*The one-period Gaussian Kyle model has exactly one equilibrium*) and is
+re-keyed to v4 here. v4 renumbered essentially everything: Theorem 1 → 1.1,
+Proposition 2 → 4.1, Theorem 3 → Proposition 6.1, Theorem 4 → 7.1, and no v3
+equation number survives. Full crosswalk: `V4_DELTA_REPORT_2026-09-16.md` §1
+(policy: `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1).
 
 ## Moved to `KyleUniqueness.Main`
 
@@ -26,50 +33,58 @@ import DAG, because their proofs consume the Session-3 modules
 (`ValueFunction`, `Posterior`, `Resampling`, `Loss`, `Accounting`,
 `SignedRoot`), every one of which imports this file:
 
-* `isGammaSolution_zero_iff` — **Theorem 4** (v4 Theorem 7.1): `φ` satisfies
-  the pointwise maximisation condition (17), `φ(v) ∈ argmax_x x(v − F(x))`
-  for every `v ∈ ℝ`, iff `φ = id`;
+* `isGammaSolution_zero_iff` — **v4 Theorem 7.1** (v3 Theorem 4): `φ`
+  satisfies the pointwise maximisation condition (untagged in v4; v3
+  eq. (17)), `φ(v) ∈ argmax_x x(v − F(x))` for every `v ∈ ℝ`, iff `φ = id`;
 * `existsUnique_zeroSolution` — its `∃!`-packaging;
-* `isEquilibrium_eq_kyleStrategy` — the uniqueness direction of Theorem 1's
-  strategy half (the development's only remaining open obligation);
-* `kyle_unique_equilibrium` / `kyle_existsUnique_equilibrium` — Theorem 1
-  projected to strategies: `φ` is an equilibrium strategy iff
+* `isEquilibrium_eq_kyleStrategy` — the uniqueness direction of
+  **v4 Theorem 1.1**'s strategy half;
+* `kyle_unique_equilibrium` / `kyle_existsUnique_equilibrium` —
+  v4 Theorem 1.1 projected to strategies: `φ` is an equilibrium strategy iff
   `φ = kyleStrategy`; there is exactly one equilibrium strategy;
-* `kyle_equilibrium_pair_iff` — **Theorem 1** (v3's headline, the pair
-  form): a pair `(φ, P)` is an equilibrium iff `φ` is Kyle's affine
-  strategy `φ(v) = (σ/τ)(v − μ₀)` (eq. (1)) and `P(Y_φ) = μ₀ + λ·Y_φ`
-  almost surely with `λ = τ/(2σ)` (eq. (2)).
+* `kyle_equilibrium_pair_iff` — **v4 Theorem 1.1** (the headline, in its
+  pair form): a pair `(φ, P)` is an equilibrium iff `φ` is Kyle's affine
+  strategy `φ(v) = (σ/τ)(v − μ₀)` (eq. (1.1)) and `P(Y_φ) = μ₀ + λ·Y_φ`
+  almost surely with `λ = τ/(2σ)` (eq. (1.2)).
 
 ## Main statements
 
 * `kyleStrategy_isEquilibrium` /
   `kyleStrategy_kylePricingRule_isEquilibrium` — the existence direction of
-  **Theorem 1** in its strategy and pair forms: Kyle's affine strategy
-  (eq. (1)), paired with the affine pricing rule of eq. (2), is an
+  **v4 Theorem 1.1** in its strategy and pair forms: Kyle's affine strategy
+  (eq. (1.1)), paired with the affine pricing rule of eq. (1.2), is an
   equilibrium.
 * `noiseTraderLoss_le_half` / `noiseTraderLoss_eq_half_iff` /
-  `noiseTraderLoss_eq_neg_half_iff` / `integrable_noiseTraderLoss` —
-  **Proposition 2**, the pivot of v3's proof: for EVERY Borel `φ`, the
-  noise traders' expected loss `Γ = Cov(U, E[V ∣ Y])` (eq. (13)) is finite,
-  `−1/2 ≤ Γ ≤ 1/2` (eq. (14)), with equality iff `φ(v) = ±v + a` for
-  Lebesgue-a.e. `v` (eq. (15)).
+  `noiseTraderLoss_eq_neg_half_iff` — **v4 Proposition 4.1** (v3
+  Proposition 2), the pivot of the proof: for EVERY Borel `φ`, the noise
+  traders' expected loss `Γ` satisfies `−1/2 ≤ Γ ≤ 1/2` (eq. (4.1)), with
+  equality iff `φ(v) = ±v + a` for Lebesgue-a.e. `v` (untagged in v4; v3
+  eq. (15)).
+* `integrable_noiseTraderLoss` — finiteness of `Γ`. **Re-attributed under
+  v4**: v3's Proposition 2 asserted "is finite and"; v4's Proposition 4.1
+  dropped it, and the obligation now belongs to v4 **Lemma 3.1**'s
+  Cauchy–Schwarz clause.
 * `lemma21_*` / `lemma22_memLp_two` / `lemma23_integrable` — **Lemmas
   2.1–2.3** (regularity of the inverse regression): the flow density is
   everywhere positive; the explicit `inverseRegression` is a genuine
   pricing rule (PROVED — the definitional-fidelity canary), continuous,
   square-integrable along the flow; the smoothing integrand is integrable.
 * `equilibrium_iff_zeroSolution` — the `σ = τ = 1` case of the
-  location–scale standardisation in the proof of Theorem 1 (§3.1):
-  §1-equilibrium on the normalised model coincides with condition (17).
+  location–scale standardisation in the proof of Theorem 1.1 (v4 §7; v3
+  §3.1): §1-equilibrium on the normalised model coincides with the
+  pointwise-maximisation condition. **No longer on the headline path** —
+  see its docstring.
 * `pricingRule_ae_eq_kylePricingRule` — a.s./Lebesgue-a.e. uniqueness of
-  the pricing rule for the affine strategy (the pricing half of Theorem 1's
-  uniqueness), with the classical "only continuous version" statement
-  (`eq_kylePricingRule_of_continuous`) derived as a corollary.
+  the pricing rule for the affine strategy (the pricing half of
+  Theorem 1.1's uniqueness), with the classical "only continuous version"
+  statement (`eq_kylePricingRule_of_continuous`) derived as a corollary.
 
 The beyond-paper cubic-root layer (v2's deleted quadratic-cost family)
-lives in `KyleUniqueness.BeyondPaper` and is NOT part of the v3 claim set.
+lives in `KyleUniqueness.BeyondPaper` and is NOT part of the v3 or v4 claim
+set.
 
-All section, equation and lemma numbers refer to arXiv:2607.23585 **v3**.
+All section, equation and lemma numbers refer to arXiv:2607.23585 **v4**
+unless explicitly marked v3 or v2.
 -/
 
 open MeasureTheory ProbabilityTheory
@@ -78,7 +93,7 @@ namespace KyleUniqueness
 
 /-! ## Lemmas 2.1 and 2.2: regularity of the inverse regression
 
-v3 §2.2 defines the pricing rule `P` by the explicit Bayes quotient
+v4 §2.2 defines the pricing rule `P` by the explicit Bayes quotient
 (our `inverseRegression`); Lemma 2.1 gives the everywhere-positive density
 of `Y` (and the joint density of `(V, Y)`), and Lemma 2.2 asserts that `P`
 is continuous with `P(Y) = E[V ∣ Y] ∈ L²` a.s. -/
@@ -119,15 +134,16 @@ theorem lemma21_flowDensity_pos {φ : ℝ → ℝ} (hφ : Measurable φ) (y : �
 /-- **Lemma 2.2** (verbatim; the definitional-fidelity canary, PROVED): the
 explicit posterior-mean formula `inverseRegression φ` is a pricing rule for
 `φ` on the normalised model — i.e. it is Borel and `P(Y) = E[V ∣ Y]` almost
-surely, for EVERY Borel strategy `φ`. This is the bridge between v3 §2.2's
+surely, for EVERY Borel strategy `φ`. This is the bridge between v4 §2.2's
 Bayes-quotient definition of `P` and the abstract conditional expectation
-of §1.
+of §1. (v4 re-conjuncted Lemma 2.2's clauses relative to v3, so "verbatim"
+is claimed for the content of this clause, not for the sentence shape.)
 
 Proof: `inverseRegression φ = n/p` satisfies the density identity
 `(n/p)·p = n` because `p > 0` everywhere (`lemma21_flowDensity_pos`), so
 the general pricing-rule bridge
 (`KyleModel.isPricingRule_of_forall_mul_flowPDF`, the Fubini/translation
-argument that v3 App. A carries out for Lemma 2.2) applies on the
+argument that v4 Appendix A carries out for Lemma 2.2) applies on the
 normalised model. -/
 theorem lemma21_isPricingRule {φ : ℝ → ℝ} (hφ : Measurable φ) :
     stdModel.IsPricingRule φ (inverseRegression φ) := by
@@ -137,8 +153,11 @@ theorem lemma21_isPricingRule {φ : ℝ → ℝ} (hφ : Measurable φ) :
   rw [stdModel_flowPDF, stdModel_flowNum, inverseRegression]
   exact div_mul_cancel₀ _ (lemma21_flowDensity_pos hφ y).ne'
 
-/-- Lemma 2.2, continuity claim: `P` is continuous (v3 Lemma 4.1 proves
-more — `P ∈ C¹` with `P′(y) = Cov_{π_y}(id, φ) > 0`, eq. (20)). -/
+/-- Lemma 2.2, continuity claim: `P` is continuous (v4 Lemma 2.5 — v3
+Lemma 4.1 — proves more: `P′(y) = Cov_{π_y}(id, φ) > 0`, v4 eq. (2.7),
+under the strict monotonicity of `φ` that v4 Lemma 2.4 supplies; see
+`KyleUniqueness.Posterior`. Continuity of `P′` itself is not stated
+anywhere in this tree). -/
 theorem lemma21_continuous {φ : ℝ → ℝ} (hφ : Measurable φ) :
     Continuous (inverseRegression φ) := by
   -- Both `n` and `p` are continuous by dominated convergence (dominant:
@@ -181,9 +200,9 @@ theorem lemma21_continuous {φ : ℝ → ℝ} (hφ : Measurable φ) :
   exact hn.div hp fun y => (lemma21_flowDensity_pos hφ y).ne'
 
 /-- Lemma 2.2, integrability claim: `P(Y) = E[V ∣ Y] ∈ L²` — the explicit
-inverse regression is square-integrable along the order flow. (v3 proves it
-by the conditional-Jensen/L²-contraction argument; it is the integrability
-input to Proposition 2.) -/
+inverse regression is square-integrable along the order flow. (The paper
+proves it by the conditional-Jensen/L²-contraction argument; it is the
+integrability input to v4 Proposition 4.1 and to v4 Lemma 3.1.) -/
 theorem lemma22_memLp_two {φ : ℝ → ℝ} (hφ : Measurable φ) :
     MemLp (fun ω => inverseRegression φ (stdModel.orderFlow φ ω)) 2
       stdModel.μ := by
@@ -201,13 +220,21 @@ theorem lemma22_memLp_two {φ : ℝ → ℝ} (hφ : Measurable φ) :
 
 /-! ## Lemma 2.3: integrability of the smoothed price
 
-v3 replaces v2's pointwise growth bound `|P(y)| ≤ |y| + K` (v2 eq. (4),
-deleted) by an integrated statement: `P̃(x + U) ∈ L¹` for every Borel
-version `P̃` and every `x`, proved in App. A by the `K_x` kernel-boundedness
-argument. We state it for the canonical version; the general-version form
-follows from a.e.-agreement of versions (`x + U` has a density). -/
+From v3 on, the paper replaces v2's pointwise growth bound
+`|P(y)| ≤ |y| + K` (v2 eq. (4), deleted) by an integrated statement:
+`P̃(x + U) ∈ L¹` for every Borel version `P̃` and every `x`, proved in
+Appendix A by the `K_x` kernel-boundedness argument. We state it for the
+canonical version; the general-version form follows from a.e.-agreement of
+versions (`x + U` has a density).
 
-/-- (Proof-internal, v3 App. A, Lemma 2.3.) Interval lower bound for the
+**v4 caveat.** v4's Lemma 2.3 is strictly STRONGER than v3's: besides the
+`C¹` regularity and the integral formulas (2.1)–(2.3), it asserts finiteness
+of the expectation in (2.1) and absolute convergence of the integrals in
+(2.2)/(2.3). Those clauses are discharged across `lemma23_integrable` here,
+`KyleUniqueness.Regularity` and `KyleModel.integrable_Q_comp_add`, so no
+single declaration below should be cited as "v4 Lemma 2.3". -/
+
+/-- (Proof-internal, v4 Appendix A, Lemma 2.3.) Interval lower bound for the
 flow density: `p(y) ≥ μφ([α,β]) · min(ϱ(y−α), ϱ(y−β))` where `μφ` is the
 law of `φ(V)`. -/
 private lemma flowDensity_ge_Icc {φ : ℝ → ℝ} (hφ : Measurable φ)
@@ -324,7 +351,8 @@ private lemma exists_Icc_of_Iio_ne_zero {ν : Measure ℝ} {x : ℝ}
   have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   linarith
 
-/-- (Proof-internal, v3 App. A, Lemma 2.3.) The kernel bound: if `[α, β]`
+/-- (Proof-internal, v4 Appendix A, Lemma 2.3.) The kernel bound: if
+`[α, β]`
 carries positive `φ(V)`-mass and `a` lies on the same side of `x` as the
 interval, then `K_x(a) ≤ r⁻¹(e^{(x−α)²} + e^{(x−β)²})`. -/
 private lemma lintegral_kernel_le_Icc {φ : ℝ → ℝ} (hφ : Measurable φ)
@@ -446,7 +474,7 @@ private lemma lintegral_kernel_le_Icc {φ : ℝ → ℝ} (hφ : Measurable φ)
           (Real.exp_pos _).le (Real.exp_pos _).le]
 
 /-- Lemma 2.3, integrability part (stated for the canonical version, in the
-convolution form of eq. (4)): for every Borel `φ` and every `x`, the
+convolution form of eq. (2.2)): for every Borel `φ` and every `x`, the
 integrand `y ↦ P(y)·ϱ(y − x)` of `F(x) = E[P(x + U)]` is Lebesgue
 integrable. In particular the Bochner integral defining
 `gaussianSmoothing` is the honest expectation. -/
@@ -458,7 +486,7 @@ theorem lemma23_integrable {φ : ℝ → ℝ} (hφ : Measurable φ) (x : ℝ) :
     have h := stdModel.measurable_flowPDF hφ
     rwa [show stdModel.flowPDF φ = flowDensity φ
       from funext (stdModel_flowPDF φ)] at h
-  -- STEP 1: the kernel bound `K_x(φ(V)) ≤ C` a.s. (three cases, v3 App. A)
+  -- STEP 1: kernel bound `K_x(φ(V)) ≤ C` a.s. (three cases, v4 Appendix A)
   obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ᵐ v ∂(gaussianReal 0 1 : Measure ℝ),
       (∫⁻ y, ENNReal.ofReal (stdNormalPDF (y - x) * stdNormalPDF (y - φ v)
         / flowDensity φ y)) ≤ ENNReal.ofReal C := by
@@ -670,9 +698,10 @@ theorem lemma23_integrable {φ : ℝ → ℝ} (hφ : Measurable φ) (x : ℝ) :
 
 /-! ## Auxiliary: uniqueness of the continuous version
 
-v3 phrases all pricing-rule uniqueness a.s. / up to Lebesgue-null
-modification (Theorem 1, eq. (2); the intro remark on the a.e. variant);
-the "unique continuous version" formulation below is v2 legacy. It remains
+v4 phrases all pricing-rule uniqueness a.s. / up to Lebesgue-null
+modification (Theorem 1.1, eq. (1.2); v4 footnote 1 and Appendix B carry the
+a.e. variant, where v3 had an inline intro remark); the "unique continuous
+version" formulation below is v2 legacy. It remains
 true, still feeds `eq_kylePricingRule_of_continuous`, and is kept as an
 AUXILIARY statement — not paper-claim surface. -/
 
@@ -692,19 +721,30 @@ theorem lemma21_unique_continuous_version {φ : ℝ → ℝ} (hφ : Measurable �
       fun y => by rw [stdModel_flowPDF]; exact lemma21_flowDensity_pos hφ y
   exact (hQc.ae_eq_iff_eq (volume : Measure ℝ) (lemma21_continuous hφ)).mp hae
 
-/-! ## The location–scale bridge at `σ = τ = 1` (proof of Theorem 1, §3.1)
+/-! ## The location–scale bridge at `σ = τ = 1` (proof of Theorem 1.1, v4 §7)
 
-Kyle's §1 equilibrium condition on the normalised model is EXACTLY v3's
-pointwise-maximisation condition (17): expanding the profit expectation by
-Fubini, `E[(v − P(x+U))x] = x(v − F(x))` for any pricing-rule version `P`,
-and `F` is version-independent (Lemmas 2.2/2.3). This is the `σ = τ = 1`
-instance of the standardisation step in the proof of Theorem 1 (§3.1), and
-it certifies that `IsGammaSolution 0` — the hypothesis of Theorem 4 —
-faithfully renders "equilibrium strategy" on the normalised model. -/
+Kyle's §1 equilibrium condition on the normalised model is EXACTLY the
+paper's pointwise-maximisation condition (untagged in v4; v3 eq. (17)):
+expanding the profit expectation by Fubini, `E[(v − P(x+U))x] = x(v − F(x))`
+for any pricing-rule version `P`, and `F` is version-independent
+(Lemmas 2.2/2.3). This is the `σ = τ = 1` instance of the standardisation
+step in the proof of Theorem 1.1 (v4 §7; v3 §3.1), and it certifies that
+`IsGammaSolution 0` — the hypothesis of v4 Theorem 7.1 — faithfully renders
+"equilibrium strategy" on the normalised model. -/
 
 /-- On the normalised model, `φ` is an equilibrium strategy (§1) iff `φ`
-satisfies the pointwise-maximisation condition (17) (i.e. is a
-`0`-solution). -/
+satisfies the pointwise-maximisation condition (untagged in v4; v3
+eq. (17)) — i.e. is a `0`-solution.
+
+**Status: no longer on the headline path.** `KyleUniqueness.Main` reaches
+`kyle_equilibrium_pair_iff` by Route 1′ — `KyleModel.pricingRule_ae_eq_of_flowPDF_pos`
++ `expectedProfit_congr_ae` + `KyleModel.expectedProfit_bayesPrice`, at
+general `(μ₀, τ, σ)` — which subsumes this lemma and never calls it. It is
+retained deliberately as the artifact's **σ = τ = 1 faithfulness
+certificate**: the only single-statement rendering of the paper's "for any
+Borel version of the pricing rule" quantifier, in the form
+`stdModel.IsEquilibriumStrategy φ ↔ IsGammaSolution 0 φ`. It is built and
+axiom-audited at every build. -/
 theorem equilibrium_iff_zeroSolution (φ : ℝ → ℝ) :
     stdModel.IsEquilibriumStrategy φ ↔ IsGammaSolution 0 φ := by
   -- The computational core (§3.1 at σ = τ = 1): against ANY pricing rule
@@ -740,7 +780,7 @@ theorem equilibrium_iff_zeroSolution (φ : ℝ → ℝ) :
       simp only [Function.comp_apply] at hω
       rw [hω]
     rw [hcongr]
-    -- `P₀(x + U) ∈ L¹` (Lemma 2.3 = R1) after translating the integrand
+    -- `P₀(x + U) ∈ L¹` (v4 Lemma 2.3 = R1) after translating the integrand
     have hint23 := lemma23_integrable hφ x
     have hshift : Integrable (fun u => inverseRegression φ (x + u))
         (gaussianReal 0 1) := by
@@ -799,7 +839,8 @@ theorem equilibrium_iff_zeroSolution (φ : ℝ → ℝ) :
     exact hmax v x
 
 /-- Sanity: on the normalised model (`μ₀ = 0`, `τ = σ = 1`), Kyle's affine
-strategy (eq. (1)) is the identity — the form appearing in Theorem 4.
+strategy (eq. (1.1)) is the identity — the form appearing in v4
+Theorem 7.1.
 Proved by unfolding; no `sorry`. -/
 theorem stdModel_kyleStrategy : stdModel.kyleStrategy = id := by
   funext v
@@ -807,22 +848,23 @@ theorem stdModel_kyleStrategy : stdModel.kyleStrategy = id := by
 
 /-! ## Gaussian regression for affine strategies
 
-The computational inputs to the proofs of Theorems 4 and 1: if `φ` is
-affine with unit slope, `(V, Y)` is jointly Gaussian and the inverse
+The computational inputs to the proofs of v4 Theorems 7.1 and 1.1: if `φ`
+is affine with unit slope, `(V, Y)` is jointly Gaussian and the inverse
 regression and its smoothing are the explicit affine maps below. (These
-specialise v2's deleted general-`γ` price formulas to the only case v3
-uses.) -/
+specialise v2's deleted general-`γ` price formulas to the only case v3 and
+v4 use.) -/
 
-/-- Gaussian regression, intercept form (used in the proof of Theorem 4
-with the a.e. output `φ = v + a` of Proposition 2): for the affine strategy
+/-- Gaussian regression, intercept form (used in the proof of v4
+Theorem 7.1 with the a.e. output `φ = v + a` of v4 Proposition 4.1): for the
+affine strategy
 `v ↦ v + a`, the inverse regression is `y ↦ (y − a)/2`. -/
 theorem inverseRegression_affine (a : ℝ) :
     inverseRegression (fun v => v + a) = fun y => (y - a) / 2 := by
   -- Complete the square (`gaussianPDFReal_mul_gaussianPDFReal_std`, the
   -- `σ = τ = 1` Kyle factorization): the joint density of `(V, Y)` at
   -- `Y = V + a + U` factorizes as `ϱ_{0,2}(y − a) · ϱ_{(y−a)/2, 1/2}(v)`,
-  -- so the Bayes quotient `n/p` is the posterior mean `(y − a)/2` (v3
-  -- eq. (6) for the unit-slope affine strategy).
+  -- so the Bayes quotient `n/p` is the posterior mean `(y − a)/2` (the
+  -- last display of v4 §2.2, for the unit-slope affine strategy).
   funext y
   simp only [inverseRegression, flowDensity, stdNormalPDF]
   have hhalf : ((1 / 2 : NNReal)) ≠ 0 := by norm_num
@@ -867,8 +909,8 @@ theorem inverseRegression_affine (a : ℝ) :
   rw [hnum, hden,
     mul_div_cancel_left₀ _ (gaussianPDFReal_pos 0 2 (y - a) h2).ne']
 
-/-- Gaussian regression for the identity strategy: `P(y) = y/2` — v3
-eq. (2) at `τ = σ = 1`, `μ = 0`. Derived from the intercept form at
+/-- Gaussian regression for the identity strategy: `P(y) = y/2` — v4
+eq. (1.2) at `τ = σ = 1`, `μ = 0`. Derived from the intercept form at
 `a = 0`; no `sorry` of its own. -/
 theorem inverseRegression_id : inverseRegression id = fun y => y / 2 := by
   have h := inverseRegression_affine 0
@@ -896,18 +938,31 @@ theorem gaussianSmoothing_id : gaussianSmoothing id = fun x => x / 2 := by
   have h := gaussianSmoothing_affine 0
   simpa [Function.id_def] using h
 
-/-! ## Proposition 2: the sharp bound on the noise traders' expected loss
+/-! ## Proposition 4.1: the sharp bound on the noise traders' expected loss
 
-The pivot of v3's proof. `Γ := Cov(U, E[V ∣ Y])` (eq. (13)) is the noise
-traders' expected loss; `noiseTraderLoss` realises it through the explicit
-inverse regression (`Γ = E[U·P(Y)]`, the unnumbered display in Prop 5's
-proof; the identification with the covariance is Lemma 2.2 + `E[U] = 0`).
-Proposition 2 holds for EVERY Borel `φ` — no equilibrium hypothesis. -/
+The pivot of the proof (v3 Proposition 2 = **v4 Proposition 4.1**, §4
+"Sharp universal bounds on noise-trader loss"). `Γ` is the noise traders'
+expected loss; `noiseTraderLoss` realises it through the explicit inverse
+regression as `Γ = E[U·P(Y)]`.
 
-/-- Proposition 2, finiteness: the integrand defining `Γ` is integrable for
-every Borel `φ` (v3: "Γ is finite"; by conditional Jensen and
-Cauchy–Schwarz from Lemma 2.2's `P(Y) ∈ L²`). This de-vacuates the junk
-value of the Bochner integral in `noiseTraderLoss`. -/
+**Definiens note.** v3's eq. (13) defined `Γ := Cov(U, E[V ∣ Y])`; v4 §3.1
+defines `Γ := E[U(P(Y) − V)]` and makes both the middle form `E[U·P(Y)]`
+used here and the covariance form conclusions of its new **Lemma 3.1**. Both
+equalities are proved in `KyleUniqueness.Loss`
+(`integral_noise_mul_sub_value_eq_noiseTraderLoss`,
+`covariance_noise_condExp_eq_noiseTraderLoss`); the identification with the
+covariance needs Lemma 2.2 + `E[U] = 0`. Proposition 4.1 holds for EVERY
+Borel `φ` — no equilibrium hypothesis. -/
+
+/-- Finiteness of `Γ`: the integrand defining `Γ` is integrable for every
+Borel `φ` (by conditional Jensen and Cauchy–Schwarz from Lemma 2.2's
+`P(Y) ∈ L²`). This de-vacuates the junk value of the Bochner integral in
+`noiseTraderLoss`.
+
+**Re-attributed under v4.** v3's Proposition 2 opened with "Γ is finite
+and"; v4's Proposition 4.1 dropped that clause, so this statement now
+discharges the Cauchy–Schwarz clause of v4 **Lemma 3.1**, not a clause of
+Proposition 4.1. -/
 theorem integrable_noiseTraderLoss {φ : ℝ → ℝ} (hφ : Measurable φ) :
     Integrable (fun p : ℝ × ℝ => p.2 * inverseRegression φ (φ p.1 + p.2))
       ((gaussianReal 0 1).prod (gaussianReal 0 1)) := by
@@ -921,7 +976,7 @@ theorem integrable_noiseTraderLoss {φ : ℝ → ℝ} (hφ : Measurable φ) :
       stdModel.hU.aemeasurable).mp h
   exact hU2.integrable_mul (lemma22_memLp_two hφ)
 
-/-! ### Proof-internal moment layer for Proposition 2 (not claim surface) -/
+/-! ### Proof-internal moment layer for Prop. 4.1 (not claim surface) -/
 
 private lemma memLp_two_fst' : MemLp stdModel.V 2 stdModel.μ := by
   have h : MemLp id 2 (stdModel.μ.map stdModel.V) := by
@@ -953,7 +1008,7 @@ private lemma integral_snd_mul_snd' :
   rw [hmap, stdModel.map_U, stdModel_noiseLaw,
     integral_mul_self_gaussianReal_std]
 
-/-- (Proof-internal.) The full L² identity behind Proposition 2:
+/-- (Proof-internal.) The full L² identity behind v4 Proposition 4.1:
 `E[(2M − V − sU)²] = 1 + s² − 4sΓ` for every real `s`. -/
 private lemma integral_sq_kernel' {φ : ℝ → ℝ} (hφ : Measurable φ) (s : ℝ) :
     ∫ ω, (2 * inverseRegression φ (stdModel.orderFlow φ ω) - stdModel.V ω
@@ -1051,13 +1106,14 @@ private lemma integral_sq_kernel' {φ : ℝ → ℝ} (hφ : Measurable φ) (s : 
     hproj, hEVV, integral_snd_mul_snd', integral_fst_mul_snd', ← hGamma]
   ring
 
-/-- **Proposition 2, eq. (14)**: `−1/2 ≤ Γ ≤ 1/2` for EVERY Borel strategy
-`φ`. (v3's proof is elementary L² algebra: `0 ≤ E[(X − sU)²]` with
+/-- **v4 Proposition 4.1, eq. (4.1)** (v3 Proposition 2, eq. (14)):
+`−1/2 ≤ Γ ≤ 1/2` for EVERY Borel strategy
+`φ`. (The paper's proof is elementary L² algebra: `0 ≤ E[(X − sU)²]` with
 `X = 2E[V∣Y] − V`, `s = ±1`, using conditional Jensen `E[M²] ≤ E[V²] = 1`
 and the projection identity `E[VM] = E[M²]`.) -/
 theorem noiseTraderLoss_le_half {φ : ℝ → ℝ} (hφ : Measurable φ) :
     |noiseTraderLoss φ| ≤ 1 / 2 := by
-  -- v3's elementary L² argument: `0 ≤ E[(2M − V − sU)²] = 1 + s² − 4sΓ`
+  -- the elementary L² argument: `0 ≤ E[(2M − V − sU)²] = 1 + s² − 4sΓ`
   -- (`integral_sq_kernel'`, from the projection identity `E[MV] = E[M²]`
   -- and the moment dictionary), taken at `s = ±1`.
   have hkey : ∀ s : ℝ, 0 ≤ 1 + s ^ 2 - 4 * s * noiseTraderLoss φ := by
@@ -1072,7 +1128,7 @@ theorem noiseTraderLoss_le_half {φ : ℝ → ℝ} (hφ : Measurable φ) :
   rw [abs_le]
   constructor <;> nlinarith [h1, h2]
 
-/-! ### Proof-internal: the signed equality case of Proposition 2 -/
+/-! ### Proof-internal: the signed equality case of Prop. 4.1 -/
 
 private lemma inverseRegression_neg_affine (a : ℝ) :
     inverseRegression (fun v => -v + a) = fun y => -((y - a) / 2) := by
@@ -1127,7 +1183,8 @@ private lemma noiseTraderLoss_eq_signed_iff {φ : ℝ → ℝ} (hφ : Measurable
       ∃ a : ℝ, φ =ᵐ[(volume : Measure ℝ)] fun v => s * v + a := by
   have hs2 : s ^ 2 = 1 := by rcases hs with rfl | rfl <;> norm_num
   constructor
-  · -- (⇒) rigidity: `E[(2M − V − sU)²] = 0`, eq. (16), Tonelli sections,
+  · -- (⇒) rigidity: `E[(2M − V − sU)²] = 0` (v3 eq. (16), untagged in v4),
+    -- Tonelli sections,
     -- translation invariance of Lebesgue measure
     intro hΓ
     have hzero : ∫ ω, (2 * inverseRegression φ (stdModel.orderFlow φ ω)
@@ -1141,7 +1198,7 @@ private lemma noiseTraderLoss_eq_signed_iff {φ : ℝ → ℝ} (hφ : Measurable
         (memLp_two_snd'.const_mul s)
     have hae0 := (integral_eq_zero_iff_of_nonneg
       (fun ω => sq_nonneg _) hmemsub.integrable_sq).mp hzero
-    -- eq. (16), rearranged: a.e. `(v,u)`, `T(φ(v)+u) = φ(v) − sv` where
+    -- that identity rearranged: a.e. `(v,u)`, `T(φ(v)+u) = φ(v) − sv` where
     -- `T y := y − 2sP(y)`
     have hae1 : ∀ᵐ ω ∂((gaussianReal 0 1).prod (gaussianReal 0 1) :
         Measure (ℝ × ℝ)),
@@ -1261,11 +1318,11 @@ private lemma noiseTraderLoss_eq_signed_iff {φ : ℝ → ℝ} (hφ : Measurable
       integral_const_mul, hEVU', hEUU']
     ring
 
-/-- **Proposition 2, eq. (15), upper saturation**: `Γ = 1/2` iff
-`φ(v) = v + a` for Lebesgue-a.e. `v`, for some `a ∈ ℝ`. (v3's equality case
-is a measure-theoretic rigidity argument: `2P(Y) = V + U` a.s. (eq. (16))
-⇒ a jointly-a.e. identity ⇒ Tonelli sections + translation invariance of
-Lebesgue measure ⇒ `φ(v) − v` constant a.e.) -/
+/-- **v4 Proposition 4.1, upper saturation** (untagged in v4; v3 eq. (15)):
+`Γ = 1/2` iff `φ(v) = v + a` for Lebesgue-a.e. `v`, for some `a ∈ ℝ`. (The
+equality case is a measure-theoretic rigidity argument: `2P(Y) = V + U` a.s.
+(v3 eq. (16)) ⇒ a jointly-a.e. identity ⇒ Tonelli sections + translation
+invariance of Lebesgue measure ⇒ `φ(v) − v` constant a.e.) -/
 theorem noiseTraderLoss_eq_half_iff {φ : ℝ → ℝ} (hφ : Measurable φ) :
     noiseTraderLoss φ = 1 / 2 ↔
       ∃ a : ℝ, φ =ᵐ[(volume : Measure ℝ)] fun v => v + a := by
@@ -1273,7 +1330,7 @@ theorem noiseTraderLoss_eq_half_iff {φ : ℝ → ℝ} (hφ : Measurable φ) :
     (Or.inl rfl : (1 : ℝ) = 1 ∨ (1 : ℝ) = -1)
   simpa only [one_mul] using h
 
-/-- **Proposition 2, eq. (15), lower saturation**: `Γ = −1/2` iff
+/-- **v4 Proposition 4.1, lower saturation**: `Γ = −1/2` iff
 `φ(v) = −v + a` for Lebesgue-a.e. `v`, for some `a ∈ ℝ` (the mirrored case
 `s = −1`). -/
 theorem noiseTraderLoss_eq_neg_half_iff {φ : ℝ → ℝ} (hφ : Measurable φ) :
@@ -1283,16 +1340,16 @@ theorem noiseTraderLoss_eq_neg_half_iff {φ : ℝ → ℝ} (hφ : Measurable φ)
     (Or.inr rfl : (-1 : ℝ) = 1 ∨ (-1 : ℝ) = -1)
   simpa only [neg_mul, one_mul, neg_div] using h
 
-/-! ## Theorem 1: the strategy layer -/
+/-! ## Theorem 1.1: the strategy layer -/
 
 variable {Ω : Type*} [MeasurableSpace Ω]
 
-/-- Existence direction of **Theorem 1** (strategy layer): Kyle's affine
-strategy `φ(v) = (σ/τ)(v − μ₀)` (eq. (1)) is an equilibrium strategy.
-(The definitional-fidelity canary, PROVED. v3 supplies the textual proof of
-this direction that v2 only asserted.)
+/-- Existence direction of **v4 Theorem 1.1** (strategy layer): Kyle's
+affine strategy `φ(v) = (σ/τ)(v − μ₀)` (eq. (1.1)) is an equilibrium
+strategy. (The definitional-fidelity canary, PROVED. From v3 on the paper
+supplies the textual proof of this direction that v2 only asserted.)
 
-Proof: the witness pricing rule is eq. (2)'s affine rule
+Proof: the witness pricing rule is eq. (1.2)'s affine rule
 `P(y) = μ₀ + λy`, `λ = τ/(2σ)`. It prices the affine strategy by the
 complete-the-square density identity
 (`KyleModel.kylePricingRule_mul_flowPDF` fed through the pricing-rule
@@ -1306,9 +1363,9 @@ theorem kyleStrategy_isEquilibrium (M : KyleModel Ω) :
       M.measurable_kylePricingRule M.kylePricingRule_mul_flowPDF,
     fun v x => M.expectedProfit_kylePricingRule_le v x⟩
 
-/-! ## Eq. (2): Kyle's pricing rule and the price impact `λ = τ/(2σ)` -/
+/-! ## Eq. (1.2): Kyle's pricing rule and the price impact `λ = τ/(2σ)` -/
 
-/-- Eq. (2): `P_φ(y) = μ₀ + λy` with `λ = τ/(2σ)` is a pricing rule for
+/-- Eq. (1.2): `P_φ(y) = μ₀ + λy` with `λ = τ/(2σ)` is a pricing rule for
 Kyle's affine strategy (PROVED).
 
 Proof: the affine pair satisfies the density identity `P·p = n` by
@@ -1320,10 +1377,10 @@ theorem isPricingRule_kylePricingRule (M : KyleModel Ω) :
   M.isPricingRule_of_forall_mul_flowPDF M.measurable_kyleStrategy
     M.measurable_kylePricingRule M.kylePricingRule_mul_flowPDF
 
-/-- Pricing half of **Theorem 1**'s uniqueness, a.e.-primary form (v3
-states all pricing-rule uniqueness a.s. / up to Lebesgue-null
+/-- Pricing half of **v4 Theorem 1.1**'s uniqueness, a.e.-primary form (the
+paper states all pricing-rule uniqueness a.s. / up to Lebesgue-null
 modification): any pricing rule for Kyle's affine strategy agrees with
-eq. (2)'s affine rule Lebesgue-almost everywhere. (Along the flow the two
+eq. (1.2)'s affine rule Lebesgue-almost everywhere. (Along the flow the two
 agree a.s. by definition of pricing rule; the law of the flow has
 everywhere-positive density — Lemma 2.1 — so flow-a.s. transfers to
 Lebesgue-a.e.) -/
@@ -1354,21 +1411,22 @@ theorem eq_kylePricingRule_of_continuous (M : KyleModel Ω) {Q : ℝ → ℝ}
   exact (hQc.ae_eq_iff_eq (volume : Measure ℝ) hkc).mp
     (pricingRule_ae_eq_kylePricingRule M hQ)
 
-/-! ## Theorem 1: the pair form (v3's headline) — ingredients
+/-! ## Theorem 1.1: the pair form (the headline) — ingredients
 
-v3's Theorem 1 is an iff over the (strategy, pricing-rule) PAIR — see
+v4's Theorem 1.1 is an iff over the (strategy, pricing-rule) PAIR — see
 `KyleModel.IsEquilibrium`. The assembly itself is `kyle_equilibrium_pair_iff`
 in `KyleUniqueness.Main`; it uses the easy direction below together with two
 version-independence ingredients: pricing rules for the same strategy agree
 a.s. along the flow (`pricingRule_ae_orderFlow`, immediate from `condExp`
 a.e.-uniqueness), and expected profits are insensitive to Lebesgue-null
 modification of the pricing rule (`expectedProfit_congr_ae`, since `x + U`
-has a density — the content of v3's Lemmas 2.2/2.3 remark that profits do
-not depend on the chosen Borel version). -/
+has a density — the content of the version-independence clauses of v4
+Lemmas 2.2/2.3: profits do not depend on the chosen Borel version). -/
 
-/-- Kyle's affine pair — the strategy of eq. (1) with the pricing rule of
-eq. (2) — is an equilibrium PAIR (the `(1)∧(2) ⇒ equilibrium` direction of
-Theorem 1, pair form). Assembled from the canary-phase infrastructure; no
+/-- Kyle's affine pair — the strategy of eq. (1.1) with the pricing rule of
+eq. (1.2) — is an equilibrium PAIR (the `(1.1)∧(1.2) ⇒ equilibrium`
+direction of Theorem 1.1, pair form). Assembled from the canary-phase
+infrastructure; no
 `sorry`. -/
 theorem kyleStrategy_kylePricingRule_isEquilibrium (M : KyleModel Ω) :
     M.IsEquilibrium M.kyleStrategy M.kylePricingRule :=
@@ -1387,7 +1445,7 @@ theorem pricingRule_ae_orderFlow (M : KyleModel Ω) {φ P Q : ℝ → ℝ}
 /-- Version-independence of expected profit: pricing rules that agree
 Lebesgue-a.e. yield identical expected profits at every `(v, x)` (the law
 of `x + U` is Gaussian, hence absolutely continuous). This is the
-version-independence remark that v3 promotes to Lemmas 2.2/2.3; no
+version-independence remark that v3 and v4 promote to Lemmas 2.2/2.3; no
 `sorry`. -/
 theorem expectedProfit_congr_ae (M : KyleModel Ω) {P Q : ℝ → ℝ}
     (h : P =ᵐ[(volume : Measure ℝ)] Q) (v x : ℝ) :

@@ -1,5 +1,8 @@
 # CANARY_REPORT — definitional-fidelity gate, Kyle-uniqueness formalization
 
+> **Historical (v3-keyed).** Superseded 2026-09-16 by the v4 reconciliation
+> (`V4_DELTA_REPORT_2026-09-16.md`) and the completed proofs (`PROVING_LOG.md` Session 3).
+
 Date: 2026-08-12. Toolchain: Lean `v4.32.0`, Mathlib `81a5d257` (tag
 v4.32.0). Paper: Monteiro & Tourky, arXiv:2607.23585v2.
 **Local only — nothing published, pushed, or announced.**

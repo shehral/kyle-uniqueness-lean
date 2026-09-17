@@ -6,12 +6,21 @@ Authors: Mohammad Ali Shehral
 import KyleUniqueness.Statement
 
 /-!
-# Regularity of the Gaussian smoothing `F` (blueprint node R2; v3 Lemma 2.3)
+# Regularity of the Gaussian smoothing `F` (blueprint node R2; v4 Lemma 2.3)
 
-v3 Lemma 2.3's regularity clause: `F(x) = E[P(x + U)]` is continuously
+Keyed to Monteiro & Tourky, *The one-period Kyle model has one equilibrium*
+(arXiv:2607.23585, **v4** of 2026-08-20). This module was written in the v3
+session; its numbering is re-keyed to v4 here (crosswalk:
+`V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1). Lemma 2.3 keeps its
+number from v3, but v3's eq. (4) is v4's **(2.2)** and v3's eq. (5) is v4's
+**(2.3)** — and v4 tags only the FIRST line of that split display, so the
+`u`-integral form below carries no v4 equation number of its own.
+
+v4 Lemma 2.3's regularity clause: `F(x) = E[P(x + U)]` is continuously
 differentiable with
 
-`F′(x) = ∫ P(y)·(y − x)·ϱ(y − x) dy = ∫ u·P(x + u)·ϱ(u) du`   (eq. (5))
+`F′(x) = ∫ P(y)·(y − x)·ϱ(y − x) dy = ∫ u·P(x + u)·ϱ(u) du`   (eq. (2.3))
 
 for every Borel strategy `φ` — no moment hypotheses (node R1 =
 `lemma23_integrable`, proved, supplies all integrability). The route is the
@@ -25,16 +34,27 @@ built from the algebraic shift identity `e^{ct}ϱ(t) = e^{c²/2}ϱ(t − c)` —
 no complex analysis anywhere (v2's hard block 1 stays dead).
 
 Main statements:
-* `gaussianSmoothing_eq_convolution` — eq. (4), `F(x) = ∫ P(y)ϱ(y − x) dy`;
+* `gaussianSmoothing_eq_convolution` — eq. (2.2),
+  `F(x) = ∫ P(y)ϱ(y − x) dy`;
 * `hasDerivAt_gaussianSmoothing` + `integrable_gaussianSmoothing_deriv_kernel`
-  — differentiability with the eq.-(5) kernel;
-* `deriv_gaussianSmoothing_eq_prob` — the probabilistic form of eq. (5);
+  — differentiability with the eq.-(2.3) kernel;
+* `deriv_gaussianSmoothing_eq_prob` — the probabilistic form of eq. (2.3);
 * `continuous_gaussianSmoothing_deriv` (+ `deriv_gaussianSmoothing`,
   `continuous_deriv_gaussianSmoothing`) — `F ∈ C¹`.
 
 Lemma 2.3's remaining bookkeeping clause (`F(φ(V)) = E[E[V∣Y]∣V]` a.s.) is
 E2's input and is deferred to the resampling file with the rest of the
 condExp plumbing.
+
+**Scope caveat against v4.** v4's Lemma 2.3 is strictly STRONGER than v3's:
+besides the `C¹` regularity and the two integral formulas proved here, it
+asserts finiteness of the expectation in (2.1) and absolute convergence of
+the integrals in (2.2)/(2.3). Those extra conclusions are supplied elsewhere
+in the tree — `lemma23_integrable` (`Statement.lean`),
+`integrable_gaussianSmoothing_deriv_kernel` below,
+`KyleModel.integrable_Q_comp_add` (`CondExpBridge.lean`) and
+`integrable_inverseRegression_const_add` — so this module alone discharges a
+proper SUBSET of v4 Lemma 2.3.
 -/
 
 open MeasureTheory ProbabilityTheory Real Filter Set
@@ -140,7 +160,7 @@ lemma gaussianPDFReal_std_shift_le {s : ℝ} (hs : |s| ≤ 2) (t : ℝ) :
         * (gaussianPDFReal 0 1 (t - 2) + gaussianPDFReal 0 1 (t + 2)) :=
         (mul_add _ _ _).symm
 
-/-- The locally-uniform majorant for the eq.-(5) derivative kernel: for
+/-- The locally-uniform majorant for the eq.-(2.3) derivative kernel: for
 `|x − x₀| ≤ 1`,
 `|y − x|·ϱ(y − x) ≤ 2e^{5/2}·(ϱ(y − x₀ − 2) + ϱ(y − x₀ + 2))`. -/
 lemma abs_sub_mul_gaussianPDFReal_std_le {x₀ x : ℝ} (hx : |x - x₀| ≤ 1)
@@ -180,10 +200,10 @@ lemma abs_sub_mul_gaussianPDFReal_std_le {x₀ x : ℝ} (hx : |x - x₀| ≤ 1)
         rw [show (5/2 : ℝ) = 1/2 + 2 by norm_num, Real.exp_add]
         ring
 
-/-! ## eq. (4): the convolution form of `F` -/
+/-! ## eq. (2.2): the convolution form of `F` -/
 
-/-- v3 eq. (4): `F(x) = ∫ P(y)·ϱ(y − x) dy` (Lebesgue convolution form of
-the Gaussian smoothing). -/
+/-- v4 eq. (2.2) (v3 eq. (4)): `F(x) = ∫ P(y)·ϱ(y − x) dy` (Lebesgue
+convolution form of the Gaussian smoothing). -/
 theorem gaussianSmoothing_eq_convolution {φ : ℝ → ℝ} (hφ : Measurable φ)
     (x : ℝ) :
     gaussianSmoothing φ x
@@ -193,10 +213,10 @@ theorem gaussianSmoothing_eq_convolution {φ : ℝ → ℝ} (hφ : Measurable φ
       (lemma21_continuous hφ).aestronglyMeasurable]
   exact integral_congr_ae (ae_of_all _ fun y => mul_comm _ _)
 
-/-! ## eq. (5): differentiability of `F` -/
+/-! ## eq. (2.3): differentiability of `F` -/
 
 /-- The dominated-differentiation core for node R2: at every `x₀`, the
-eq.-(5) kernel is integrable and `x ↦ ∫ P(y)ϱ(y − x) dy` differentiates
+eq.-(2.3) kernel is integrable and `x ↦ ∫ P(y)ϱ(y − x) dy` differentiates
 under the integral. -/
 private lemma hasDerivAt_core {φ : ℝ → ℝ} (hφ : Measurable φ) (x₀ : ℝ) :
     Integrable (fun y => inverseRegression φ y
@@ -280,7 +300,7 @@ private lemma hasDerivAt_core {φ : ℝ → ℝ} (hφ : Measurable φ) (x₀ : �
     (Eventually.of_forall fun x => hFmeas x) hFint hF'meas h_bound hbint
     h_diff
 
-/-- Node R2 (integrability leg): the eq.-(5) derivative kernel
+/-- Node R2 (integrability leg): the eq.-(2.3) derivative kernel
 `y ↦ P(y)·(y − x)·ϱ(y − x)` is Lebesgue-integrable for every `x`. -/
 theorem integrable_gaussianSmoothing_deriv_kernel {φ : ℝ → ℝ}
     (hφ : Measurable φ) (x : ℝ) :
@@ -288,7 +308,7 @@ theorem integrable_gaussianSmoothing_deriv_kernel {φ : ℝ → ℝ}
       * ((y - x) * stdNormalPDF (y - x))) (volume : Measure ℝ) := by
   simpa only [stdNormalPDF] using (hasDerivAt_core hφ x).1
 
-/-- **Node R2, differentiability** (v3 Lemma 2.3, eq. (5), first form):
+/-- **Node R2, differentiability** (v4 Lemma 2.3, eq. (2.3), first form):
 `F` is differentiable with `F′(x) = ∫ P(y)·(y − x)·ϱ(y − x) dy`. -/
 theorem hasDerivAt_gaussianSmoothing {φ : ℝ → ℝ} (hφ : Measurable φ)
     (x₀ : ℝ) :
@@ -304,7 +324,8 @@ theorem hasDerivAt_gaussianSmoothing {φ : ℝ → ℝ} (hφ : Measurable φ)
   rw [hFeq] at h
   simpa only [stdNormalPDF] using h
 
-/-- eq. (5), second (probabilistic) form:
+/-- eq. (2.3), second (probabilistic) form — untagged in v4, which tags
+only the first line of the display:
 `F′(x) = ∫ u·P(x + u)·ϱ(u) du = E[U·P(x + U)]` (true for every `φ` — the
 identity is pure translation invariance). -/
 theorem deriv_gaussianSmoothing_eq_prob (φ : ℝ → ℝ) (x : ℝ) :
@@ -320,7 +341,7 @@ theorem deriv_gaussianSmoothing_eq_prob (φ : ℝ → ℝ) (x : ℝ) :
   rw [show x + u - x = u by ring, stdNormalPDF, smul_eq_mul]
   ring
 
-/-- The eq.-(5) derivative is continuous (with `hasDerivAt_gaussianSmoothing`
+/-- The eq.-(2.3) derivative is continuous (with `hasDerivAt_gaussianSmoothing`
 this is `F ∈ C¹`, completing node R2). -/
 theorem continuous_gaussianSmoothing_deriv {φ : ℝ → ℝ} (hφ : Measurable φ) :
     Continuous fun x =>
@@ -371,7 +392,7 @@ theorem continuous_gaussianSmoothing_deriv {φ : ℝ → ℝ} (hφ : Measurable 
           (continuous_const.sub continuous_id)))
     exact hc.continuousAt
 
-/-- `deriv` form of eq. (5). -/
+/-- `deriv` form of eq. (2.3). -/
 theorem deriv_gaussianSmoothing {φ : ℝ → ℝ} (hφ : Measurable φ) (x : ℝ) :
     deriv (gaussianSmoothing φ) x
       = ∫ y, inverseRegression φ y * ((y - x) * stdNormalPDF (y - x)) :=

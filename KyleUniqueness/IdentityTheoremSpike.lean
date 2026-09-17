@@ -10,7 +10,8 @@ import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 /-!
 # Identity-theorem spike (blueprint Tier 0.4, de-risking hard block 5)
 
-The rigidity endgame of the paper (Theorem 3.1, blueprint node L2) needs:
+The rigidity endgame of the paper as it stood in **v2** (v2 Theorem 3.1 —
+a v2-only number with no v3 or v4 counterpart; blueprint node L2) needs:
 a real-analytic `G : ℝ → ℝ` whose zero set carries positive mass under an
 atomless law must vanish identically. This file proves exactly that chain
 against the pin, verifying that the only API uncertainty flagged in
@@ -31,12 +32,18 @@ Consequence for the campaign: hard block 5's L2 node loses its API risk
 entirely; what remains there is the `F/x` ODE patch and the pushforward
 atomlessness, both routine.
 
-**v3 note (2026-08-12):** arXiv:2607.23585v3 REMOVED the complex-analytic
-rigidity endgame from the paper ("The proof is probabilistic and
-convex-analytic and uses no complex analysis"), so this spike's consumer
-(blueprint node L2 / v2 Theorem 3.1) no longer exists in the v3 proof plan.
+**Version note (v3 recorded 2026-08-12; re-checked against v4
+2026-09-16).** arXiv:2607.23585**v3** REMOVED the complex-analytic rigidity
+endgame from the paper ("The proof is probabilistic and convex-analytic and
+uses no complex analysis"), and **v4** (2026-08-20) did not bring it back —
+v4 additionally deleted v3's Appendix B scope lemma and v3 eqs. (30)–(32)
+outright. So this spike's consumer (blueprint node L2 / v2 Theorem 3.1) no
+longer exists in the v3 or the v4 proof plan.
+
 The file is retained as proved, Mathlib-only infrastructure (potential
-upstream material); it is NOT part of the v3 claim surface.
+upstream material); it is **NOT part of the claim surface of v3 or v4**.
+Crosswalk: `V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1.
 -/
 
 open Filter MeasureTheory Set

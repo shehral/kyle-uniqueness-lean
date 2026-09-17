@@ -8,8 +8,8 @@ import KyleUniqueness.Regularity
 /-!
 # Noise-trader loss: the `Γ` identities (v4 Lemma 3.1 / 3.2; decision D5)
 
-The `Γ`-layer of Monteiro & Tourky, *The one-period Gaussian Kyle model has
-exactly one equilibrium* (arXiv:2607.23585, **v4** of 2026-08-20), §3.
+The `Γ`-layer of Monteiro & Tourky, *The one-period Kyle model has one
+equilibrium* (arXiv:2607.23585, **v4** of 2026-08-20), §3.
 
 v4 §3.1 defines the noise traders' expected loss as
 `Γ := E[U(P(Y) − V)]` and Lemma 3.1 chains it through

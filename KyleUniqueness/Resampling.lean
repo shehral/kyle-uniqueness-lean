@@ -8,8 +8,8 @@ import KyleUniqueness.Regularity
 /-!
 # Conditional resampling (blueprint node E1; v4 Lemma 2.6 = v3 Lemma 2.4)
 
-Formalization of Lemma 2.6 of Monteiro & Tourky, *The one-period Gaussian
-Kyle model has exactly one equilibrium* (arXiv:2607.23585, **v4** of
+Formalization of Lemma 2.6 of Monteiro & Tourky, *The one-period Kyle
+model has one equilibrium* (arXiv:2607.23585, **v4** of
 2026-08-20; the identical statement is v3 Lemma 2.4). Numbering below is
 v4's.
 

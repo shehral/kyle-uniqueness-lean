@@ -12,7 +12,7 @@ import KyleUniqueness.SteinInequality
 # The signed root `h` and the bound `1 ≤ 2Γ` (blueprint nodes H1 and J1)
 
 Formalization of the construction inside the proof of **Proposition 6.1** of
-Monteiro & Tourky, *The one-period Gaussian Kyle model has exactly one
+Monteiro & Tourky, *The one-period Kyle model has one
 equilibrium* (arXiv:2607.23585, **v4** of 2026-08-20; the construction is
 v3's Proposition 6), together with the resulting inequality `Γ ≥ 1/2`.
 
@@ -506,12 +506,14 @@ theorem integrable_insiderProfit_id :
   rw [insiderProfit_id]
   exact integrable_sq_gaussianReal_std.div_const 2
 
-/-- Oracle: `E[W(V)] = E[V²]/2 = 1/2` at `φ = id`. Primed because
-`KyleUniqueness.Accounting` proves the same identity under the unprimed
-name by the *other* route (feeding `φ = id` to `accounting_identity`); the
-two routes are independent, so keeping both is a genuine cross-check and
-the prime only keeps the names apart for a file that imports both. -/
-theorem integral_insiderProfit_id' :
+/-- Oracle: `E[W(V)] = E[V²]/2 = 1/2` at `φ = id`, **via the closed form**
+`insiderProfit id = fun v => v ^ 2 / 2` (`insiderProfit_id`).
+`KyleUniqueness.Accounting.integral_insiderProfit_id` proves the very same
+identity by the *other* route, feeding `φ = id` to `accounting_identity`.
+The two routes are independent, so keeping both is a genuine cross-check;
+the `_of_closedForm` suffix says which route this one is (it was originally
+distinguished only by a prime, which told a reader nothing). -/
+theorem integral_insiderProfit_id_of_closedForm :
     ∫ v, insiderProfit (id : ℝ → ℝ) v ∂(gaussianReal 0 1) = 1 / 2 := by
   have hsq : (fun v : ℝ => v ^ 2) = fun v : ℝ => v * v := funext fun v => sq v
   rw [insiderProfit_id]
@@ -529,6 +531,6 @@ theorem two_mul_noiseTraderLoss_id : 2 * noiseTraderLoss (id : ℝ → ℝ) = 1 
 witnesses that the bound `1 ≤ 2Γ` is tight. -/
 theorem one_le_two_mul_noiseTraderLoss_id : 1 ≤ 2 * noiseTraderLoss (id : ℝ → ℝ) :=
   one_le_two_mul_noiseTraderLoss isGammaSolution_zero_id integrable_insiderProfit_id
-    (noiseTraderLoss_id.trans integral_insiderProfit_id'.symm)
+    (noiseTraderLoss_id.trans integral_insiderProfit_id_of_closedForm.symm)
 
 end KyleUniqueness

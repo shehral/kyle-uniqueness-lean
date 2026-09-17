@@ -10,16 +10,16 @@ import KyleUniqueness.GaussianHelpers
 # The pricing-rule bridge: from density identities to conditional expectations
 
 The workhorse of the proof phase (blueprint node P1, direct route): for any
-Kyle model (paper §1) and any Borel strategy `φ`, a Borel candidate price
-function `Q : ℝ → ℝ` is a pricing rule — `Q(Y_φ) = E[V ∣ Y_φ]` a.s., the
-display before eq. (1) — as soon as it satisfies the pointwise *density
-identity*
+Kyle model (v4 §1) and any Borel strategy `φ`, a Borel candidate price
+function `Q : ℝ → ℝ` is a pricing rule — `Q(Y_φ) = E[V ∣ Y_φ]` a.s., item 2
+("market efficiency") of v4 §1's equilibrium definition — as soon as it
+satisfies the pointwise *density identity*
 
 `Q(y) · p_φ(y) = n_φ(y)` for every `y`,
 
 where `p_φ(y) = E[ϱ_σ(y − φ(V))]` is the order-flow density and
 `n_φ(y) = E[V·ϱ_σ(y − φ(V))]` its value-weighted counterpart (`flowPDF` and
-`flowNum` below; §4.1's `p` and `n` in the normalised model, Appendix A's
+`flowNum` below; v4 §2.2's `p` and `n` in the normalised model, Appendix A's
 `C`/`D` up to a common factor). This is the Bayes-quotient description of
 the inverse regression, verified against Mathlib's `condExp` through the
 uniqueness characterisation `ae_eq_condExp_of_forall_setIntegral_eq`: for
@@ -33,24 +33,43 @@ each equality by Tonelli/Fubini and the translation
 
 The file ends with the consumers proved for the canary phase:
 
-* `KyleModel.kylePricingRule_mul_flowPDF` — eq. (3)'s density identity for
-  the affine pair (eq. (2)/(3)), by the complete-the-square factorization
-  `gaussianPDFReal_mul_gaussianPDFReal_kyle`;
+* `KyleModel.kylePricingRule_mul_flowPDF` — eq. (1.2)'s density identity for
+  the affine pair (eqs. (1.1)/(1.2)), by the complete-the-square
+  factorization `gaussianPDFReal_mul_gaussianPDFReal_kyle`;
 * `KyleModel.expectedProfit_kylePricingRule` /
   `KyleModel.expectedProfit_kylePricingRule_le` — against the affine rule
-  the insider's profit (eq. (1)) is the strictly concave quadratic
-  `(v − μ₀ − λx)·x`, maximised at `x = (σ/τ)(v − μ₀) = kyleStrategy v`;
+  the insider's profit (v4 §1, item 1, untagged) is the strictly concave
+  quadratic `(v − μ₀ − λx)·x`, maximised at
+  `x = (σ/τ)(v − μ₀) = kyleStrategy v`;
 * `stdModel_flowPDF` / `stdModel_flowNum` /
   `measurable_inverseRegression` — the σ = τ = 1 specialisations linking
   the general-model bridge to §2's normalised objects.
 
-Section/equation numbers in this file were written against
-arXiv:2607.23585**v2** and are retained (the proofs predate the v3
-reconciliation). v3 renumbered: v2 eq. (2) [Kyle strategy] → v3 eq. (1),
-v2 eq. (3) [pricing rule] → v3 eq. (2), v2 eq. (10) [Bayes posterior mean]
-→ v3 eq. (6), v2 §4.1 ↔ v3 §2.2/App. A; the machinery itself is what v3's
-Lemma 2.2 and Theorem 1 converse now state as paper content. Full map:
-`STATEMENT_NOTES.md` §1.
+## Numbering: ONE declared scheme (v4), with the legacy table
+
+This module's proofs predate both the v3 and the v4 reconciliations and its
+comments once interleaved **v2** and **v3** numbers with no in-file key —
+three schemes for a reader to disambiguate. That is fixed: **every section,
+equation and lemma number below is arXiv:2607.23585 v4** (*The one-period
+Kyle model has one equilibrium*, 2026-08-20). Legacy table for anyone
+holding an older PDF:
+
+| object | v2 | v3 | **v4** |
+|---|---|---|---|
+| insider's profit / profit maximisation | eq. (1) | display before eq. (1) | §1 item 1, untagged |
+| Kyle's strategy `φ(v) = (σ/τ)(v − μ₀)` | eq. (2) | eq. (1) | **eq. (1.1)** |
+| Kyle's pricing rule `P(y) = μ₀ + λy` | eq. (3) | eq. (2) | **eq. (1.2)** |
+| Bayes posterior mean `P(y) = ∫ v π_y(dv)` | eq. (10) | eq. (6) | §2.2 last display, untagged |
+| normalised densities `p`, `n` | §4.1 | §2.2 / App. A | **§2.2 / Appendix A** |
+| "`P` is a pricing rule", "`P` continuous, `P(Y) ∈ L²`" | — | Lemma 2.2 | **Lemma 2.2** |
+| order-flow law clause | — | Lemma 2.1 | **Lemma 2.1** |
+| headline characterisation | Theorem 1.1 | Theorem 1 | **Theorem 1.1** |
+
+The machinery in this file is what v4's Lemma 2.2 and the converse half of
+v4 Theorem 1.1 state as paper content. Full v2 ↔ v3 map:
+`STATEMENT_NOTES.md` §1; v3 → v4 crosswalk:
+`V4_DELTA_REPORT_2026-09-16.md` §1 (policy:
+`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1).
 -/
 
 open MeasureTheory ProbabilityTheory Real
@@ -133,12 +152,12 @@ lemma integral_U : ∫ ω, M.U ω ∂M.μ = 0 := by
         (integral_map M.hU.aemeasurable aestronglyMeasurable_id).symm
     _ = 0 := by rw [M.map_U]; exact integral_id_gaussianReal
 
-/-! ## Flow density and flow numerator (§4.1 / Appendix A, general model)
+/-! ## Flow density and flow numerator (v4 §2.2 / Appendix A, general model)
 
 `flowPDF φ` is the Lebesgue density of the law of the order flow
 `Y_φ = φ(V) + U` (the general-σ analogue of Lemma 2.1's `p`), and
 `flowNum φ` is its value-weighted counterpart (the numerator `n` of the
-Bayes quotient, eq. (10)). -/
+Bayes quotient — v4 §2.2's last display, which carries no equation tag). -/
 
 /-- `p_φ(y) = E[ϱ_σ(y − φ(V))]` — the density of the order flow. -/
 noncomputable def flowPDF (φ : ℝ → ℝ) (y : ℝ) : ℝ :=
@@ -514,7 +533,8 @@ lemma integrable_Q_comp_orderFlow {φ Q : ℝ → ℝ} (hφ : Measurable φ)
 
 /-- **The pricing-rule bridge.** If a Borel `Q` satisfies the density
 identity `Q·p_φ = n_φ` pointwise, then `Q` is a pricing rule for `φ`:
-`Q(Y_φ) = E[V ∣ σ(Y_φ)]` almost surely (paper §1, display before eq. (1)).
+`Q(Y_φ) = E[V ∣ σ(Y_φ)]` almost surely (v4 §1, item 2 "market
+efficiency").
 
 Proved via the uniqueness characterisation of conditional expectation:
 `Q(Y_φ)` is `σ(Y_φ)`-measurable, integrable, and has the same integral as
@@ -576,7 +596,7 @@ theorem isPricingRule_of_forall_mul_flowPDF {φ Q : ℝ → ℝ}
       Measurable.of_comap_le le_rfl
     exact ((hQ.comp hYm).stronglyMeasurable).aestronglyMeasurable
 
-/-! ## Eq. (2)/(3): the affine pair and its density identity -/
+/-! ## Eqs. (1.1)/(1.2): the affine pair and its density identity -/
 
 lemma measurable_kyleStrategy : Measurable M.kyleStrategy := by
   unfold kyleStrategy
@@ -604,7 +624,7 @@ lemma integral_valueLaw_eq_shift (F : ℝ → ℝ) (hF : Measurable F) :
     hF.aestronglyMeasurable]
 
 /-- The order-flow density of the affine strategy is `N(0, 2σ²)`
-(the complete-the-square computation behind eq. (3)). -/
+(the complete-the-square computation behind eq. (1.2)). -/
 lemma flowPDF_kyleStrategy (y : ℝ) :
     M.flowPDF M.kyleStrategy y
       = gaussianPDFReal 0 ⟨2 * M.σ ^ 2, by positivity⟩ y := by
@@ -632,7 +652,7 @@ lemma flowPDF_kyleStrategy (y : ℝ) :
 
 /-- The value-weighted order-flow density of the affine strategy:
 `n(y) = ϱ_{2σ²}(y)·(μ₀ + λy)` with `λ = τ/(2σ)` — the posterior mean is
-Kyle's price (eq. (3)). -/
+Kyle's price (eq. (1.2)). -/
 lemma flowNum_kyleStrategy (y : ℝ) :
     M.flowNum M.kyleStrategy y
       = gaussianPDFReal 0 ⟨2 * M.σ ^ 2, by positivity⟩ y
@@ -679,7 +699,7 @@ lemma flowNum_kyleStrategy (y : ℝ) :
           integral_const_mul, integral_gaussianPDFReal_eq_one _ hpost,
           integral_id_mul_gaussianPDFReal _ hpost, mul_one]
 
-/-- **Eq. (3)'s density identity**: the affine rule `P(y) = μ₀ + λy`
+/-- **Eq. (1.2)'s density identity**: the affine rule `P(y) = μ₀ + λy`
 satisfies `P·p = n` for the affine strategy. -/
 lemma kylePricingRule_mul_flowPDF (y : ℝ) :
     M.kylePricingRule y * M.flowPDF M.kyleStrategy y
@@ -688,10 +708,10 @@ lemma kylePricingRule_mul_flowPDF (y : ℝ) :
   unfold kylePricingRule priceImpact
   ring
 
-/-! ## Eq. (1) against the affine rule: the profit quadratic -/
+/-! ## v4 §1's profit against the affine rule: the profit quadratic -/
 
 /-- Against the affine pricing rule, the insider's expected profit
-(eq. (1)) is the deterministic quadratic `(v − μ₀ − λx)·x`
+(v4 §1, item 1) is the deterministic quadratic `(v − μ₀ − λx)·x`
 (`E[U] = 0` kills the noise term). -/
 lemma expectedProfit_kylePricingRule (v x : ℝ) :
     M.expectedProfit M.kylePricingRule v x
@@ -707,7 +727,8 @@ lemma expectedProfit_kylePricingRule (v x : ℝ) :
   simp
 
 /-- The profit quadratic is maximised at Kyle's strategy
-`x* = (σ/τ)(v − μ₀)` (eq. (2)): the pointwise optimality in eq. (1). -/
+`x* = (σ/τ)(v − μ₀)` (eq. (1.1)): the pointwise optimality of v4 §1,
+item 1. -/
 lemma expectedProfit_kylePricingRule_le (v x : ℝ) :
     M.expectedProfit M.kylePricingRule v x
       ≤ M.expectedProfit M.kylePricingRule v (M.kyleStrategy v) := by
@@ -726,12 +747,12 @@ lemma expectedProfit_kylePricingRule_le (v x : ℝ) :
   have hlam : 0 < M.priceImpact := div_pos M.hτ (mul_pos two_pos M.hσ)
   exact mul_nonneg hlam.le (sq_nonneg _)
 
-/-! ## The law of the order flow (v3 Lemma 2.1's law clause, general σ)
+/-! ## The law of the order flow (v4 Lemma 2.1's law clause, general σ)
 
 The law of `Y_φ = φ(V) + U` is the `flowPDF`-weighted Lebesgue measure —
 proved by pushing to the product space, translating the noise coordinate
 (`lintegral_comp_add_gaussianReal'`), and one Tonelli swap. Consumed by the
-pricing half of Theorem 1's uniqueness (flow-a.s. ⇒ Lebesgue-a.e., since
+pricing half of Theorem 1.1's uniqueness (flow-a.s. ⇒ Lebesgue-a.e., since
 `flowPDF > 0`). -/
 
 /-- The flow density is Borel measurable (parametric-integral
@@ -863,14 +884,16 @@ lemma stdModel_flowPDF (φ : ℝ → ℝ) (y : ℝ) :
     flowDensity, stdNormalPDF]
 
 /-- On the normalised model the general flow numerator is §2's `n` — the
-numerator of the Bayes quotient defining `inverseRegression` (eq. (10)). -/
+numerator of the Bayes quotient defining `inverseRegression` (v4 §2.2's
+last display). -/
 lemma stdModel_flowNum (φ : ℝ → ℝ) (y : ℝ) :
     stdModel.flowNum φ y
       = ∫ v, v * stdNormalPDF (y - φ v) ∂gaussianReal 0 1 := by
   rw [KyleModel.flowNum_def, stdModel_valueLaw, stdModel_noiseVar,
     stdNormalPDF]
 
-/-- The explicit inverse regression (eq. (10)) is Borel measurable
+/-- The explicit inverse regression (v4 §2.2's last display) is Borel
+measurable
 (parametric-integral measurability for numerator and denominator). -/
 lemma measurable_inverseRegression {φ : ℝ → ℝ} (hφ : Measurable φ) :
     Measurable (inverseRegression φ) := by

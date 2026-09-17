@@ -662,3 +662,165 @@ NEW pin-specific gotchas from this wave (worth adding to PROVING_LOG):
 - NON-BLOCKING, PRE-EXISTING: the one `info:` diagnostic in a full clean rebuild is KyleUniqueness/Regularity.lean:57:2, a `ring` -> `ring_nf` suggestion. Info level, not a warning; it does not affect exit status, warning count or axioms; the file is untouched this wave; it is PROVING_LOG gotcha #14. Same canary Stages A and B reported.
 - DOC DRIFT, STILL UNFIXED AFTER STAGE B FLAGGED IT -- out of this wave's Lean edit scope but it is the ATTESTATION SURFACE and is now factually false. (a) STATEMENT_NOTES.md:12 lists the artifact as 'KyleUniqueness/Definitions.lean + KyleUniqueness/Statement.lean (+ BeyondPaper, AxiomAudit, GaussianHelpers, CondExpBridge)' -- it omits Main.lean and all six Session-3 modules. STATEMENT_NOTES.md:18-22 states 'Build status (2026-08-12 ...): 2 `sorry`s, both in Statement.lean and both headline uniqueness carriers (isGammaSolution_zero_iff rigidity direction, isEquilibrium_eq_kyleStrategy)'. Both are now proved and BOTH DECLARATIONS HAVE MOVED to KyleUniqueness/Main.lean. (b) claim-package/formalization.yaml:29 says `sorry_count: 14` (true value: 0); its `main_results` block gives `file: KyleUniqueness/Statement.lean` for kyle_equilibrium_pair_iff, kyle_unique_equilibrium, kyle_existsUnique_equilibrium and isGammaSolution_zero_iff (all now in Main.lean) with statuses 'stated (proof in progress)' / 'uniqueness half in progress'; its `alignment` block repeats 'uniqueness legs stated (sorry)', 'Proposition 2 stated (sorry x4)', 'Theorem 4 stated (sorry)', '3 regularity bridges stated (sorry)' and 'Theorem 3, Propositions 5-6, Lemmas 2.4-2.7 and the Stein inequality are deliberately NOT stated yet' -- every one of those is now false. Its scope/fidelity prose is keyed to v3 numbering throughout, while the tree's new modules are keyed to v4 (decision D1). MITIGATING: formalization.yaml line 1 reads 'DRAFT -- DO NOT POST/PUBLISH -- pending Shehral review', line 86 marks review status 'pre-publication', and SETUP.md/STATEMENT_NOTES both say 'Local only -- nothing published', so NO LIVE FALSE ATTESTATION EXISTS. It must be refreshed before any external step.
 - PROCESS GAP, out of Lean scope: PROVING_LOG.md still ends at 'Session 3 -- 2026-09-16, Wave 2', with no Wave-3 entry for either Stage A (the move of the six carriers out of Statement.lean into the new top module Main.lean, the AxiomAudit rewiring, the SignedRoot rename) or Stage B (node O1, the location-scale standardisation layer). blueprint/attack_order.md's Tier-5 checklist ('AxiomAudit.lean final pass, formalization.yaml refresh, sorry count -> 0') is likewise unticked even though all three are now true of the tree. Stage B's report says its route_notes were written to be pasted verbatim; they have not been.
+
+---
+
+## Campaign summary — closed 2026-09-16 (working tree, uncommitted on top of commit `f975dbc`)
+
+> **Commit label.** Every figure in this section is measured on the **working
+> tree of 2026-09-16**, which is uncommitted on top of commit `f975dbc`. They do
+> **not** hold at `f975dbc` itself: there `AxiomAudit.lean` has 239 `#print axioms`
+> lines, the 19 files total 9,630 lines, and `lakefile.lean` has no `lintDriver`.
+> The hash must be re-pinned once the closeout is committed.
+
+Written at the documents closeout, after the final adversarial audit returned
+`pass`. This section is the campaign's own record; the claim-facing versions of
+the same facts are `STATEMENT_NOTES.md` (§0 artifact, §1 crosswalk, §5 deviation
+ledger, §6 what is not formalized) and `claim-package/formalization.yaml`.
+
+### Per-wave table
+
+| Wave | Date | Nodes closed | Files produced / touched | LOC | Verification outcome |
+|---|---|---|---|---:|---|
+| Statement + canary phase | 2026-08-11/12 | N0, P1, A1 (positivity) | `Definitions.lean` (308), `GaussianHelpers.lean` (490), `CondExpBridge.lean` (889), `Statement.lean` (claim surface), `BeyondPaper.lean` (144), `IdentityTheoremSpike.lean` (70), `AxiomAudit.lean` | — | both definitional-fidelity canaries proved with **zero** definition changes (`CANARY_REPORT.md`); 14 tracked sorries |
+| Session 1 | 2026-08-12 | N1, A2, A3, R1, Q1, Q2, `equilibrium_iff_zeroSolution`, `pricingRule_ae_eq_kylePricingRule` | `Statement.lean` in place (no new module); infra added to `GaussianHelpers`/`CondExpBridge` | — | `lake build` green; 14 sorries → **2** |
+| Session 2 | 2026-08-18 | I1–I3 (*hard block 2*), R2, D1 `C¹` legs | `SteinInequality.lean` (869, **zero project imports**), `Regularity.lean` (391), `PosteriorDeriv.lean` (165) | 1,425 | green, axiom-clean; still 2 sorries (both headline carriers, gated on §4 machinery) |
+| v4 re-baseline | 2026-09-16 | — (analysis) | `V4_DELTA_REPORT_2026-09-16.md`, `blueprint/LANE_C_DECISIONS_2026-09-16.md` | — | 10-agent workflow: 2 independent v3/v4 readers, 3 refuters, repo-impact scan, remaining-work audit + 2 refuters, W review packet. Verdict: the four headline results are unchanged up to renumbering; the §4 apparatus was rewritten; **no v3 equation number survives** |
+| Session 3, Wave 1 | 2026-09-16 | B1, B2, A1b, D1-rest, D2, E1, R2b, Lemmas 3.1/3.2 | `ValueFunction.lean` (391), `Posterior.lean` (865), `Resampling.lean` (970), `Loss.lean` (283) | 2,509 | 0 sorries, axiom-clean, lint-clean; each module independently verified by an adversarial agent (rebuild from deleted oleans, out-of-tree `#print axioms`, statement-by-statement vs `paper/v4.txt`, vacuity probes at φ = id). **All four passed on the first round** |
+| Session 3, Wave 2 | 2026-09-16 | E2 (*hard block 3*), H1 (*hard block 4b*), J1 | `Accounting.lean` (826), `SignedRoot.lean` (534) | 1,360 | 0 sorries, axiom-clean, lint-clean; both verified adversarially, **first round**. Hard-block census: 0 of 5 remain. E2 taken by the **full v4 route**, no fallback |
+| Session 3, Wave 3 | 2026-09-16 | T3, N2, O1 | `Main.lean` (600, new top module), `AxiomAudit.lean`, `KyleUniqueness.lean`, `Statement.lean` (docstring), `SignedRoot.lean` (rename) | 600 | **from-scratch `lake build`: exit 0, 3149 jobs, 0 errors, 0 warnings, 0 `declaration uses 'sorry'`, 0 `sorryAx`.** Final audit verdict **pass**, with no repairs required in the Lean tree |
+| Documents closeout | 2026-09-16 | — | `STATEMENT_NOTES.md`, `README.md`, `SETUP.md`, `claim-package/*` (5 files), `blueprint/blueprint.md`, `blueprint/attack_order.md`, three historical v3 reports, this log; **and in the Lean tree** `KyleUniqueness/AxiomAudit.lean`, `KyleUniqueness/GaussianHelpers.lean`, `KyleUniqueness/SignedRoot.lean`, `KyleUniqueness/Main.lean`, `lakefile.lean` | — | attestation surface re-keyed to v4 and to 0 sorries. Lean files **were** touched, but no statement changed: `AxiomAudit.lean` expanded from 239 to 399 `#print axioms` lines (now exhaustive) with its docstring rewritten; the unused `[SFinite μ]` instance argument dropped from `measure_prod_diagonal_eq_zero` in `GaussianHelpers.lean` (a strictly stronger lemma); two helpers renamed (`integral_insiderProfit_id'` → `integral_insiderProfit_id_of_closedForm` in `SignedRoot.lean`, `Monotone.eq_of_ae_eq_continuous` → `monotone_eq_of_ae_eq_continuous` in `Main.lean`); `lintDriver` wired into `lakefile.lean` |
+
+**Totals.** 19 Lean files, **10,120 lines** by `wc -l` over
+`KyleUniqueness.lean` + `KyleUniqueness/*.lean` (10,102 is the same count over
+the 18 files in `KyleUniqueness/` only, excluding the 18-line root module; the
+Wave-3 report's 9,630 / 9,612 are those same two counts as of commit `f975dbc`,
+i.e. before the documents closeout expanded `AxiomAudit.lean`). 399
+`#print axioms` lines in the build, one distinct axiom list:
+`[propext, Classical.choice, Quot.sound]`. Elapsed: 2026-08-11 → 2026-09-16,
+of which the proving itself was three working sessions.
+
+### The decisions that mattered
+
+1. **D1 — re-baseline to v4 rather than finish against v3.** v4's comments field
+   said "no change in theorem or proofs"; the diff said otherwise. Re-keying
+   cost one analysis day and avoided shipping an artifact whose every equation
+   reference was stale.
+2. **D7 — keep the banked Stein inequality instead of formalizing Cacoullos.**
+   `SteinInequality.lean` was already proved (Session 2, 869 LOC) and closes
+   `1 ≤ 2Γ` with `f := h`. Formalizing v4's Lemma 2.7 would have re-run a hard
+   block for a route change. The cost is deviation **F1**, the largest in the
+   artifact, and it is disclosed everywhere.
+3. **D2 — define the value function at its attained value** (`insiderProfit`),
+   with `insiderProfit_eq_iSup` as the mandatory bridge. Total, junk-free, Borel
+   in one line; the literal `⨆ x : ℝ` has junk value 0 exactly at H1's point `c`,
+   and `EReal` is the wrong currency for every consumer. Cost: deviation **F7**.
+4. **D4 — build the resampling measure explicitly on `ℝ³`** by one flat
+   `withDensity`, with clauses (iii)/(iv) in bounded-test-function form, instead
+   of Kallenberg transfer and `condExp`. This is what made Wave 2 tractable: the
+   highest-leverage move in `Accounting.lean` was identifying μ₃'s common 2-D
+   marginal with the law of `(V,Y)` on `stdModel`, which then reduced everything
+   about `U⁰`/`U¹` to the second coordinate of `γ⊗γ`. Cost: deviation **F6**.
+5. **D6 — take Proposition 5.1 by the v4 route, not the v3 aₙ/FOC fallback.**
+   The fallback was budgeted and never needed.
+6. **Wave 3 Stage A — move the six headline carriers out of `Statement.lean`
+   into a new top module `Main.lean`.** Forced by the import DAG: `Statement`
+   sits below every Session-3 module. The alternative (importing upward) was not
+   available. Everything in `claim-package/` that names a file had to change
+   because of this one move.
+7. **Statement-level route for §7: standardise the laws, not the space.** Two
+   Bochner integrals instead of constructing a standardised `KyleModel`. Cost:
+   deviation **F12**; benefit: no second model instance to build and certify.
+8. **Hypothesise `IsGammaSolution 0 φ` rather than "is an equilibrium"** in
+   `gamma_eq_half` and `isGammaSolution_zero_iff` — strictly weaker, and exactly
+   what the paper's own proofs reduce to in their first lines. Recorded as
+   **F10**, where Lean is stronger than the paper.
+9. **Take the rigidity argmax comparison at `v = 0, x = a/2`** rather than
+   general `v`: `h.2 0 (a/2)` reduces to `a²/8 ≤ 0`, one specialisation cheaper
+   than the paper's "the unique maximiser is `v + a/2`".
+10. **Adversarial verification per module, not per campaign.** Every module was
+    checked by an independent agent before the next wave consumed it; all seven
+    passed on the first round, and the final audit found no Lean repairs needed.
+    The defects it did find were all in the documents — which is what this
+    closeout fixed.
+
+### The twelve deviations (F1–F12)
+
+Full text with Lean names: `STATEMENT_NOTES.md` §5;
+machine-readable: `claim-package/formalization.yaml`, `fidelity.deviations`.
+
+| # | One line |
+|---|---|
+| F1 | v4 Lemma 2.7 (Cacoullos) has no Lean counterpart; `1 ≤ 2Γ` is proved by the **v3** one-sided Stein inequality, so for that step the formalized proof is v3's. **Largest divergence.** |
+| F2 | `Γ` is *defined* as `E[U·P(Y)]` (the paper's second expression); the paper's definiens `E[U(P(Y)−V)]` and the `Cov` form are proved equal. |
+| F3 | "Every Borel version" clauses (Lemma 2.3's version clause, Lemmas 3.1/3.2) are stated for the canonical `inverseRegression`; the transfer is proved machinery, never one lemma. |
+| F4 | `π_y` is not formalized as a `condDistrib`; only the consequences used are proved. |
+| F5 | Continuity of `P′` is not stated (differentiability, the formula and positivity are). |
+| F6 | Conditional resampling is an explicit `ℝ³` measure; conditional i.i.d.-ness is not stated; (iii)/(iv) in test-function form. |
+| F7 | The value function is defined at its attained value, not as a `⨆`; nonnegativity/convexity therefore carry the maximisation hypothesis. |
+| F8 | `kyle_equilibrium_pair_iff` carries an explicit `Measurable P`. |
+| F9 | `accounting_identity` carries a redundant `Measurable φ` alongside `Monotone φ`. |
+| F10 | `gamma_eq_half` / `isGammaSolution_zero_iff` assume only `IsGammaSolution 0 φ` — **Lean is stronger**. |
+| F11 | v4 Appendix B (a.e. maximisation, quasi-equilibrium) is **not formalized**; Theorem 1.1 is scoped to pointwise maximisation. |
+| F12 | §7 standardises the laws, not the space; the equilibrium-transfer biconditional is never stated. |
+
+### What is **not** formalized
+
+1. **v4 Appendix B** — the a.e.-maximisation / quasi-equilibrium variant
+   (blueprint node R3, deliberately deferred). F11.
+2. **`π_y` as a version of the conditional law** (`ProbabilityTheory.condDistrib`
+   appears nowhere in the tree but in two explanatory docstrings). F4.
+3. **Continuity of `P′`.** F5.
+4. **A general-parameter `KyleModel` inhabitant.** `stdModel` (μ₀ = 0, τ = σ = 1)
+   is the only one. The headline theorems are universally quantified so none can
+   be false, but the artifact never exhibits Kyle's `λ = τ/(2σ)` at a value other
+   than `1/2`. ~20 lines to close; recommended before any external step, and the
+   single most likely first question from a reviewer.
+5. Also absent, for completeness: Cacoullos's lower Gaussian variance bound (F1),
+   conditional i.i.d.-ness of the resampled pair and Kallenberg transfer (F6),
+   and the §7 equilibrium-transfer biconditional (F12).
+
+### Known non-blocking defects carried forward
+
+Two defects that earlier waves carried are **no longer open** — they were fixed
+during the documents closeout and are recorded here, past tense, so the history
+reads straight:
+
+- *(fixed)* `AxiomAudit.lean:13` used to say "every public statement is audited
+  at every build" while the audit covered only part of the tree. The audit list
+  was expanded at closeout and is now exhaustive — 399 of 399 public named
+  declarations, independently re-derived by enumerating every column-0
+  non-private named declaration across the 17 source modules (0 missing, 0
+  extra; the only omissions are the four anonymous instances the docstring names).
+  The docstring was rewritten to match.
+- *(fixed)* `lakefile.lean` used to wire no lint driver, so `lake build` ran only
+  the `mathlibStandardSet` **text** linters, and the Batteries **environment**
+  linter — run by hand — reported one `unusedArguments` finding. At closeout
+  `lintDriver := "batteries/runLinter"` with `lintDriverArgs := #["KyleUniqueness"]`
+  was added, and the finding itself was fixed: the declaration now stands at
+  `GaussianHelpers.lean:217` with `[SFinite ν]` only. `lake lint` exits 0 with
+  `-- Linting passed for KyleUniqueness.` and zero findings.
+
+**Still carried forward:**
+
+- One info-level diagnostic in a clean rebuild: a `ring` → `ring_nf` suggestion
+  at `Regularity.lean:77:2` (gotcha #14; the dated session narrative above records
+  the site as line 57, which is a stale line number — 77:2 is what both of the
+  closeout build logs report).
+- `equilibrium_iff_zeroSolution` is now dead code by dependency — retained
+  deliberately as the artifact's only single-statement rendering of the paper's
+  "any Borel version" quantifier at σ = τ = 1.
+- Two independent proofs of the same `φ = id` integral identity coexist
+  (`integral_insiderProfit_id` in `Accounting.lean`,
+  `integral_insiderProfit_id_of_closedForm` in `SignedRoot.lean`) — kept as a
+  cross-check.
+
+### Pre-publication blockers (none of them mathematics)
+
+`claim-package/timestamp_plan.md` Phase P carries the full list; the two that
+are only fixable while the repo is private: the **git-identity rewrite** of the
+first three commits (`e71e0a2`, `5d38cde`, `9bfb1f7`, authored as the work
+identity) and **removing `claim-package/` from the repository and its history**
+(currently git-tracked, while `.gitignore` carries only `/.lake` and `/paper`).
+**Nothing is published; every draft still carries its `DRAFT — DO NOT
+POST/PUBLISH` header.**

@@ -15,30 +15,38 @@ generalisation that appeared in **v2** of Monteiro & Tourky
 (arXiv:2607.23585v2, Definition 2.2 / Theorem 3.2 / Remark 5.4: `γ`-solutions
 with objective `x(v − F(x)) − (γ/2)x²`, classified as `φ = β_γ · id` with
 `β_γ` the unique positive root of the cubic `γt³ + t² + γt = 1`) and was
-**deleted from the paper in v3** (2026-08-10). No published version of the
-paper now states these results; v3 keeps only the frictionless `γ = 0`
-instance (its condition (17) and Theorem 4).
+**deleted from the paper in v3** (2026-08-10) and is still absent from **v4**
+(*The one-period Kyle model has one equilibrium*, 2026-08-20). No published
+version of the paper now states these results; v3 and v4 keep only the
+frictionless `γ = 0` instance (v3's condition (17) and Theorem 4 = v4's
+untagged pointwise-maximisation condition and Theorem 7.1).
 
 We keep the layer because it is **fully proved** (no `sorry`, axioms
 `propext, Classical.choice, Quot.sound` only) and correct mathematics: the
 existence, uniqueness and bounds for the positive root of the cubic, by the
 intermediate value theorem and strict monotonicity. It is offered as **our
 own extension** of the formalization, anchored to v2's deleted material, not
-as formalized content of arXiv:2607.23585v3. Claim-package documents must
-label anything from this file accordingly.
+as formalized content of arXiv:2607.23585 **v3 or v4**. Claim-package
+documents must label anything from this file accordingly. This fence is
+load-bearing, so it is stated against the current version explicitly.
 
-The only facts from this layer that remain load-bearing for the v3-facing
+The only facts from this layer that remain load-bearing for the paper-facing
 statements are the trivial specialisations `betaGamma_zero : betaGamma 0 = 1`
-and `lambdaGamma 0 = 1/2` (matching `λ = τ/(2σ)` of v3 eq. (2) at
-`τ = σ = 1`) — and the v3 statements in `KyleUniqueness.Statement` do not
-import them; they are restated there in closed form.
+and `lambdaGamma 0 = 1/2` (matching `λ = τ/(2σ)` of v4 eq. (1.2) — v3
+eq. (2) — at `τ = σ = 1`) — and the statements in
+`KyleUniqueness.Statement` do not import them; they are restated there in
+closed form.
+
+Numbering note: v2 numbers below are cited as v2's on purpose (this is
+v2-legacy material). v4 references use v4 numbering; the v3 → v4 crosswalk
+is `V4_DELTA_REPORT_2026-09-16.md` §1.
 -/
 
 open MeasureTheory ProbabilityTheory
 
 namespace KyleUniqueness
 
-/-! ## The cubic `γt³ + t² + γt = 1` (v2 Theorem 3.2, deleted in v3)
+/-! ## The cubic `γt³ + t² + γt = 1` (v2 Theorem 3.2, deleted in v3 and v4)
 
 v2's Theorem 3.2 characterised the unique `γ`-solution as `φ(v) = β_γ v`
 with `β_γ ∈ (0, 1]` "the unique positive root of `γt³ + t² + γt = 1`". The
@@ -90,8 +98,8 @@ theorem cubic_pos_root_existsUnique (γ : ℝ) (hγ : 0 ≤ γ) :
 
 /-- The equilibrium slope `β_γ`: the unique positive root of
 `γt³ + t² + γt = 1` (v2 Theorem 3.2). Junk value `1` for `γ < 0` (where
-v2's Remark 5.4 — also deleted in v3 — showed the root is genuinely
-non-unique). -/
+v2's Remark 5.4 — also deleted in v3, and absent from v4 — showed the root
+is genuinely non-unique). -/
 noncomputable def betaGamma (γ : ℝ) : ℝ :=
   if hγ : 0 ≤ γ then (cubic_pos_root_existsUnique γ hγ).exists.choose else 1
 
@@ -114,8 +122,8 @@ theorem betaGamma_unique {γ : ℝ} (hγ : 0 ≤ γ) {t : ℝ} (ht : 0 < t)
     ⟨betaGamma_pos hγ, betaGamma_root hγ⟩
 
 /-- `β₀ = 1`: at `γ = 0` the cubic reduces to `t² = 1` on `(0, ∞)`. This
-specialisation is the point of contact with v3: it recovers the identity
-strategy of v3 Theorem 4. -/
+specialisation is the point of contact with the published paper: it recovers
+the identity strategy of **v4 Theorem 7.1** (v3 Theorem 4). -/
 theorem betaGamma_zero : betaGamma 0 = 1 :=
   (betaGamma_unique le_rfl one_pos (by norm_num)).symm
 
@@ -131,11 +139,11 @@ theorem betaGamma_le_one {γ : ℝ} (hγ : 0 ≤ γ) : betaGamma γ ≤ 1 := by
 
 /-- The normalised price impact `λ_γ = β_γ / (1 + β_γ²)` (v2 Theorem 3.2:
 in the unique `γ`-solution, `P(y) = λ_γ y` and `F(x) = λ_γ x`). At `γ = 0`
-this is `1/2`, matching `λ = τ/(2σ)` of v3 eq. (2) at `τ = σ = 1`. -/
+this is `1/2`, matching `λ = τ/(2σ)` of v4 eq. (1.2) at `τ = σ = 1`. -/
 noncomputable def lambdaGamma (γ : ℝ) : ℝ :=
   betaGamma γ / (1 + betaGamma γ ^ 2)
 
-/-- Sanity for the `γ = 0` contact point: `λ₀ = 1/2` (v3 eq. (2) at
+/-- Sanity for the `γ = 0` contact point: `λ₀ = 1/2` (v4 eq. (1.2) at
 `τ = σ = 1`). -/
 theorem lambdaGamma_zero : lambdaGamma 0 = 1 / 2 := by
   rw [lambdaGamma, betaGamma_zero]

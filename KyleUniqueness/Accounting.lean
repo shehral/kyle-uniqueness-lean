@@ -12,7 +12,7 @@ import KyleUniqueness.Loss
 # The accounting identity `Γ = E[Π(V)]` (blueprint node E2; v4 Proposition 5.1)
 
 Formalization of **Proposition 5.1** of Monteiro & Tourky, *The one-period
-Gaussian Kyle model has exactly one equilibrium* (arXiv:2607.23585, **v4** of
+Kyle model has one equilibrium* (arXiv:2607.23585, **v4** of
 2026-08-20; = blueprint node E2, Lane-C decision D6), together with the
 equations (5.1)–(5.3) of its proof:
 
