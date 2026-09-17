@@ -506,8 +506,12 @@ theorem integrable_insiderProfit_id :
   rw [insiderProfit_id]
   exact integrable_sq_gaussianReal_std.div_const 2
 
-/-- Oracle: `E[W(V)] = E[V²]/2 = 1/2` at `φ = id`. -/
-theorem integral_insiderProfit_id :
+/-- Oracle: `E[W(V)] = E[V²]/2 = 1/2` at `φ = id`. Primed because
+`KyleUniqueness.Accounting` proves the same identity under the unprimed
+name by the *other* route (feeding `φ = id` to `accounting_identity`); the
+two routes are independent, so keeping both is a genuine cross-check and
+the prime only keeps the names apart for a file that imports both. -/
+theorem integral_insiderProfit_id' :
     ∫ v, insiderProfit (id : ℝ → ℝ) v ∂(gaussianReal 0 1) = 1 / 2 := by
   have hsq : (fun v : ℝ => v ^ 2) = fun v : ℝ => v * v := funext fun v => sq v
   rw [insiderProfit_id]
@@ -525,6 +529,6 @@ theorem two_mul_noiseTraderLoss_id : 2 * noiseTraderLoss (id : ℝ → ℝ) = 1 
 witnesses that the bound `1 ≤ 2Γ` is tight. -/
 theorem one_le_two_mul_noiseTraderLoss_id : 1 ≤ 2 * noiseTraderLoss (id : ℝ → ℝ) :=
   one_le_two_mul_noiseTraderLoss isGammaSolution_zero_id integrable_insiderProfit_id
-    (noiseTraderLoss_id.trans integral_insiderProfit_id.symm)
+    (noiseTraderLoss_id.trans integral_insiderProfit_id'.symm)
 
 end KyleUniqueness

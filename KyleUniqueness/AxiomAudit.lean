@@ -3,12 +3,9 @@ Copyright (c) 2026 Mohammad Ali Shehral. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mohammad Ali Shehral
 -/
-import KyleUniqueness.Statement
-import KyleUniqueness.Regularity
-import KyleUniqueness.PosteriorDeriv
+import KyleUniqueness.Main
 import KyleUniqueness.BeyondPaper
 import KyleUniqueness.IdentityTheoremSpike
-import KyleUniqueness.SteinInequality
 
 /-!
 # Axiom audit
@@ -17,11 +14,21 @@ import KyleUniqueness.SteinInequality
 every public statement is audited at every build, so the proof-debt surface
 is machine-checked and visible in the build log.
 
-Expected axiom sets after the Tier-1/2 proving session (2026-08-12,
-post-reconciliation; see `PROVING_LOG.md`):
+`KyleUniqueness.Main` transitively imports the whole development except the
+two leaf modules `BeyondPaper` and `IdentityTheoremSpike`, which are
+imported here directly so that their declarations stay under audit.
+
+**Status after Session 3, Stage B (2026-09-16; see `PROVING_LOG.md`): the
+formalization has no open obligations.** Session 3 closed the value
+function (B1/B2), the posterior (A1b/D1/D2), the resampling measure (E1),
+the loss identities (v4 Lemmas 3.1/3.2), the accounting identity
+(E2 = v4 Prop 5.1), the signed root (H1), `1 ≤ 2Γ` (J1), the saturation
+`Γ = 1/2` (T3 = v4 Prop 6.1), the rigidity theorem (N2 = v4 Thm 7.1) and
+finally the location–scale standardisation (O1 = v4 §7), which carries the
+headline `isEquilibrium_eq_kyleStrategy` (v4 Theorem 1.1, strategy half).
 
 * **Fully proved** (`propext`, `Classical.choice`, `Quot.sound` only):
-  everything except the two headline uniqueness carriers — in particular
+  **every declaration audited below, without exception** — in particular
   all of Lemmas 2.1–2.3 (`lemma21_*`, `lemma22_memLp_two`,
   `lemma23_integrable`), the `σ = τ = 1` bridge
   (`equilibrium_iff_zeroSolution`), all four Proposition-2 statements
@@ -32,14 +39,18 @@ post-reconciliation; see `PROVING_LOG.md`):
   (`pricingRule_ae_eq_kylePricingRule`, `eq_kylePricingRule_of_continuous`),
   the order-flow law identity (`KyleModel.map_orderFlow` + consumers), the
   Gaussian helper layer, the pricing-rule bridge, the beyond-paper layer,
-  the identity-theorem spike, and both canaries.
-* **Open obligations** (additionally `sorryAx`): exactly the two headline
-  uniqueness carriers `isGammaSolution_zero_iff` (Theorem 4, rigidity
-  direction — its existence direction is proved in-file) and
-  `isEquilibrium_eq_kyleStrategy` (Theorem 1, strategy half). Assembled
-  theorems (`kyle_unique_equilibrium`, `kyle_existsUnique_equilibrium`,
-  `kyle_equilibrium_pair_iff`, `existsUnique_zeroSolution`) carry `sorryAx`
-  only through those two names, not through `sorry`s of their own.
+  the identity-theorem spike, both canaries, every declaration of the six
+  Session-3 modules (`ValueFunction`, `Posterior`, `Resampling`, `Loss`,
+  `Accounting`, `SignedRoot`), the saturation `gamma_eq_half`, the rigidity
+  theorem `isGammaSolution_zero_iff` with its `∃!`-packaging
+  `existsUnique_zeroSolution`, the Stage-B standardisation layer
+  (`KyleModel.stdStrategy`, `KyleModel.bayesPrice` and the `*_mul_sigma`
+  family) and all four forms of the headline
+  (`isEquilibrium_eq_kyleStrategy`, `kyle_unique_equilibrium`,
+  `kyle_existsUnique_equilibrium`, `kyle_equilibrium_pair_iff`).
+* **Open obligations** (additionally `sorryAx`): **none.** No declaration
+  anywhere in the development uses `sorry`; `sorryAx` must not appear in
+  any line of this file's build output.
 -/
 
 open KyleUniqueness
@@ -77,7 +88,8 @@ open KyleUniqueness
 #print axioms noiseTraderLoss_eq_half_iff
 #print axioms noiseTraderLoss_eq_neg_half_iff
 
--- Theorem 4 (rigidity direction open) + affine regression (proved).
+-- Theorem 4 = v4 Theorem 7.1 (CLOSED in Session 3, both directions; the
+-- declarations now live in `KyleUniqueness.Main`) + affine regression.
 #print axioms isGammaSolution_zero_iff
 #print axioms existsUnique_zeroSolution
 #print axioms inverseRegression_affine
@@ -85,7 +97,9 @@ open KyleUniqueness
 #print axioms gaussianSmoothing_affine
 #print axioms gaussianSmoothing_id
 
--- Theorem 1, strategy layer and eq. (2).
+-- Theorem 1, strategy layer and eq. (2). `isEquilibrium_eq_kyleStrategy`
+-- (in `KyleUniqueness.Main`) was the last open obligation; node O1 closed
+-- it in Session 3 Stage B, so nothing in this file carries `sorryAx`.
 #print axioms kyleStrategy_isEquilibrium
 #print axioms isEquilibrium_eq_kyleStrategy
 #print axioms kyle_unique_equilibrium
@@ -165,3 +179,178 @@ open KyleUniqueness
 #print axioms hasDerivAt_flowDensity
 #print axioms hasDerivAt_flowNumerator
 #print axioms hasDerivAt_inverseRegression
+
+/-! ### Session 3 (2026-09-16): the §4–§6 machinery
+
+All of the following are expected `[propext, Classical.choice, Quot.sound]`.
+Numbering is v4's (`blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1).
+-/
+
+-- `ValueFunction.lean` — nodes B1/B2 = v4 Lemma 2.4, eqs. (2.4)–(2.6), (A.1).
+#print axioms insiderProfit
+#print axioms valueFunction
+#print axioms objective_zero
+#print axioms insiderProfit_apply
+#print axioms isMaxOn_objective
+#print axioms objective_le_insiderProfit
+#print axioms insiderProfit_eq_iSup
+#print axioms continuous_gaussianSmoothing
+#print axioms measurable_insiderProfit
+#print axioms insiderProfit_nonneg
+#print axioms insiderProfit_subgradient
+#print axioms insiderProfit_sub_sandwich
+#print axioms convexOn_insiderProfit
+#print axioms monotone_of_isGammaSolution
+#print axioms firstOrderCondition
+#print axioms insiderProfit_eq_sq_mul_deriv
+#print axioms strictMono_of_isGammaSolution
+#print axioms continuous_insiderProfit
+#print axioms hasDerivAt_insiderProfit_of_continuousAt
+#print axioms ae_hasDerivAt_insiderProfit
+#print axioms hasDerivWithinAt_Ioi_insiderProfit
+#print axioms intervalIntegrable_of_isGammaSolution
+#print axioms insiderProfit_sub_eq_intervalIntegral
+#print axioms insiderProfit_id
+
+-- `Posterior.lean` — nodes A1b + D1-rest + D2 = v4 Lemma 2.1, §2.2, Lemma 2.5.
+#print axioms jointDensity
+#print axioms measurable_jointDensity
+#print axioms map_value_orderFlow
+#print axioms stdModel_map_value_orderFlow
+#print axioms posteriorDensity
+#print axioms posterior
+#print axioms isProbabilityMeasure_posterior
+#print axioms nullSingletonClass_posterior
+#print axioms integral_posterior
+#print axioms integrable_posterior_iff
+#print axioms inverseRegression_eq_integral_posterior
+#print axioms integrable_sq_gaussianReal_std
+#print axioms memLp_id_posterior
+#print axioms memLp_strategy_posterior
+#print axioms deriv_inverseRegression_eq_cov
+#print axioms integrable_symm
+#print axioms integral_symm_eq
+#print axioms integral_symm_pos
+#print axioms deriv_inverseRegression_eq_symm
+#print axioms deriv_inverseRegression_pos
+#print axioms strictMono_inverseRegression
+#print axioms integral_symm_gaussianSmoothing
+#print axioms deriv_gaussianSmoothing_pos
+#print axioms strictMono_gaussianSmoothing
+#print axioms deriv_gaussianSmoothing_pos_of_strictMono
+#print axioms strictMono_gaussianSmoothing_of_strictMono
+
+-- `Resampling.lean` — node E1 + R2b = v4 Lemma 2.6 (i)–(iv), Lemma 2.3 tower.
+#print axioms resamplingMeasure
+#print axioms isProbabilityMeasure_resamplingMeasure
+#print axioms resamplingMeasure_map_swap
+#print axioms resamplingMeasure_map_snd
+#print axioms resamplingMeasure_map_fst
+#print axioms resamplingMeasure_map_v1
+#print axioms resamplingMeasure_map_v0
+#print axioms resamplingMeasure_map_y
+#print axioms integrable_v1_resampling
+#print axioms integrable_v0_resampling
+#print axioms integrable_inverseRegression_resampling
+#print axioms integrable_bayesNumerator_kernel
+#print axioms integral_bayesNumerator_kernel
+#print axioms integral_v1_mul_eq_inverseRegression
+#print axioms integral_v1_mul_eq_gaussianSmoothing
+#print axioms integral_v1_mul_comp_eq_gaussianSmoothing
+#print axioms integrable_v0_mul_v1_resampling
+#print axioms integral_v0_mul_v1_resampling
+#print axioms integrable_gaussianSmoothing_comp
+#print axioms gaussianSmoothing_comp_ae_eq_condExp_condExp
+
+-- `Loss.lean` — v4 Lemma 3.1 (`Γ = E[F′(φ(V))]`) and Lemma 3.2.
+#print axioms deriv_gaussianSmoothing_eq_integral
+#print axioms deriv_gaussianSmoothing_comp_eq
+#print axioms integrable_deriv_gaussianSmoothing_comp
+#print axioms noiseTraderLoss_eq_integral_deriv
+#print axioms integral_snd_mul_sub_fst_eq_noiseTraderLoss
+#print axioms integral_noise_mul_sub_value_eq_noiseTraderLoss
+#print axioms covariance_noise_condExp_eq_noiseTraderLoss
+#print axioms integrable_inverseRegression_const_add
+#print axioms expectedProfit_inverseRegression
+#print axioms objective_eq_expectedProfit
+#print axioms noiseTraderLoss_id
+
+-- `Accounting.lean` — node E2 = v4 Proposition 5.1 (the accounting identity).
+#print axioms clampAt
+#print axioms clampAt_sub_le
+#print axioms integral_resampling_swap
+#print axioms integral_pair_v0
+#print axioms integral_pair_v1
+#print axioms integral_v1_mul_eq_inverseRegression_memLp
+#print axioms integrable_replica_increment
+#print axioms replica_identity
+#print axioms integral_clamp_replica_eq
+#print axioms clamp_increment_bounds
+#print axioms tendsto_clamp_replica
+#print axioms ae_clamp_insiderProfit
+#print axioms accounting_identity
+#print axioms integrable_insiderProfit_of_isGammaSolution
+#print axioms noiseTraderLoss_eq_integral_insiderProfit
+#print axioms integral_insiderProfit_id
+
+-- `SignedRoot.lean` — node H1 (v4 Prop 6.1's construction) and node J1.
+#print axioms criticalPoint
+#print axioms strategy_criticalPoint
+#print axioms posteriorSlope
+#print axioms posteriorSlope_pos
+#print axioms noiseTraderLoss_eq_integral_posteriorSlope
+#print axioms noiseTraderLoss_pos
+#print axioms insiderProfit_criticalPoint
+#print axioms insiderProfit_pos_of_ne
+#print axioms signedRoot
+#print axioms rootSlope
+#print axioms signedRoot_sq
+#print axioms inv_rootSlope_sq
+#print axioms continuous_signedRoot
+#print axioms strictMono_signedRoot
+#print axioms monotone_signedRoot
+#print axioms ae_hasDerivAt_signedRoot
+#print axioms integrable_sq_signedRoot_iff
+#print axioms integral_sq_signedRoot
+#print axioms integrable_inv_sq_rootSlope
+#print axioms integral_inv_sq_rootSlope
+#print axioms one_le_two_mul_noiseTraderLoss
+#print axioms isGammaSolution_zero_id
+#print axioms signedRoot_id
+#print axioms integral_insiderProfit_id'
+#print axioms two_mul_noiseTraderLoss_id
+#print axioms one_le_two_mul_noiseTraderLoss_id
+
+-- `Main.lean` — node T3 = v4 Proposition 6.1, and the a.e. → everywhere
+-- upgrade that node N2 = v4 Theorem 7.1 consumes. (The six moved headline
+-- carriers are audited in their original blocks above.)
+#print axioms gamma_eq_half
+#print axioms KyleUniqueness.Monotone.eq_of_ae_eq_continuous
+
+/-! ### Session 3, Stage B (2026-09-16): node O1, the location–scale
+standardisation (v4 §7, the strategy half of Theorem 1.1)
+
+The layer that reduces a general Kyle model `(μ₀, τ, σ)` to the normalised
+model of §2 by a change of variables inside the value- and noise-law
+integrals: `V̂ = (V − μ₀)/τ`, `Û = U/σ`, `φ̂(t) = φ(μ₀ + τt)/σ`,
+`P̂(y) = (P(σy) − μ₀)/τ`. All expected `[propext, Classical.choice,
+Quot.sound]`. -/
+
+#print axioms KyleModel.stdStrategy
+#print axioms KyleModel.bayesPrice
+#print axioms KyleModel.measurable_stdStrategy
+#print axioms KyleModel.mul_stdStrategy
+#print axioms KyleModel.map_std_valueLaw
+#print axioms KyleModel.map_std_noiseLaw
+#print axioms KyleModel.integral_valueLaw_std
+#print axioms KyleModel.integral_noiseLaw_std
+#print axioms KyleModel.measurable_flowNum
+#print axioms KyleModel.flowPDF_mul_sigma
+#print axioms KyleModel.flowNum_mul_sigma
+#print axioms KyleModel.flowPDF_pos
+#print axioms KyleModel.measurable_bayesPrice
+#print axioms KyleModel.isPricingRule_bayesPrice
+#print axioms KyleModel.bayesPrice_mul_sigma
+#print axioms KyleModel.integrable_bayesPrice_comp
+#print axioms KyleModel.integral_bayesPrice_comp
+#print axioms KyleModel.expectedProfit_bayesPrice

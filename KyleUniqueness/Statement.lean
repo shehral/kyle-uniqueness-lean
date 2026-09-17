@@ -14,31 +14,45 @@ import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 
 Formal statements of the theorems of Monteiro & Tourky, *The one-period
 Gaussian Kyle model has exactly one equilibrium* (arXiv:2607.23585, **v3**
-of 2026-08-10), over the definitions in `KyleUniqueness.Definitions`. Every
-`sorry` in this file is an open proof obligation; the statements themselves
-are the claimable artifact and are catalogued, with a paper-to-Lean map and
-a fidelity assessment, in `STATEMENT_NOTES.md` at the repository root.
+of 2026-08-10), over the definitions in `KyleUniqueness.Definitions`. The
+statements themselves are the claimable artifact and are catalogued, with a
+paper-to-Lean map and a fidelity assessment, in `STATEMENT_NOTES.md` at the
+repository root. This file is `sorry`-free.
 
-## Main statements
+## Moved to `KyleUniqueness.Main`
 
+Six headline carriers used to live here. They now sit at the top of the
+import DAG, because their proofs consume the Session-3 modules
+(`ValueFunction`, `Posterior`, `Resampling`, `Loss`, `Accounting`,
+`SignedRoot`), every one of which imports this file:
+
+* `isGammaSolution_zero_iff` — **Theorem 4** (v4 Theorem 7.1): `φ` satisfies
+  the pointwise maximisation condition (17), `φ(v) ∈ argmax_x x(v − F(x))`
+  for every `v ∈ ℝ`, iff `φ = id`;
+* `existsUnique_zeroSolution` — its `∃!`-packaging;
+* `isEquilibrium_eq_kyleStrategy` — the uniqueness direction of Theorem 1's
+  strategy half (the development's only remaining open obligation);
+* `kyle_unique_equilibrium` / `kyle_existsUnique_equilibrium` — Theorem 1
+  projected to strategies: `φ` is an equilibrium strategy iff
+  `φ = kyleStrategy`; there is exactly one equilibrium strategy;
 * `kyle_equilibrium_pair_iff` — **Theorem 1** (v3's headline, the pair
   form): a pair `(φ, P)` is an equilibrium iff `φ` is Kyle's affine
   strategy `φ(v) = (σ/τ)(v − μ₀)` (eq. (1)) and `P(Y_φ) = μ₀ + λ·Y_φ`
-  almost surely with `λ = τ/(2σ)` (eq. (2)). Assembled from the two
-  strategy halves, the pricing characterisation and the version-independence
-  lemmas; no `sorry` of its own.
-* `kyle_unique_equilibrium` / `kyle_existsUnique_equilibrium` — Theorem 1
-  projected to strategies: `φ` is an equilibrium strategy iff
-  `φ = kyleStrategy`; there is exactly one equilibrium strategy.
+  almost surely with `λ = τ/(2σ)` (eq. (2)).
+
+## Main statements
+
+* `kyleStrategy_isEquilibrium` /
+  `kyleStrategy_kylePricingRule_isEquilibrium` — the existence direction of
+  **Theorem 1** in its strategy and pair forms: Kyle's affine strategy
+  (eq. (1)), paired with the affine pricing rule of eq. (2), is an
+  equilibrium.
 * `noiseTraderLoss_le_half` / `noiseTraderLoss_eq_half_iff` /
   `noiseTraderLoss_eq_neg_half_iff` / `integrable_noiseTraderLoss` —
   **Proposition 2**, the pivot of v3's proof: for EVERY Borel `φ`, the
   noise traders' expected loss `Γ = Cov(U, E[V ∣ Y])` (eq. (13)) is finite,
   `−1/2 ≤ Γ ≤ 1/2` (eq. (14)), with equality iff `φ(v) = ±v + a` for
   Lebesgue-a.e. `v` (eq. (15)).
-* `isGammaSolution_zero_iff` — **Theorem 4**: `φ` satisfies the pointwise
-  maximisation condition (17), `φ(v) ∈ argmax_x x(v − F(x))` for every
-  `v ∈ ℝ`, iff `φ = id`.
 * `lemma21_*` / `lemma22_memLp_two` / `lemma23_integrable` — **Lemmas
   2.1–2.3** (regularity of the inverse regression): the flow density is
   everywhere positive; the explicit `inverseRegression` is a genuine
@@ -1269,46 +1283,6 @@ theorem noiseTraderLoss_eq_neg_half_iff {φ : ℝ → ℝ} (hφ : Measurable φ)
     (Or.inr rfl : (-1 : ℝ) = 1 ∨ (-1 : ℝ) = -1)
   simpa only [neg_mul, one_mul, neg_div] using h
 
-/-! ## Theorem 4: the pointwise-maximisation condition forces `φ = id`
-
-v3 promotes v2's Corollary 3.3 to a main theorem. The proof route is
-Theorem 3 (`Γ = 1/2` for any `φ` satisfying (17)) + Proposition 2's
-equality case (`φ = v + a` a.e.) + the Gaussian regression for affine
-strategies (below) + the pointwise argmax comparison forcing `a = 0`. -/
-
-/-- **Theorem 4**: `φ` satisfies `φ(v) ∈ argmax_x {x(v − F(x))}` for every
-`v ∈ ℝ` (condition (17), eq. (19)) iff `φ = id`. This is the primary
-rigidity statement; it carries the proof obligation directly (v2 derived it
-from the deleted general-`γ` classification). -/
-theorem isGammaSolution_zero_iff (φ : ℝ → ℝ) :
-    IsGammaSolution 0 φ ↔ φ = id := by
-  constructor
-  · -- SCHEDULED (blueprint N2, the rigidity direction): needs Theorem 3
-    -- (`Γ = 1/2` under condition (17)), i.e. the §4 machinery — value
-    -- function W (B1/B2), posterior differentiation (D1/D2), conditional
-    -- resampling + balance identity (E1/E2), signed root (H1), Stein
-    -- pipeline (I1–I3), then J1 + T3 — followed by Proposition 2's
-    -- equality case (`noiseTraderLoss_eq_half_iff`, PROVED), the affine
-    -- regression (`inverseRegression_affine`/`gaussianSmoothing_affine`,
-    -- PROVED) and the quadratic argmax comparison forcing `a = 0`.
-    -- None of the §4 nodes exist yet; this is weeks 3–6 of the campaign
-    -- plan, not a leaf.
-    sorry
-  · -- Existence direction (banked this session): with `F(x) = x/2`
-    -- (`gaussianSmoothing_id`, PROVED), the objective is the strictly
-    -- concave quadratic `x(v − x/2)`, maximised at `x = v` for every `v`.
-    rintro rfl
-    refine ⟨measurable_id, fun v x => ?_⟩
-    simp only [objective, gaussianSmoothing_id, id_eq]
-    nlinarith [sq_nonneg (x - v)]
-
-/-- Theorem 4, `∃!`-packaging: exactly one Borel strategy satisfies the
-pointwise-maximisation condition (17). Assembled from
-`isGammaSolution_zero_iff`; no `sorry` of its own. -/
-theorem existsUnique_zeroSolution : ∃! φ : ℝ → ℝ, IsGammaSolution 0 φ :=
-  ⟨id, (isGammaSolution_zero_iff id).mpr rfl,
-    fun ψ hψ => (isGammaSolution_zero_iff ψ).mp hψ⟩
-
 /-! ## Theorem 1: the strategy layer -/
 
 variable {Ω : Type*} [MeasurableSpace Ω]
@@ -1331,39 +1305,6 @@ theorem kyleStrategy_isEquilibrium (M : KyleModel Ω) :
     M.isPricingRule_of_forall_mul_flowPDF M.measurable_kyleStrategy
       M.measurable_kylePricingRule M.kylePricingRule_mul_flowPDF,
     fun v x => M.expectedProfit_kylePricingRule_le v x⟩
-
-/-- Uniqueness direction of **Theorem 1** (strategy half): every
-equilibrium strategy — Borel, with no regularity or moment assumption —
-equals Kyle's affine strategy (eq. (1)), exactly (at every `v`, not merely
-a.e.). -/
-theorem isEquilibrium_eq_kyleStrategy (M : KyleModel Ω) (φ : ℝ → ℝ)
-    (hφ : M.IsEquilibriumStrategy φ) : φ = M.kyleStrategy := by
-  -- SCHEDULED (blueprint O1, the headline's strategy half): location–scale
-  -- standardisation `ψ(t) = φ(μ₀ + τt)/σ` reducing `M` to `stdModel`
-  -- (`gaussianReal_map_*` plumbing), the `σ = τ = 1` bridge
-  -- (`equilibrium_iff_zeroSolution`, PROVED), and Theorem 4
-  -- (`isGammaSolution_zero_iff`, whose rigidity direction is the open
-  -- carrier above). Blocked exactly on Theorem 3's §4 machinery; the
-  -- statement-level plumbing this needs beyond that (N1, the a.e.
-  -- machinery, profit finiteness) is all PROVED this session.
-  sorry
-
-/-- **Theorem 1**, strategy-only iff: for independent `V ~ N(μ₀, τ²)` and
-`U ~ N(0, σ²)` with `τ, σ > 0`, a Borel strategy is an equilibrium strategy
-iff it is Kyle's affine strategy `φ(v) = (σ/τ)(v − μ₀)` (eq. (1)).
-Assembled from the two halves above; no `sorry` of its own. -/
-theorem kyle_unique_equilibrium (M : KyleModel Ω) (φ : ℝ → ℝ) :
-    M.IsEquilibriumStrategy φ ↔ φ = M.kyleStrategy :=
-  ⟨isEquilibrium_eq_kyleStrategy M φ, by
-    rintro rfl
-    exact kyleStrategy_isEquilibrium M⟩
-
-/-- **Theorem 1**, `∃!`-form: the one-period Gaussian Kyle model has
-exactly one equilibrium strategy. Assembled; no `sorry` of its own. -/
-theorem kyle_existsUnique_equilibrium (M : KyleModel Ω) :
-    ∃! φ : ℝ → ℝ, M.IsEquilibriumStrategy φ :=
-  ⟨M.kyleStrategy, kyleStrategy_isEquilibrium M,
-    fun ψ hψ => isEquilibrium_eq_kyleStrategy M ψ hψ⟩
 
 /-! ## Eq. (2): Kyle's pricing rule and the price impact `λ = τ/(2σ)` -/
 
@@ -1413,16 +1354,17 @@ theorem eq_kylePricingRule_of_continuous (M : KyleModel Ω) {Q : ℝ → ℝ}
   exact (hQc.ae_eq_iff_eq (volume : Measure ℝ) hkc).mp
     (pricingRule_ae_eq_kylePricingRule M hQ)
 
-/-! ## Theorem 1: the pair form (v3's headline)
+/-! ## Theorem 1: the pair form (v3's headline) — ingredients
 
 v3's Theorem 1 is an iff over the (strategy, pricing-rule) PAIR — see
-`KyleModel.IsEquilibrium`. The assembly below uses two version-independence
-ingredients: pricing rules for the same strategy agree a.s. along the flow
-(`pricingRule_ae_orderFlow`, immediate from `condExp` a.e.-uniqueness), and
-expected profits are insensitive to Lebesgue-null modification of the
-pricing rule (`expectedProfit_congr_ae`, since `x + U` has a density —
-the content of v3's Lemmas 2.2/2.3 remark that profits do not depend on
-the chosen Borel version). -/
+`KyleModel.IsEquilibrium`. The assembly itself is `kyle_equilibrium_pair_iff`
+in `KyleUniqueness.Main`; it uses the easy direction below together with two
+version-independence ingredients: pricing rules for the same strategy agree
+a.s. along the flow (`pricingRule_ae_orderFlow`, immediate from `condExp`
+a.e.-uniqueness), and expected profits are insensitive to Lebesgue-null
+modification of the pricing rule (`expectedProfit_congr_ae`, since `x + U`
+has a density — the content of v3's Lemmas 2.2/2.3 remark that profits do
+not depend on the chosen Borel version). -/
 
 /-- Kyle's affine pair — the strategy of eq. (1) with the pricing rule of
 eq. (2) — is an equilibrium PAIR (the `(1)∧(2) ⇒ equilibrium` direction of
@@ -1462,35 +1404,5 @@ theorem expectedProfit_congr_ae (M : KyleModel Ω) {P Q : ℝ → ℝ}
   filter_upwards [hcomp] with ω hω
   simp only [Function.comp_apply] at hω
   rw [hω]
-
-/-- **Theorem 1** (v3's headline, verbatim pair form): a pair `(φ, P)` is
-an equilibrium if and only if `φ` is Kyle's affine strategy (eq. (1)) and
-`P(Y_φ) = μ₀ + λ·Y_φ` almost surely (eq. (2)), `λ = τ/(2σ)`. Assembled
-from the strategy halves, the pricing characterisation and the
-version-independence lemmas; no `sorry` of its own. -/
-theorem kyle_equilibrium_pair_iff (M : KyleModel Ω) (φ P : ℝ → ℝ)
-    (hP : Measurable P) :
-    M.IsEquilibrium φ P ↔
-      φ = M.kyleStrategy ∧
-        ∀ᵐ ω ∂M.μ, P (M.orderFlow φ ω)
-          = M.μ₀ + M.priceImpact * M.orderFlow φ ω := by
-  constructor
-  · intro h
-    have hstrat : φ = M.kyleStrategy :=
-      isEquilibrium_eq_kyleStrategy M φ h.isEquilibriumStrategy
-    subst hstrat
-    exact ⟨rfl, pricingRule_ae_orderFlow M h.pricingRule
-      (isPricingRule_kylePricingRule M)⟩
-  · rintro ⟨rfl, hae⟩
-    have hae' : (fun ω => P (M.orderFlow M.kyleStrategy ω)) =ᵐ[M.μ]
-        fun ω => M.kylePricingRule (M.orderFlow M.kyleStrategy ω) := hae
-    have hpr : M.IsPricingRule M.kyleStrategy P :=
-      ⟨hP, hae'.trans (isPricingRule_kylePricingRule M).ae_eq_condExp⟩
-    have hvol : P =ᵐ[(volume : Measure ℝ)] M.kylePricingRule :=
-      pricingRule_ae_eq_kylePricingRule M hpr
-    refine ⟨M.measurable_kyleStrategy, hpr, fun v x => ?_⟩
-    rw [expectedProfit_congr_ae M hvol v x,
-      expectedProfit_congr_ae M hvol v (M.kyleStrategy v)]
-    exact M.expectedProfit_kylePricingRule_le v x
 
 end KyleUniqueness
