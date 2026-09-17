@@ -32,7 +32,7 @@ imported here directly so that their declarations stay under audit.
 
 ## Expected output
 
-399 `#print axioms` lines, every one of which must read
+405 `#print axioms` lines, every one of which must read
 
 `depends on axioms: [propext, Classical.choice, Quot.sound]`.
 
@@ -111,10 +111,11 @@ cannot be named, hence cannot be listed here; see the header.
 #print axioms lintegral_gaussianPDFReal_std_mul_div
 #print axioms gaussianPDFReal_mul_gaussianPDFReal_std
 
-/-! ### `Definitions.lean` — 20 audited declarations
+/-! ### `Definitions.lean` — 26 audited declarations
 
 The model: the general Kyle model of v4 §1 and the normalised objects of
-v4 §2, plus `stdModel`.
+v4 §2, plus the two inhabitants `stdModel` (μ₀ = 0, τ = σ = 1) and
+`generalModel` (arbitrary `μ₀`, `τ, σ > 0`) with their parameter oracles.
 -/
 
 #print axioms KyleModel
@@ -137,6 +138,12 @@ v4 §2, plus `stdModel`.
 #print axioms objective
 #print axioms IsGammaSolution
 #print axioms stdModel
+#print axioms generalModel
+#print axioms stdModel_eq_generalModel
+#print axioms generalModel_priceImpact
+#print axioms generalModel_kyleStrategy
+#print axioms generalModel_priceImpact_num
+#print axioms generalModel_kyleStrategy_num
 
 /-! ### `CondExpBridge.lean` — 55 audited declarations
 

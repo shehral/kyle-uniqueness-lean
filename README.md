@@ -13,11 +13,11 @@ Mathlib alone — one period means no stochastic calculus.
 
 ## Status
 
-**Complete. 0 `sorry`, axiom-clean — as of the working tree of 2026-09-16, uncommitted on top of commit `f975dbc` (the hash must be re-pinned once the closeout is committed).**
+**Complete. 0 `sorry`, axiom-clean — as of the working tree of 2026-09-16, uncommitted on top of commit `4dd7289` (the hash must be re-pinned once the general-parameter-inhabitant wave is committed).**
 
 - From-scratch `lake build`: green, 3149 jobs, zero errors, zero warnings, zero
   `declaration uses 'sorry'`.
-- 19 Lean files, 10,120 lines.
+- 19 Lean files, 10,185 lines.
 - Every audited declaration depends only on `[propext, Classical.choice,
   Quot.sound]` — no `sorryAx`, no project-local axiom, no `native_decide`, no
   `unsafe`/`partial`/`opaque`/`@[extern]`/`@[implemented_by]`.
@@ -59,7 +59,7 @@ lake build             # the verification — green, 0 sorries
 ```
 
 The axiom audit runs as part of the build: `KyleUniqueness/AxiomAudit.lean`
-emits 399 `#print axioms` lines, each of which must read
+emits 405 `#print axioms` lines, each of which must read
 `[propext, Classical.choice, Quot.sound]`.
 
 ```bash

@@ -16,8 +16,8 @@ Bootstrapped 2026-08-12 on macOS (Darwin 25.5.0, arm64).
 
 `lake build` from scratch is green: **3149 jobs, 0 errors, 0 warnings, 0
 `declaration uses sorry`, 0 `sorryAx`**. 18 modules under `KyleUniqueness/`
-plus the umbrella `KyleUniqueness.lean`, ~10.1k lines. `AxiomAudit.lean`
-prints **399 `#print axioms` lines**, every one of them
+plus the umbrella `KyleUniqueness.lean`, ~10.2k lines. `AxiomAudit.lean`
+prints **405 `#print axioms` lines**, every one of them
 `depends on axioms: [propext, Classical.choice, Quot.sound]` — that is every
 public (non-`private`) named declaration in the tree; only the four
 anonymous `instance`s cannot be cited by name.
@@ -60,7 +60,7 @@ lake build
 lake build 2>&1 | tee build.log
 grep -c  "warning"            build.log    # expect 0
 grep -ci "sorry"              build.log    # expect 0
-grep -c  "depends on axioms"  build.log    # expect 399
+grep -c  "depends on axioms"  build.log    # expect 405
 grep -o  "depends on axioms: \[.*\]" build.log | sort -u
 #   expect exactly one line: [propext, Classical.choice, Quot.sound]
 
@@ -178,7 +178,7 @@ probability measure, conditional-expectation import. The current tree builds
   `lintDriverArgs := #["KyleUniqueness"]` (advisory, scoped to our package)
   — added 2026-09-16 and verified: `lake lint` runs and passes at this pin.
 - axiom-audit module (`#print axioms` harness): `KyleUniqueness/AxiomAudit.lean`,
-  now exhaustive over every public named declaration (399 lines).
+  now exhaustive over every public named declaration (405 lines).
 - `formalization.yaml` disclosure file: `claim-package/formalization.yaml`,
   refreshed at the 2026-09-16 closeout (`sorry_count: 0`, the six headline
   carriers filed under `KyleUniqueness/Main.lean`, the F1–F12 ledger inline).

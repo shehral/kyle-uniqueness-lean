@@ -12,18 +12,19 @@ executed 2026-09-16, is in `V4_DELTA_REPORT_2026-09-16.md`.
 
 **Status: COMPLETE — 0 `sorry`, axiom-clean.** Verified against the from-scratch
 `lake build` of 2026-09-16, run on the working tree that sits uncommitted on top
-of commit `f975dbc` (the figures below do **not** hold at `f975dbc` itself — the
-hash must be re-pinned once the closeout is committed):
+of commit `4dd7289` (the closeout commit; the figures below do **not** hold at
+`4dd7289` itself — they include the general-parameter-inhabitant wave of the same
+day, and the hash must be re-pinned once that wave is committed):
 
 - `lake build` from deleted project oleans: **exit 0, 3149 jobs**, 0 errors,
   0 warnings, 0 `declaration uses 'sorry'`, 0 `sorryAx`. The only non-axiom
-  diagnostic in the 434-line log is a pre-existing info-level `ring_nf`
-  suggestion at `Regularity.lean:77:2`. (434 lines when only
-  `.lake/build/lib/lean/KyleUniqueness/` is deleted; 435 with the §7 recipe,
+  diagnostic in the 440-line log is a pre-existing info-level `ring_nf`
+  suggestion at `Regularity.lean:77:2`. (440 lines when only
+  `.lake/build/lib/lean/KyleUniqueness/` is deleted; 441 with the §7 recipe,
   which also deletes the umbrella oleans and so re-emits the final
   `Built KyleUniqueness` line.)
-- 19 Lean files, 10,120 lines.
-- `KyleUniqueness/AxiomAudit.lean` emits 399 `#print axioms` lines; the set of
+- 19 Lean files, 10,185 lines.
+- `KyleUniqueness/AxiomAudit.lean` emits 405 `#print axioms` lines; the set of
   distinct axiom lists has cardinality **one**: `[propext, Classical.choice,
   Quot.sound]`. Independently re-checked out of tree for all 26 public
   `Main.lean` declarations plus 53 further headline carriers (79 total).
@@ -59,7 +60,7 @@ Headline declarations live in **`KyleUniqueness/Main.lean`**:
 | `Basic.lean` | 64 | scaffolding | — |
 | `GaussianHelpers.lean` | 506 | `ϱ` toolkit, tail FTC, null-singleton glue | Tier 0.1 |
 | `CondExpBridge.lean` | 912 | explicit Bayes quotient ↔ `condExp` bridge, affine consumers | P1 |
-| `Definitions.lean` | 343 | model, order flow, pricing rule, equilibrium pair, `Γ`, `stdModel` | N0 |
+| `Definitions.lean` | 401 | model, order flow, pricing rule, equilibrium pair, `Γ`, `stdModel`, `generalModel` | N0 |
 | `Statement.lean` | 1466 | Lemmas 2.1–2.3 layer, Prop 4.1, affine regression, `equilibrium_iff_zeroSolution` | A1, A2, A3, R1, N1, Q1, Q2 |
 | `Regularity.lean` | 412 | `F ∈ C¹`, eq. (2.3) | R2 |
 | `SteinInequality.lean` | 919 | one-sided Gaussian inequality; **zero project imports** | I1, I2, I3 |
@@ -71,7 +72,7 @@ Headline declarations live in **`KyleUniqueness/Main.lean`**:
 | `Accounting.lean` | 826 | **Session 3** — v4 Prop 5.1 accounting identity (full v4 route) | E2 |
 | `SignedRoot.lean` | 536 | **Session 3** — the signed-root construction inside v4 Prop 6.1; `1 ≤ 2Γ` | H1, J1 |
 | `Main.lean` | 606 | **Session 3** — v4 Prop 6.1, Theorem 7.1, §7 location–scale, Theorem 1.1 | T3, N2, O1 |
-| `AxiomAudit.lean` | 591 | `#print axioms` harness, 399 lines, runs at every build | — |
+| `AxiomAudit.lean` | 598 | `#print axioms` harness, 405 lines, runs at every build | — |
 | `BeyondPaper.lean` | 152 | v2-legacy cubic/`β_γ` layer, fenced as our own extension | (off-DAG) |
 | `IdentityTheoremSpike.lean` | 77 | legacy spike; v3 deleted its consumer | (off-DAG) |
 
@@ -180,8 +181,10 @@ Full map with per-file impact: `V4_DELTA_REPORT_2026-09-16.md` §1 and §6.
 Unchanged in substance from the statement phase; status updated.
 
 - **C1 — abstract probability space.** Theorem 1.1 is stated for *any*
-  `KyleModel Ω`. `stdModel` shows the class is inhabited. **Caveat:** it is the
-  *only* inhabitant in the tree — see §6.
+  `KyleModel Ω`. The class is inhabited at every admissible parameter triple:
+  `generalModel μ₀ τ σ hτ hσ` (`Definitions.lean`) builds a `KyleModel (ℝ × ℝ)`
+  for arbitrary `μ₀` and `τ, σ > 0`, and `stdModel = generalModel 0 1 1` is its
+  normalised instance (`stdModel_eq_generalModel`) — see §6.
 - **C2 — `τ, σ : ℝ` with `0 < τ`, `0 < σ`**, variances passed to `gaussianReal`
   as `⟨τ^2, sq_nonneg τ⟩`.
 - **C3 — `E[V∣Y_φ]` = Mathlib `condExp` w.r.t. `comap Y`.** Junk-value
@@ -276,15 +279,22 @@ Stated plainly, because these are what a reviewer will ask about.
 4. **Conditional i.i.d.-ness of the resampled pair**, and Kallenberg's transfer
    theorem (F6).
 5. **The §7 equilibrium-transfer biconditional** (F12).
-6. **A general-parameter `KyleModel` inhabitant.** The tree constructs exactly
-   one: `stdModel` (`μ₀ = 0, τ = σ = 1`). Every headline theorem is universally
-   quantified over `M : KyleModel Ω`, so none can be false — but the artifact
-   never certifies that a `KyleModel` exists at, say, `μ₀ = 3, τ = 2, σ = 5`,
-   and therefore never exhibits Kyle's `λ = τ/(2σ)` at a value other than `1/2`.
-   This is the one genuine vacuity-adjacent gap; the fix is ~20 lines mirroring
-   `stdModel` (`generalModel` on `(gaussianReal μ₀ ⟨τ²,_⟩).prod (gaussianReal 0
-   ⟨σ²,_⟩)`), recommended before any external step. **Out of scope for the
-   documents closeout — it is a Lean change.**
+6. *(Closed 2026-09-16 — no longer a gap.)* **A general-parameter `KyleModel`
+   inhabitant.** The tree now constructs `generalModel μ₀ τ σ hτ hσ :
+   KyleModel (ℝ × ℝ)` for arbitrary `μ₀` and `τ, σ > 0` — the coordinates of
+   `(gaussianReal μ₀ ⟨τ², _⟩).prod (gaussianReal 0 ⟨σ², _⟩)`, with the two laws
+   from `measurePreserving_fst/snd.map_eq` and independence from
+   `indepFun_iff_map_prod_eq_prod_map_map` — together with
+   `stdModel_eq_generalModel : stdModel = generalModel 0 1 1 one_pos one_pos`,
+   the parameter oracles `generalModel_priceImpact`
+   (`λ = τ/(2σ)`) and `generalModel_kyleStrategy` (`φ(v) = (σ/τ)(v − μ₀)`), and
+   their numeric instances at `(μ₀, τ, σ) = (3, 2, 5)`
+   (`generalModel_priceImpact_num : λ = 1/5`, `generalModel_kyleStrategy_num :
+   φ = fun v ↦ 5/2 · (v − 3)`). Every headline theorem is universally quantified
+   over `M : KyleModel Ω`, and the class is now certified nonempty at every
+   admissible parameter triple, so the universal statements are not vacuous
+   anywhere in the parameter range and the artifact exhibits Kyle's `λ` and
+   Kyle's strategy away from the normalised point.
 7. Cacoullos's lower Gaussian variance bound (v4 Lemma 2.7) — replaced by the v3
    Stein route (F1).
 
@@ -308,9 +318,9 @@ lake build 2>&1 | grep -o "depends on axioms: \[.*\]" | sort -u    # exactly one
 ```
 
 The axiom audit is `KyleUniqueness/AxiomAudit.lean` and runs as part of the
-build. Its coverage is **exhaustive over public named declarations**: 399 of
-399. Every column-0 non-`private` named declaration across the 17 source
-modules was enumerated and matched against the 399 audited names — 0 missing,
+build. Its coverage is **exhaustive over public named declarations**: 405 of
+405. Every column-0 non-`private` named declaration across the 17 source
+modules was enumerated and matched against the 405 audited names — 0 missing,
 0 extra. The only omissions are the four anonymous `instance`s
 (`Definitions.lean:111`, `GaussianHelpers.lean:81`, `CondExpBridge.lean:110`
 and `:113`), which have machine-generated names and cannot be cited by hand,

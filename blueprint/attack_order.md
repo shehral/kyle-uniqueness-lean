@@ -8,7 +8,7 @@
 > (2026-08-18) cleared the early tiers and the Stein pipeline; Session 3
 > (2026-09-16) ran Waves 1–3 and finished the campaign. From-scratch
 > `lake build`: green, 3149 jobs, **0 `sorry`**, every audited declaration
-> `[propext, Classical.choice, Quot.sound]`. 19 files, 10,120 LOC.
+> `[propext, Classical.choice, Quot.sound]`. 19 files, 10,185 LOC.
 >
 > **This document is v3-keyed and is kept as the historical proof plan.** The
 > artifact is keyed to arXiv:2607.23585 **v4**; the crosswalk is
@@ -181,7 +181,8 @@ new `sorry` outside the tracked inventory.
   independent adversarial auditor; its ledger is `STATEMENT_NOTES.md` §5.
 - [x] `AxiomAudit.lean` final pass — **DONE** (Wave 3 + closeout: 399 `#print
   axioms` lines, exhaustive over every public named declaration; single
-  distinct axiom list `[propext, Classical.choice, Quot.sound]`).
+  distinct axiom list `[propext, Classical.choice, Quot.sound]`). Raised to 405
+  lines on 2026-09-16 by the six `generalModel` declarations.
 - [x] sorry count → 0 — **DONE** 2026-09-16, commit `f975dbc`; from-scratch
   `lake build` green, 3149 jobs, zero `declaration uses 'sorry'`.
 - [x] `formalization.yaml` refresh — **DONE** in the documents closeout
@@ -192,10 +193,13 @@ new `sorry` outside the tracked inventory.
   maximisation / quasi-equilibrium). Not formalized; recorded as deviation
   **F11**. Theorem 1.1 is therefore scoped to the *pointwise*-maximisation
   definition.
-- [ ] Not a blueprint node, but the one open completeness item found by the
-  closing audit: **a general-parameter `KyleModel` inhabitant**. The tree
-  constructs only `stdModel` (μ₀ = 0, τ = σ = 1). ~20 lines; recommended
-  before any external step.
+- [x] Not a blueprint node, but the one open completeness item found by the
+  closing audit: **a general-parameter `KyleModel` inhabitant** — **CLOSED**
+  2026-09-16. `Definitions.lean` now carries `generalModel μ₀ τ σ hτ hσ :
+  KyleModel (ℝ × ℝ)` for arbitrary `μ₀` and `τ, σ > 0`, with
+  `stdModel_eq_generalModel`, `generalModel_priceImpact` (`λ = τ/(2σ)`),
+  `generalModel_kyleStrategy` (`φ(v) = (σ/τ)(v − μ₀)`) and numeric oracles at
+  `(μ₀, τ, σ) = (3, 2, 5)`; all six audited.
 
 ---
 

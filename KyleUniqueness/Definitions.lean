@@ -340,4 +340,62 @@ noncomputable def stdModel : KyleModel (ℝ × ℝ) where
       MeasureTheory.measurePreserving_snd.map_eq]
     exact Measure.map_id
 
+/-- The general model of §1 realised as a `KyleModel` on the canonical space
+`ℝ × ℝ` at ARBITRARY parameters: `V` and `U` are the coordinates under
+`N(μ₀, τ²) ⊗ N(0, σ²)`, so `V ~ N(μ₀, τ²)`, `U ~ N(0, σ²)` and the two are
+independent by construction. `stdModel` is the instance `(0, 1, 1)`
+(`stdModel_eq_generalModel`). This witnesses that the hypotheses of §1 — and
+hence of every theorem quantified over a `KyleModel`, including
+`isEquilibrium_eq_kyleStrategy` (v4 Theorem 1.1) — are satisfiable at every
+admissible parameter triple, not only at the normalised one. -/
+noncomputable def generalModel (μ₀ τ σ : ℝ) (hτ : 0 < τ) (hσ : 0 < σ) :
+    KyleModel (ℝ × ℝ) where
+  μ := (gaussianReal μ₀ ⟨τ ^ 2, sq_nonneg τ⟩).prod (gaussianReal 0 ⟨σ ^ 2, sq_nonneg σ⟩)
+  hprob := inferInstance
+  μ₀ := μ₀
+  τ := τ
+  σ := σ
+  hτ := hτ
+  hσ := hσ
+  V := Prod.fst
+  U := Prod.snd
+  hV := measurable_fst
+  hU := measurable_snd
+  hVlaw := MeasureTheory.measurePreserving_fst.map_eq
+  hUlaw := MeasureTheory.measurePreserving_snd.map_eq
+  hIndep := by
+    rw [ProbabilityTheory.indepFun_iff_map_prod_eq_prod_map_map
+      measurable_fst.aemeasurable measurable_snd.aemeasurable,
+      MeasureTheory.measurePreserving_fst.map_eq,
+      MeasureTheory.measurePreserving_snd.map_eq]
+    exact Measure.map_id
+
+/-- `stdModel` is the `(μ₀, τ, σ) = (0, 1, 1)` instance of `generalModel`. -/
+theorem stdModel_eq_generalModel : stdModel = generalModel 0 1 1 one_pos one_pos := by
+  unfold stdModel generalModel
+  -- structure eta reduces the goal to the single `μ` field; the parameter,
+  -- law and independence fields are `rfl`/proof-irrelevant.
+  congr 1
+  rw [nnreal_one_sq]
+  rfl
+
+/-- Kyle's price impact at arbitrary parameters: `λ = τ/(2σ)` (v4 eq. (1.2)). -/
+theorem generalModel_priceImpact (μ₀ τ σ : ℝ) (hτ : 0 < τ) (hσ : 0 < σ) :
+    (generalModel μ₀ τ σ hτ hσ).priceImpact = τ / (2 * σ) := rfl
+
+/-- Kyle's strategy at arbitrary parameters: `φ(v) = (σ/τ)(v − μ₀)`
+(v4 eq. (1.1)). -/
+theorem generalModel_kyleStrategy (μ₀ τ σ : ℝ) (hτ : 0 < τ) (hσ : 0 < σ) :
+    (generalModel μ₀ τ σ hτ hσ).kyleStrategy = fun v => σ / τ * (v - μ₀) := rfl
+
+/-- Numeric oracle at `(μ₀, τ, σ) = (3, 2, 5)`: `λ = 2/(2·5) = 1/5`. -/
+theorem generalModel_priceImpact_num :
+    (generalModel 3 2 5 (by norm_num) (by norm_num)).priceImpact = 1 / 5 := by
+  rw [generalModel_priceImpact]; norm_num
+
+/-- Numeric oracle at `(μ₀, τ, σ) = (3, 2, 5)`: `φ(v) = (5/2)(v − 3)`. -/
+theorem generalModel_kyleStrategy_num :
+    (generalModel 3 2 5 (by norm_num) (by norm_num)).kyleStrategy
+      = fun v => 5 / 2 * (v - 3) := rfl
+
 end KyleUniqueness

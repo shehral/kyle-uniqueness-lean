@@ -690,12 +690,14 @@ ledger, §6 what is not formalized) and `claim-package/formalization.yaml`.
 | Session 3, Wave 2 | 2026-09-16 | E2 (*hard block 3*), H1 (*hard block 4b*), J1 | `Accounting.lean` (826), `SignedRoot.lean` (534) | 1,360 | 0 sorries, axiom-clean, lint-clean; both verified adversarially, **first round**. Hard-block census: 0 of 5 remain. E2 taken by the **full v4 route**, no fallback |
 | Session 3, Wave 3 | 2026-09-16 | T3, N2, O1 | `Main.lean` (600, new top module), `AxiomAudit.lean`, `KyleUniqueness.lean`, `Statement.lean` (docstring), `SignedRoot.lean` (rename) | 600 | **from-scratch `lake build`: exit 0, 3149 jobs, 0 errors, 0 warnings, 0 `declaration uses 'sorry'`, 0 `sorryAx`.** Final audit verdict **pass**, with no repairs required in the Lean tree |
 | Documents closeout | 2026-09-16 | — | `STATEMENT_NOTES.md`, `README.md`, `SETUP.md`, `claim-package/*` (5 files), `blueprint/blueprint.md`, `blueprint/attack_order.md`, three historical v3 reports, this log; **and in the Lean tree** `KyleUniqueness/AxiomAudit.lean`, `KyleUniqueness/GaussianHelpers.lean`, `KyleUniqueness/SignedRoot.lean`, `KyleUniqueness/Main.lean`, `lakefile.lean` | — | attestation surface re-keyed to v4 and to 0 sorries. Lean files **were** touched, but no statement changed: `AxiomAudit.lean` expanded from 239 to 399 `#print axioms` lines (now exhaustive) with its docstring rewritten; the unused `[SFinite μ]` instance argument dropped from `measure_prod_diagonal_eq_zero` in `GaussianHelpers.lean` (a strictly stronger lemma); two helpers renamed (`integral_insiderProfit_id'` → `integral_insiderProfit_id_of_closedForm` in `SignedRoot.lean`, `Monotone.eq_of_ae_eq_continuous` → `monotone_eq_of_ae_eq_continuous` in `Main.lean`); `lintDriver` wired into `lakefile.lean` |
+| General-parameter inhabitant | 2026-09-16 | — (vacuity gap) | `KyleUniqueness/Definitions.lean` (343 → 401), `KyleUniqueness/AxiomAudit.lean` (591 → 598) | 65 | closes the last vacuity-adjacent gap: `generalModel μ₀ τ σ hτ hσ : KyleModel (ℝ × ℝ)` at arbitrary `μ₀`, `τ, σ > 0`, with `stdModel_eq_generalModel`, the parameter oracles `generalModel_priceImpact` (`λ = τ/(2σ)`) / `generalModel_kyleStrategy` (`φ(v) = (σ/τ)(v − μ₀)`) and their numeric instances at `(3, 2, 5)`. No existing statement changed. From-scratch `lake build` (project oleans deleted): exit 0, 3149 jobs, 0 errors, 0 warnings, 0 sorries; `lake lint` passes; **405** `#print axioms` lines, one distinct list |
 
-**Totals.** 19 Lean files, **10,120 lines** by `wc -l` over
-`KyleUniqueness.lean` + `KyleUniqueness/*.lean` (10,102 is the same count over
+**Totals.** 19 Lean files, **10,185 lines** by `wc -l` over
+`KyleUniqueness.lean` + `KyleUniqueness/*.lean` (10,167 is the same count over
 the 18 files in `KyleUniqueness/` only, excluding the 18-line root module; the
-Wave-3 report's 9,630 / 9,612 are those same two counts as of commit `f975dbc`,
-i.e. before the documents closeout expanded `AxiomAudit.lean`). 399
+figures before the general-parameter-inhabitant wave were 10,120 / 10,102, and
+the Wave-3 report's 9,630 / 9,612 are those same two counts as of commit
+`f975dbc`, i.e. before the documents closeout expanded `AxiomAudit.lean`). 405
 `#print axioms` lines in the build, one distinct axiom list:
 `[propext, Classical.choice, Quot.sound]`. Elapsed: 2026-08-11 → 2026-09-16,
 of which the proving itself was three working sessions.
@@ -771,11 +773,19 @@ machine-readable: `claim-package/formalization.yaml`, `fidelity.deviations`.
 2. **`π_y` as a version of the conditional law** (`ProbabilityTheory.condDistrib`
    appears nowhere in the tree but in two explanatory docstrings). F4.
 3. **Continuity of `P′`.** F5.
-4. **A general-parameter `KyleModel` inhabitant.** `stdModel` (μ₀ = 0, τ = σ = 1)
-   is the only one. The headline theorems are universally quantified so none can
-   be false, but the artifact never exhibits Kyle's `λ = τ/(2σ)` at a value other
-   than `1/2`. ~20 lines to close; recommended before any external step, and the
-   single most likely first question from a reviewer.
+4. *(This item is **closed** as of 2026-09-16 and is kept so the history reads
+   straight.)* **A general-parameter `KyleModel` inhabitant.** `stdModel`
+   (μ₀ = 0, τ = σ = 1) used to be the only one, so the artifact never exhibited
+   Kyle's `λ = τ/(2σ)` at a value other than `1/2`. `Definitions.lean` now also
+   builds `generalModel μ₀ τ σ hτ hσ : KyleModel (ℝ × ℝ)` for arbitrary `μ₀` and
+   `τ, σ > 0` — the coordinates of `(gaussianReal μ₀ ⟨τ², _⟩).prod
+   (gaussianReal 0 ⟨σ², _⟩)` — with `stdModel_eq_generalModel : stdModel =
+   generalModel 0 1 1 one_pos one_pos`, `generalModel_priceImpact :
+   λ = τ/(2σ)`, `generalModel_kyleStrategy : φ = fun v ↦ (σ/τ)(v − μ₀)` and the
+   numeric oracles at `(μ₀, τ, σ) = (3, 2, 5)` (`generalModel_priceImpact_num :
+   λ = 1/5`, `generalModel_kyleStrategy_num : φ = fun v ↦ 5/2 · (v − 3)`). The
+   universal quantification over `M : KyleModel Ω` is therefore non-vacuous at
+   every admissible parameter triple.
 5. Also absent, for completeness: Cacoullos's lower Gaussian variance bound (F1),
    conditional i.i.d.-ness of the resampled pair and Kallenberg transfer (F6),
    and the §7 equilibrium-transfer biconditional (F12).
@@ -788,7 +798,7 @@ reads straight:
 
 - *(fixed)* `AxiomAudit.lean:13` used to say "every public statement is audited
   at every build" while the audit covered only part of the tree. The audit list
-  was expanded at closeout and is now exhaustive — 399 of 399 public named
+  was expanded at closeout and is now exhaustive — 405 of 405 public named
   declarations, independently re-derived by enumerating every column-0
   non-private named declaration across the 17 source modules (0 missing, 0
   extra; the only omissions are the four anonymous instances the docstring names).

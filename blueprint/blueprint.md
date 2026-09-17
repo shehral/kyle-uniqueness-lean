@@ -8,7 +8,7 @@
 > (2026-08-18) cleared the early tiers and the Stein pipeline; Session 3
 > (2026-09-16) ran Waves 1–3 and finished the campaign. From-scratch
 > `lake build`: green, 3149 jobs, **0 `sorry`**, every audited declaration
-> `[propext, Classical.choice, Quot.sound]`. 19 files, 10,120 LOC.
+> `[propext, Classical.choice, Quot.sound]`. 19 files, 10,185 LOC.
 >
 > **This document is v3-keyed and is kept as the historical proof plan.** The
 > artifact is keyed to arXiv:2607.23585 **v4**; the crosswalk is
