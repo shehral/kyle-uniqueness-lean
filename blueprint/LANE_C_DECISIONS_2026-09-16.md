@@ -10,7 +10,7 @@ Paper text: `paper/v4.txt` (v4, 2026-08-20, de-tagged HTML), `paper/v4_alttext.t
 New files cite **v4** numbering (Thm 1.1, Prop 4.1, Prop 5.1, Prop 6.1, Thm 7.1,
 Lemmas 2.1–2.7 in v4 order, eqs. (2.4)–(2.8), (A.1)) with the v3 label in
 parentheses where a blueprint node name refers to it. Existing files keep their
-v3 docstrings until the closeout wave re-keys them; see `V4_DELTA_REPORT_2026-09-16.md`.
+v3 docstrings until the closeout wave re-keys them; see `STATEMENT_NOTES.md` §1.
 Crosswalk that matters for the blueprint node names:
 - v3 Lemma 2.6 (FOC/W, node B1/B2)      = **v4 Lemma 2.4**, eqs. (2.4) FOC, (2.5) W = φ²F′(φ), (2.6) W′ = φ a.e.; subgradient ineq. = (A.1). The divergence clause v3 (12) is GONE.
 - v3 Lemma 4.1 (posterior, D1/D2)       = **v4 Lemma 2.5**, eqs. (2.7) P′ = Cov_{π_y}(id, φ) > 0, (2.8) F′ > 0.

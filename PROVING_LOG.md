@@ -100,7 +100,7 @@ balance identity, hard block 3), **H1** (signed root, hard block 4b),
 
 ```bash
 export PATH="$HOME/.elan/bin:$PATH"
-cd /Users/shehral/quant-moonshot/problems/3-lean-mathfin/kyle-formalization
+cd kyle-uniqueness-lean
 lake build   # green; exactly 2 "declaration uses 'sorry'" warnings
              # (Statement.lean: isGammaSolution_zero_iff,
              #  isEquilibrium_eq_kyleStrategy)
@@ -211,7 +211,7 @@ signed root, under the `E[h²] = E[1/h′²] = 2Γ` dictionary).
 
 ```bash
 export PATH="$HOME/.elan/bin:$PATH"
-cd /Users/shehral/quant-moonshot/problems/3-lean-mathfin/kyle-formalization
+cd kyle-uniqueness-lean
 lake build   # green; exactly 2 "declaration uses 'sorry'" warnings
              # (Statement.lean: isGammaSolution_zero_iff,
              #  isEquilibrium_eq_kyleStrategy); AxiomAudit prints the 9
@@ -222,7 +222,7 @@ lake build   # green; exactly 2 "declaration uses 'sorry'" warnings
 
 ## Session 3 — 2026-09-16, Wave 1 (Fable orchestrator; opus provers + adversarial verifiers): B1, B2, A1b, D1-rest, D2, E1, R2b, Lemma 3.1/3.2 CLOSED
 
-**Context:** arXiv v4 (2026-08-20) found to be a proof rewrite (see `V4_DELTA_REPORT_2026-09-16.md`); all Lane-C decisions delegated to the agent and recorded in `blueprint/LANE_C_DECISIONS_2026-09-16.md`. New files cite v4 numbering.
+**Context:** arXiv v4 (2026-08-20) found to be a proof rewrite (see the crosswalk in `STATEMENT_NOTES.md` §1); all Lane-C decisions delegated to the agent and recorded in `blueprint/LANE_C_DECISIONS_2026-09-16.md`. New files cite v4 numbering.
 
 **Result:** four new modules, 2,509 LOC, **0 sorries**, every public declaration `[propext, Classical.choice, Quot.sound]`, lint-clean, each `lake build KyleUniqueness.<M>` green. Each module was independently verified by an adversarial agent (build from deleted oleans, out-of-tree `#print axioms`, statement-by-statement faithfulness vs `paper/v4.txt`, vacuity probes at φ = id); all four passed on the first round. Umbrella import + AxiomAudit wiring deferred to closeout by rule D9.
 
@@ -665,18 +665,18 @@ NEW pin-specific gotchas from this wave (worth adding to PROVING_LOG):
 
 ---
 
-## Campaign summary — closed 2026-09-16 (working tree, uncommitted on top of commit `f975dbc`)
+## Campaign summary — closed 2026-09-16 (working tree, uncommitted on top of commit `1570bff`)
 
 > **Commit label.** Every figure in this section is measured on the **working
-> tree of 2026-09-16**, which is uncommitted on top of commit `f975dbc`. They do
-> **not** hold at `f975dbc` itself: there `AxiomAudit.lean` has 239 `#print axioms`
+> tree of 2026-09-16**, which is uncommitted on top of commit `1570bff`. They do
+> **not** hold at `1570bff` itself: there `AxiomAudit.lean` has 239 `#print axioms`
 > lines, the 19 files total 9,630 lines, and `lakefile.lean` has no `lintDriver`.
 > The hash must be re-pinned once the closeout is committed.
 
 Written at the documents closeout, after the final adversarial audit returned
 `pass`. This section is the campaign's own record; the claim-facing versions of
 the same facts are `STATEMENT_NOTES.md` (§0 artifact, §1 crosswalk, §5 deviation
-ledger, §6 what is not formalized) and `claim-package/formalization.yaml`.
+ledger, §6 what is not formalized) and `formalization.yaml`.
 
 ### Per-wave table
 
@@ -685,7 +685,7 @@ ledger, §6 what is not formalized) and `claim-package/formalization.yaml`.
 | Statement + canary phase | 2026-08-11/12 | N0, P1, A1 (positivity) | `Definitions.lean` (308), `GaussianHelpers.lean` (490), `CondExpBridge.lean` (889), `Statement.lean` (claim surface), `BeyondPaper.lean` (144), `IdentityTheoremSpike.lean` (70), `AxiomAudit.lean` | — | both definitional-fidelity canaries proved with **zero** definition changes (`CANARY_REPORT.md`); 14 tracked sorries |
 | Session 1 | 2026-08-12 | N1, A2, A3, R1, Q1, Q2, `equilibrium_iff_zeroSolution`, `pricingRule_ae_eq_kylePricingRule` | `Statement.lean` in place (no new module); infra added to `GaussianHelpers`/`CondExpBridge` | — | `lake build` green; 14 sorries → **2** |
 | Session 2 | 2026-08-18 | I1–I3 (*hard block 2*), R2, D1 `C¹` legs | `SteinInequality.lean` (869, **zero project imports**), `Regularity.lean` (391), `PosteriorDeriv.lean` (165) | 1,425 | green, axiom-clean; still 2 sorries (both headline carriers, gated on §4 machinery) |
-| v4 re-baseline | 2026-09-16 | — (analysis) | `V4_DELTA_REPORT_2026-09-16.md`, `blueprint/LANE_C_DECISIONS_2026-09-16.md` | — | 10-agent workflow: 2 independent v3/v4 readers, 3 refuters, repo-impact scan, remaining-work audit + 2 refuters, W review packet. Verdict: the four headline results are unchanged up to renumbering; the §4 apparatus was rewritten; **no v3 equation number survives** |
+| v4 re-baseline | 2026-09-16 | — (analysis) | `STATEMENT_NOTES.md` §1, `blueprint/LANE_C_DECISIONS_2026-09-16.md` | — | 10-agent workflow: 2 independent v3/v4 readers, 3 refuters, repo-impact scan, remaining-work audit + 2 refuters, W review packet. Verdict: the four headline results are unchanged up to renumbering; the §4 apparatus was rewritten; **no v3 equation number survives** |
 | Session 3, Wave 1 | 2026-09-16 | B1, B2, A1b, D1-rest, D2, E1, R2b, Lemmas 3.1/3.2 | `ValueFunction.lean` (391), `Posterior.lean` (865), `Resampling.lean` (970), `Loss.lean` (283) | 2,509 | 0 sorries, axiom-clean, lint-clean; each module independently verified by an adversarial agent (rebuild from deleted oleans, out-of-tree `#print axioms`, statement-by-statement vs `paper/v4.txt`, vacuity probes at φ = id). **All four passed on the first round** |
 | Session 3, Wave 2 | 2026-09-16 | E2 (*hard block 3*), H1 (*hard block 4b*), J1 | `Accounting.lean` (826), `SignedRoot.lean` (534) | 1,360 | 0 sorries, axiom-clean, lint-clean; both verified adversarially, **first round**. Hard-block census: 0 of 5 remain. E2 taken by the **full v4 route**, no fallback |
 | Session 3, Wave 3 | 2026-09-16 | T3, N2, O1 | `Main.lean` (600, new top module), `AxiomAudit.lean`, `KyleUniqueness.lean`, `Statement.lean` (docstring), `SignedRoot.lean` (rename) | 600 | **from-scratch `lake build`: exit 0, 3149 jobs, 0 errors, 0 warnings, 0 `declaration uses 'sorry'`, 0 `sorryAx`.** Final audit verdict **pass**, with no repairs required in the Lean tree |
@@ -697,7 +697,7 @@ ledger, §6 what is not formalized) and `claim-package/formalization.yaml`.
 the 18 files in `KyleUniqueness/` only, excluding the 18-line root module; the
 figures before the general-parameter-inhabitant wave were 10,120 / 10,102, and
 the Wave-3 report's 9,630 / 9,612 are those same two counts as of commit
-`f975dbc`, i.e. before the documents closeout expanded `AxiomAudit.lean`). 405
+`1570bff`, i.e. before the documents closeout expanded `AxiomAudit.lean`). 405
 `#print axioms` lines in the build, one distinct axiom list:
 `[propext, Classical.choice, Quot.sound]`. Elapsed: 2026-08-11 → 2026-09-16,
 of which the proving itself was three working sessions.
@@ -749,7 +749,7 @@ of which the proving itself was three working sessions.
 ### The twelve deviations (F1–F12)
 
 Full text with Lean names: `STATEMENT_NOTES.md` §5;
-machine-readable: `claim-package/formalization.yaml`, `fidelity.deviations`.
+machine-readable: `formalization.yaml`, `fidelity.deviations`.
 
 | # | One line |
 |---|---|
@@ -829,7 +829,7 @@ reads straight:
 
 `claim-package/timestamp_plan.md` Phase P carries the full list; the two that
 are only fixable while the repo is private: the **git-identity rewrite** of the
-first three commits (`e71e0a2`, `5d38cde`, `9bfb1f7`, authored as the work
+first three commits (`b8db757`, `86d6391`, `e842f0d`, authored as the work
 identity) and **removing `claim-package/` from the repository and its history**
 (currently git-tracked, while `.gitignore` carries only `/.lake` and `/paper`).
 **Nothing is published; every draft still carries its `DRAFT — DO NOT

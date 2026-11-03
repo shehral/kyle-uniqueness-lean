@@ -6,15 +6,12 @@ unless explicitly marked v3 or v2. Title history: v2 *"Monotonicity and Rigidity
 in Gaussian Inverse Regression — The One-Period Kyle Model Has a Unique
 Equilibrium"*; v3 (2026-08-10) *"The one-period Gaussian Kyle model has exactly
 one equilibrium"*; v4 dropped "Gaussian"/"exactly" from the title and rewrote the
-§4 proof apparatus. The v2 → v3 reconciliation is in `V3_RECONCILIATION_PLAN.md`
-+ `RECONCILIATION_REPORT.md` (both now historical); the v3 → v4 reconciliation,
-executed 2026-09-16, is in `V4_DELTA_REPORT_2026-09-16.md`.
+§4 proof apparatus. The v2 → v3 and v3 → v4 (executed 2026-09-16) reconciliation reports are kept
+in the private working archive; §1 below is the public v3 ↔ v4 crosswalk.
 
 **Status: COMPLETE — 0 `sorry`, axiom-clean.** Verified against the from-scratch
-`lake build` of 2026-09-16, run on the working tree that sits uncommitted on top
-of commit `4dd7289` (the closeout commit; the figures below do **not** hold at
-`4dd7289` itself — they include the general-parameter-inhabitant wave of the same
-day, and the hash must be re-pinned once that wave is committed):
+`lake build` of the v1.0.0 release tree (2026-11-03; same Lean sources as the
+2026-09-16 close, documentation comments re-pointed only):
 
 - `lake build` from deleted project oleans: **exit 0, 3149 jobs**, 0 errors,
   0 warnings, 0 `declaration uses 'sorry'`, 0 `sorryAx`. The only non-axiom
@@ -88,9 +85,8 @@ Mathlib lemma).
 ## 1. v3 ↔ v4 crosswalk
 
 The Lean tree and these notes are keyed to **v4**. Older documents in this
-repository (`CANARY_REPORT.md`, `RECONCILIATION_REPORT.md`,
-`V3_RECONCILIATION_PLAN.md`, `blueprint/*`) are v3-keyed and marked historical.
-Full map with per-file impact: `V4_DELTA_REPORT_2026-09-16.md` §1 and §6.
+repository (`CANARY_REPORT.md`, `blueprint/*`) are v3-keyed and marked historical.
+Full map with per-file impact: `STATEMENT_NOTES.md` §1.
 
 ### Results
 
@@ -304,7 +300,7 @@ Stated plainly, because these are what a reviewer will ask about.
 
 ```bash
 export PATH="$HOME/.elan/bin:$PATH"
-cd /Users/shehral/quant-moonshot/problems/3-lean-mathfin/kyle-formalization
+cd kyle-uniqueness-lean
 lake build          # green: 0 errors, 0 warnings, 0 sorries
 ```
 
@@ -339,9 +335,9 @@ axiom lines again.
 
 | Date | Event |
 |---|---|
-| 2026-08-11/12 | statement phase against v2, then the v2 → v3 reconciliation (`V3_RECONCILIATION_PLAN.md`, `RECONCILIATION_REPORT.md`, `CANARY_REPORT.md` — all now historical) |
+| 2026-08-11/12 | statement phase against v2, then the v2 → v3 reconciliation (reconciliation notes kept in the private working archive; `CANARY_REPORT.md` is historical) |
 | 2026-08-12 | Session 1: Tier 1 + R1 + Q2 + the `σ=τ=1` bridge; 14 sorries → 2 |
 | 2026-08-18 | Session 2: Stein pipeline (I1–I3), R2, D1 `C¹` legs |
-| 2026-09-16 | v4 found and reconciled (`V4_DELTA_REPORT_2026-09-16.md`); Lane-C decisions D1–D9 (`blueprint/LANE_C_DECISIONS_2026-09-16.md`) |
-| 2026-09-16 | Session 3, Waves 1–3: seven new modules, campaign closed at **0 sorries**, commit `f975dbc` |
+| 2026-09-16 | v4 found and reconciled (report in the private working archive; crosswalk in §1); Lane-C decisions D1–D9 (`blueprint/LANE_C_DECISIONS_2026-09-16.md`) |
+| 2026-09-16 | Session 3, Waves 1–3: seven new modules, campaign closed at **0 sorries**, commit `1570bff` |
 | 2026-09-16 | documents closeout: this file re-keyed to v4, F1–F12 ledger installed |

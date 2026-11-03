@@ -50,8 +50,8 @@ deleted quadratic-cost family now lives in `KyleUniqueness.BeyondPaper`.
 All section, equation and lemma numbers in this file refer to
 arXiv:2607.23585 **v4**. Earlier sessions of this development were keyed to
 v3 (and, before that, v2): the v2 ↔ v3 map is recorded in
-`STATEMENT_NOTES.md` and `V3_RECONCILIATION_PLAN.md`, and the v3 → v4
-crosswalk in `V4_DELTA_REPORT_2026-09-16.md` §1 (repo policy:
+`STATEMENT_NOTES.md`, and the v3 → v4
+crosswalk in `STATEMENT_NOTES.md` §1 (repo policy:
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1). None of v3's flat
 equation numbers survives into v4's per-section numbering, so a bare v3
 number appearing below would be a bug, not a variant spelling.

@@ -53,7 +53,7 @@ downstream claim, abstract or announcement must carry:
 
 The consumer is `KyleUniqueness.SignedRoot`
 (`one_le_two_mul_noiseTraderLoss`), whose docstrings record the same
-deviation. Crosswalk: `V4_DELTA_REPORT_2026-09-16.md` §1 and §6; the final
+deviation. Crosswalk: `STATEMENT_NOTES.md` §1; the final
 audit records it as faithfulness item **F1**.
 
 All "Lemma 2.5" and "eq. (7)" references in this file are **v3** numbers and

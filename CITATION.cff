@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this formalization, please cite it as below, together with the source paper."
+title: "KyleUniqueness: a Lean 4 formalization of equilibrium uniqueness in the one-period Kyle model"
+type: software
+authors:
+  - family-names: Shehral
+    given-names: Mohammad Ali
+    orcid: "https://orcid.org/0009-0000-9545-6243"
+    affiliation: "Khoury College of Computer Sciences, Northeastern University, San Jose"
+version: v1.0.0
+date-released: 2026-11-03
+doi: 10.5281/zenodo.23912107
+license: Apache-2.0
+repository-code: "https://github.com/shehral/kyle-uniqueness-lean"
+keywords:
+  - Lean 4
+  - Mathlib
+  - formal verification
+  - Kyle model
+  - market microstructure
+references:
+  - type: article
+    title: "The one-period Kyle model has one equilibrium"
+    authors:
+      - family-names: Monteiro
+        given-names: Paulo K.
+      - family-names: Tourky
+        given-names: Rabee
+    year: 2026
+    identifiers:
+      - type: doi
+        value: 10.48550/arXiv.2607.23585
+    notes: "arXiv:2607.23585v4"

@@ -58,7 +58,7 @@ module's docstrings from v3 to v4 numbering.
 All paper references in this file are arXiv:2607.23585 **v4** (2026-08-20),
 *The one-period Kyle model has one equilibrium*, except where explicitly
 marked v3 or v2. Earlier sessions were keyed to v3; the crosswalk is
-`V4_DELTA_REPORT_2026-09-16.md` §1 (policy:
+`STATEMENT_NOTES.md` §1 (policy:
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1). Two references
 below are deliberately NOT re-keyed because they have no v4 counterpart:
 `SteinInequality.lean` formalizes **v3** Lemma 2.5 / v3 eq. (7), deleted in

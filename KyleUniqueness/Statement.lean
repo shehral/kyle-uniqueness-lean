@@ -23,7 +23,7 @@ file is `sorry`-free.
 *The one-period Gaussian Kyle model has exactly one equilibrium*) and is
 re-keyed to v4 here. v4 renumbered essentially everything: Theorem 1 → 1.1,
 Proposition 2 → 4.1, Theorem 3 → Proposition 6.1, Theorem 4 → 7.1, and no v3
-equation number survives. Full crosswalk: `V4_DELTA_REPORT_2026-09-16.md` §1
+equation number survives. Full crosswalk: `STATEMENT_NOTES.md` §1
 (policy: `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1).
 
 ## Moved to `KyleUniqueness.Main`

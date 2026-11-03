@@ -26,7 +26,7 @@ We keep the layer because it is **fully proved** (no `sorry`, axioms
 existence, uniqueness and bounds for the positive root of the cubic, by the
 intermediate value theorem and strict monotonicity. It is offered as **our
 own extension** of the formalization, anchored to v2's deleted material, not
-as formalized content of arXiv:2607.23585 **v3 or v4**. Claim-package
+as formalized content of arXiv:2607.23585 **v3 or v4**. Release
 documents must label anything from this file accordingly. This fence is
 load-bearing, so it is stated against the current version explicitly.
 
@@ -39,7 +39,7 @@ closed form.
 
 Numbering note: v2 numbers below are cited as v2's on purpose (this is
 v2-legacy material). v4 references use v4 numbering; the v3 → v4 crosswalk
-is `V4_DELTA_REPORT_2026-09-16.md` §1.
+is `STATEMENT_NOTES.md` §1.
 -/
 
 open MeasureTheory ProbabilityTheory

@@ -20,7 +20,7 @@ integral toolkit consumed by the pricing-rule bridge (`CondExpBridge.lean`).
 v4 here; earlier sessions of the development were keyed to v3. Nothing in
 this file is paper content — every lemma is Mathlib-only — so the paper
 references below are provenance pointers, not claims. Crosswalk:
-`V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+`STATEMENT_NOTES.md` §1; policy:
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1.
 
 ## Audit §10 status at pin `81a5d257` (tag v4.32.0)

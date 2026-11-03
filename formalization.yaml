@@ -1,0 +1,217 @@
+# Machine-readable AI-assistance & faithfulness disclosure for the
+# KyleUniqueness project, in the formal-mathfin formalization.yaml v0.3
+# schema (https://github.com/formal-applied-math/formal-mathfin/blob/main/formalization.yaml).
+# Hand-maintained. Counts verified against the from-scratch `lake build` of the
+# v1.0.0 release tree (Lean v4.32.0, Mathlib 81a5d257).
+version: v0.3
+project:
+  name: kyle-uniqueness-lean
+  url: https://github.com/shehral/kyle-uniqueness-lean
+  authors:
+    - Mohammad Ali Shehral
+  license: Apache-2.0
+sources:
+  - title: "The one-period Kyle model has one equilibrium (arXiv:2607.23585)"
+    authors:
+      - Paulo K. Monteiro
+      - Rabee Tourky
+    id: monteiro-tourky-2026-kyle-uniqueness
+    type: "research paper (arXiv preprint; statements and proofs track v4 of 2026-08-20 — the v3 -> v4 reconciliation was executed 2026-09-16, crosswalk in STATEMENT_NOTES.md section 1). TITLE HISTORY, because citations differ by version: v2 'Monotonicity and Rigidity in Gaussian Inverse Regression - The One-Period Kyle Model Has a Unique Equilibrium'; v3 (2026-08-10) 'The one-period Gaussian Kyle model has exactly one equilibrium'; v4 (2026-08-20) 'The one-period Kyle model has one equilibrium'. All three are the same paper. v4's comments field says 'no change in theorem or proofs'; that is true of the four headline results up to renumbering, but the Section 4 proof apparatus was rewritten and not one v3 equation number survives."
+    license: arXiv.org perpetual non-exclusive license
+    author_contacted: no
+    prior_work: "McLennan, Monteiro & Tourky, Math. Financ. Econ. 11 (2017) 161-172 (uniqueness within an analytic class; general case left open there, closed by this paper). No prior formalization of any Kyle model found in Mathlib, formal-mathfin, Isabelle AFP, or Coq as of 2026-08-11; re-checked 2026-11-03 (GitHub code search, formal-mathfin incl. its open-problems entry MF-OP-008, web search): none found."
+status:
+  scope: "COMPLETE formalization of the paper's v4 Theorem 1.1 (a pair (phi, P) is an equilibrium iff phi is Kyle's affine strategy and P prices affinely along the order flow a.s. -- the iff over the strategy-pricing pair, plus the strategy-only and exists-unique projections), Theorem 7.1 (rigidity: the pointwise-maximisation condition holds iff phi = id), Proposition 4.1 (the noise traders' expected loss Gamma is finite, |Gamma| <= 1/2, with equality iff phi = +-v + a Lebesgue-a.e.), Proposition 5.1 (the accounting identity Gamma = E[Pi(V)]), Proposition 6.1 (covariance saturation Gamma = 1/2 under pointwise maximisation, including the signed-root construction inside its proof), and Lemmas 2.1-2.6, 3.1 and 3.2 -- on Mathlib alone, with no stochastic-calculus dependency. Everything listed is proved: zero sorries anywhere in the tree, every audited declaration axiom-clean. Out of scope and NOT formalized: v4 Appendix B (the a.e.-maximisation / quasi-equilibrium variant), v4 Lemma 2.7 (Cacoullos) -- see deviations F1 and F11 below. A beyond-paper module (BeyondPaper.lean) preserves the proved cubic-root layer of v2's deleted quadratic-cost family, fenced as our own extension and excluded from the claim surface."
+  sorry_count: 0                  # from-scratch lake build 2026-09-16: zero `declaration uses 'sorry'` warnings, zero sorryAx
+  sorry_in_definitions: 0
+  loc: 10185                      # 19 Lean files (wc -l KyleUniqueness/*.lean KyleUniqueness.lean, 2026-09-16, after the general-parameter-inhabitant wave; 10120 before it)
+  build: "from-scratch `lake build` of the v1.0.0 release tree (2026-11-03): exit 0, 3149 jobs, 0 errors, 0 warnings, 0 `declaration uses 'sorry'`; 405 `#print axioms` lines, all [propext, Classical.choice, Quot.sound]."
+  axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+  # AxiomAudit.lean emits 405 `#print axioms` lines at every build; the set of
+  # distinct axiom lists has cardinality ONE, namely the three above. Verified
+  # independently out of tree for all 26 public Main.lean declarations plus 53
+  # further headline carriers (79 total). No project-local axiom declaration,
+  # no native_decide, no unsafe/partial/opaque/@[extern]/@[implemented_by],
+  # no set_option suppressions anywhere in the project sources.
+  # Coverage: exhaustive over public named declarations -- 405 of 405. Every
+  # column-0 non-`private` named declaration across the 17 source modules was
+  # enumerated and matched against the audited names: 0 missing, 0 extra. The
+  # only omissions are the four ANONYMOUS instances (Definitions.lean:111,
+  # GaussianHelpers.lean:81, CondExpBridge.lean:110 and :113), which have
+  # machine-generated names and cannot be cited by hand. Tree-wide
+  # axiom-cleanliness is corroborated by the build itself as well.
+  main_results:
+    - declaration: KyleUniqueness.kyle_equilibrium_pair_iff
+      file: KyleUniqueness/Main.lean
+      informal: "Paper v4 Theorem 1.1 (pair form, the headline): (phi, P) is an equilibrium iff phi v = (sigma/tau)(v - mu0) (eq. (1.1)) and P(Y_phi) = mu0 + lambda Y_phi a.s. with lambda = tau/(2 sigma) (eq. (1.2))"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+      note: "carries an explicit (hP : Measurable P) that the paper folds into its standing Borel-pricing-rule sentence -- deviation F8"
+    - declaration: KyleUniqueness.kyle_unique_equilibrium
+      file: KyleUniqueness/Main.lean
+      informal: "Theorem 1.1, strategy-only iff: phi is an equilibrium strategy iff phi = kyleStrategy"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.kyle_existsUnique_equilibrium
+      file: KyleUniqueness/Main.lean
+      informal: "Theorem 1.1, exists-unique form"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.isEquilibrium_eq_kyleStrategy
+      file: KyleUniqueness/Main.lean
+      informal: "Theorem 1.1, uniqueness half: every equilibrium strategy equals Kyle's affine strategy, as exact function equality, over all Borel strategies"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.kyleStrategy_isEquilibrium
+      file: KyleUniqueness/Statement.lean
+      informal: "Theorem 1.1, existence direction: Kyle's affine strategy is an equilibrium strategy (definitional-fidelity canary 1)"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.kyleStrategy_kylePricingRule_isEquilibrium
+      file: KyleUniqueness/Statement.lean
+      informal: "Theorem 1.1, existence direction in pair form: (kyleStrategy, kylePricingRule) is an equilibrium, for every KyleModel"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.isGammaSolution_zero_iff
+      file: KyleUniqueness/Main.lean
+      informal: "Paper v4 Theorem 7.1 (Rigidity): phi(v) in argmax_x x(v - F_phi(x)) for every v iff phi = id"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+      note: "hypothesised on IsGammaSolution 0 phi, which is strictly weaker than the paper's 'is an equilibrium' -- Lean is stronger here, deviation F10"
+    - declaration: KyleUniqueness.existsUnique_zeroSolution
+      file: KyleUniqueness/Main.lean
+      informal: "Theorem 7.1, exists-unique packaging"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.gamma_eq_half
+      file: KyleUniqueness/Main.lean
+      informal: "Paper v4 Proposition 6.1 (covariance saturation): under pointwise maximisation, Gamma = 1/2"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+      note: "assembled from one_le_two_mul_noiseTraderLoss (1 <= 2 Gamma) and noiseTraderLoss_le_half; the 1 <= 2 Gamma step follows v3's Stein route, not v4's Cacoullos lemma -- deviation F1"
+    - declaration: KyleUniqueness.noiseTraderLoss_le_half
+      file: KyleUniqueness/Statement.lean
+      informal: "Paper v4 Proposition 4.1, eq. (4.1): the noise traders' expected loss Gamma satisfies |Gamma| <= 1/2 for every Borel strategy"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+      note: "equality cases noiseTraderLoss_eq_half_iff / _eq_neg_half_iff proved alongside; integrable_noiseTraderLoss supplies the paper's finiteness clause for every Borel phi"
+    - declaration: KyleUniqueness.accounting_identity
+      file: KyleUniqueness/Accounting.lean
+      informal: "Paper v4 Proposition 5.1: if phi is nondecreasing and Pi(V) >= 0 a.s., then Pi(V) is integrable and Gamma = E[Pi(V)]"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+      note: "carries a redundant Measurable phi alongside Monotone phi -- deviation F9; proved by the full v4 Section 5 route (replica identity, clamp truncation, two monotone-convergence passes), not the v3 fallback"
+    - declaration: KyleUniqueness.lemma21_isPricingRule
+      file: KyleUniqueness/Statement.lean
+      informal: "v4 Lemma 2.2 (a.s. clause): the explicit Bayes-quotient inverse regression is a pricing rule (a version of E[V|Y]) for EVERY Borel strategy (definitional-fidelity canary 2)"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.one_le_sqrt_integral_sq_mul_integral_inv_sq
+      file: KyleUniqueness/SteinInequality.lean
+      informal: "One-sided Gaussian (Stein-type) inequality for monotone functions: 1 <= sqrt(E[f(V)^2] * E[1/f'(V)^2]). This is v3 Lemma 2.5, DELETED in v4; it is our route to 1 <= 2 Gamma -- see deviation F1. Zero project imports; the cleanest Mathlib upstreaming candidate in the tree."
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+    - declaration: KyleUniqueness.stdModel
+      file: KyleUniqueness/Definitions.lean
+      informal: "Paper Section 2 normalised model: the KyleModel class is inhabited (canonical product-Gaussian space)"
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+      note: "the normalised instance; generalModel (same file) inhabits KyleModel at arbitrary mu0 and tau, sigma > 0, and stdModel_eq_generalModel identifies stdModel with generalModel 0 1 1 -- see deviations block, 'general-parameter inhabitant' (closed 2026-09-16)"
+    - declaration: KyleUniqueness.generalModel
+      file: KyleUniqueness/Definitions.lean
+      informal: "The Section 1 model at ARBITRARY parameters: KyleModel (R x R) on (gaussianReal mu0 <tau^2>).prod (gaussianReal 0 <sigma^2>) for any mu0 and tau, sigma > 0 -- the inhabitation witness that makes the universally quantified headline theorems non-vacuous at every admissible parameter triple. Companion oracles: generalModel_priceImpact (lambda = tau/(2 sigma)), generalModel_kyleStrategy (phi(v) = (sigma/tau)(v - mu0)), and their numeric instances at (mu0, tau, sigma) = (3, 2, 5)."
+      status: proved (axioms propext, Classical.choice, Quot.sound)
+automation:
+  methods:
+    - method: interactive AI drafting under human direction
+      models:
+        - Claude Code (Anthropic Claude; agentic coding tool — drafted Lean definitions, statements, proofs, blueprint, and documentation)
+      framework: Lean 4 (leanprover/lean4:v4.32.0) + Mathlib (81a5d257, tag v4.32.0); local lake toolchain on macOS arm64
+      tool_setup: "lake build as the acceptance gate at every step; KyleUniqueness/AxiomAudit.lean (405 `#print axioms` lines, checked at every build, exhaustive over public named declarations); the mathlibStandardSet text linters run under lake build; the Batteries ENVIRONMENT linter is wired into lakefile.lean (lintDriver = batteries/runLinter, lintDriverArgs = [KyleUniqueness]) and `lake lint` exits 0 with '-- Linting passed for KyleUniqueness.' -- zero findings (the one pre-existing finding, an unused [SFinite mu] instance argument on measure_prod_diagonal_eq_zero, was fixed at closeout by removing the argument); every statement carries a code comment citing the exact paper section/equation it tracks (v4 numbering for Session-3 modules, per decision D1 in blueprint/LANE_C_DECISIONS_2026-09-16.md)"
+      prompting_notes: "Human (Mohammad Ali Shehral) set the target, sequencing, and the fidelity frame (modeling choices C1-C12, recorded in STATEMENT_NOTES.md, plus canary statements chosen to expose definitional errors -- both canaries proved). On 2026-09-16 the Lane-C statement-review decisions were explicitly delegated to the agent and recorded as D1-D9 before the proving waves ran; the route choices they fix (D2 value function in attainment form, D4 explicit R^3 resampling measure, D7 Stein instead of Cacoullos) are the source of deviations F1, F6 and F7 below. Each proving wave was checked by an independent adversarial verifier (rebuild from deleted oleans, out-of-tree #print axioms, statement-by-statement comparison against paper/v4.txt, vacuity probes at phi = id); the closing audit of 2026-09-16 produced the F1-F12 ledger. No autoformalization pipeline; no machine-generated proof enters the repo unreviewed."
+  spend_usd: 0 (Claude Code subscription; no per-token research spend)
+  notes: "Division of labor, stated plainly: the mathematics is Monteiro & Tourky's; the Lean drafting is AI-done; the fidelity judgments and the delegation of them are human; the checking is the Lean kernel's. The claim surface is exactly what lake build accepts."
+fidelity:
+  # Twelve deviations from the paper's v4 text, from the closing adversarial
+  # audit of 2026-09-16. None is a soundness gap. Anything published must
+  # carry them; the long form is STATEMENT_NOTES.md section 5.
+  deviations:
+    - id: F1
+      severity: "largest divergence; must be disclosed in any public text"
+      text: "v4 Lemma 2.7 (Cacoullos lower Gaussian variance bound, (E[f'(V)])^2 <= Var f(V)) is NOT formalized; it has no Lean counterpart anywhere in the tree. The step it serves in v4's proof of Proposition 6.1 -- namely 1 <= 2*Gamma -- is proved instead by the v3 one-sided Stein inequality one_le_sqrt_integral_sq_mul_integral_inv_sq (KyleUniqueness/SteinInequality.lean), a deliberate route choice (Lane-C decision D7). Consequence: for that one step the formalized proof is v3's, not v4's. Public text must say 'we formalize the v3 route for this step', not 'we formalize the paper'."
+    - id: F2
+      severity: definiens differs, fully bridged
+      text: "v4 section 3.1 DEFINES Gamma := E[U(P(Y) - V)]. Lean DEFINES noiseTraderLoss = E[U*P(Y)], which is the paper's second expression (an equality the paper proves in Lemma 3.1, not its definition). Both of the paper's other forms are proved equal inside the artifact: integral_noise_mul_sub_value_eq_noiseTraderLoss (the literal definiens) and covariance_noise_condExp_eq_noiseTraderLoss (the Cov(U, E[V|Y]) form). No content is lost; the starting point differs."
+    - id: F3
+      severity: real weakening of wording
+      text: "v4 Lemma 2.3's version clause, Lemma 3.1 and Lemma 3.2 are each stated in the paper 'for every Borel version P-tilde of the inverse regression'. Every Lean rendering is stated for the ONE canonical continuous version, inverseRegression. The transfer machinery exists and is used on the headline path (pricingRule_ae_eq_of_flowPDF_pos, expectedProfit_congr_ae, lemma21_unique_continuous_version, equilibrium_iff_zeroSolution), so the every-version content is recoverable by composing two proved lemmas -- but it is never stated as one lemma."
+    - id: F4
+      severity: documented Mathlib gap
+      text: "v4 Lemma 2.2's clause 'y |-> pi_y is a version of the conditional law of V given Y = y' is not formalized: ProbabilityTheory.condDistrib appears nowhere in the tree except two explanatory docstrings. What is proved are the consequences actually used -- posterior is a probability measure, inverseRegression_eq_integral_posterior, memLp_id_posterior, memLp_strategy_posterior, map_value_orderFlow."
+    - id: F5
+      severity: wording gap on an unused clause
+      text: "v4 Lemma 2.5 asserts that P is CONTINUOUSLY differentiable. Lean proves differentiability everywhere (hasDerivAt_inverseRegression), the covariance formula (2.7) and strict positivity, but no declaration asserts Continuous (deriv (inverseRegression phi)). Nothing downstream consumes it. The corresponding C^1 clause for F is fully rendered (continuous_deriv_gaussianSmoothing)."
+    - id: F6
+      severity: deliberate construction difference (decision D4)
+      text: "v4 Lemma 2.6 builds V^(1) on an extension of the probability space via Kallenberg's transfer theorem and states that V^(0), V^(1) are conditionally i.i.d. given Y. Lean instead constructs an explicit measure resamplingMeasure on R^3 by one flat withDensity, and never states conditional independence. Clauses (i)-(iv) are rendered concretely, with (iii)/(iv) in bounded-test-function form rather than as condExp equalities; given integrable_v1_resampling the two are equivalent, so nothing downstream is weakened."
+    - id: F7
+      severity: deliberate definition difference (decision D2)
+      text: "v4 Lemma 2.4 works with W(v) := sup_x x(v - F(x)), allowing +infinity, and proves nonnegativity and convexity before assuming pointwise maximisation. Lean DEFINES insiderProfit phi v := phi v * (v - F(phi v)) -- the attained value, real-valued by construction -- with the mandatory bridge insiderProfit_eq_iSup. Corollary: insiderProfit_nonneg and convexOn_insiderProfit carry the hypothesis IsGammaSolution 0 phi where the paper has them for arbitrary phi. Every consumer supplies that hypothesis."
+    - id: F8
+      severity: extra hypothesis the paper does not display
+      text: "kyle_equilibrium_pair_iff takes an explicit (hP : Measurable P). The paper folds this into its standing sentence 'market makers set the price P(Y_phi), where P : R -> R is a Borel-measurable pricing rule'. It is genuinely needed for the <= direction and redundant for =>. Faithful, but a reader comparing the Lean line to the paper's one-sentence Theorem 1.1 sees one extra hypothesis."
+    - id: F9
+      severity: redundant hypothesis
+      text: "accounting_identity takes Measurable phi in addition to Monotone phi, while v4 Proposition 5.1 states only 'if phi is nondecreasing and Pi(V) >= 0 almost surely'. A monotone R -> R is automatically Borel, so the hypothesis is redundant and always available at call sites; it makes the Lean statement formally weaker than the paper's."
+    - id: F10
+      severity: not a defect; Lean is stronger
+      text: "v4 Proposition 6.1 and Theorem 7.1 hypothesise that (phi, P) is an equilibrium in the normalised model. Lean's gamma_eq_half and isGammaSolution_zero_iff hypothesise only IsGammaSolution 0 phi -- pointwise maximisation against the canonical F, which is the first line of the paper's own proof and strictly weaker than equilibrium. equilibrium_iff_zeroSolution bridges the two. No loss."
+    - id: F11
+      severity: scope exclusion
+      text: "v4 Appendix B ('From almost-everywhere to pointwise maximisation', the footnote-1 variant in which profit maximisation is imposed only for Lebesgue-a.e. v and the equilibrium strategy is unique modulo null sets) is NOT formalized; it was explicitly deferred as optional post-headline content (blueprint node R3). Any claim text must scope Theorem 1.1 to the POINTWISE-maximisation definition."
+    - id: F12
+      severity: route difference
+      text: "v4 section 7 proves Theorem 1.1 by a change of variables that literally standardises the probability space and asserts an equilibrium-transfer biconditional. Lean never builds the standardised KyleModel; it standardises only the LAWS (map_std_valueLaw, map_std_noiseLaw) and pushes section 7 through two Bochner integrals (flowPDF_mul_sigma, flowNum_mul_sigma, bayesPrice_mul_sigma, expectedProfit_bayesPrice). The biconditional is never stated -- only the direction the headline needs. Documented in Main.lean's 'Route taken' block."
+    - id: general-parameter inhabitant
+      severity: "not a deviation from the paper; a completeness gap in the artifact"
+      status: CLOSED 2026-09-16
+      text: "HISTORICAL, now closed. The tree used to construct exactly one inhabitant of KyleModel, namely stdModel (mu0 = 0, tau = sigma = 1), so that nothing certified that a KyleModel exists at general (mu0, tau, sigma) and the artifact never exhibited Kyle's lambda = tau/(2 sigma) at any value but 1/2. KyleUniqueness/Definitions.lean now also constructs generalModel mu0 tau sigma h_tau h_sigma : KyleModel (R x R) for arbitrary mu0 and tau, sigma > 0 -- the coordinates of (gaussianReal mu0 <tau^2, _>).prod (gaussianReal 0 <sigma^2, _>), laws by measurePreserving_fst/snd.map_eq, independence by indepFun_iff_map_prod_eq_prod_map_map -- together with stdModel_eq_generalModel (stdModel = generalModel 0 1 1 one_pos one_pos), generalModel_priceImpact (lambda = tau/(2 sigma)), generalModel_kyleStrategy (phi(v) = (sigma/tau)(v - mu0)) and the numeric oracles at (mu0, tau, sigma) = (3, 2, 5): generalModel_priceImpact_num (lambda = 1/5) and generalModel_kyleStrategy_num (phi = fun v => 5/2 * (v - 3)). The universal quantification over M : KyleModel Omega is therefore non-vacuous at every admissible parameter triple. All six declarations are audited in AxiomAudit.lean and axiom-clean."
+  divergences: "See the structured `deviations` block above (F1-F12 plus the general-parameter inhabitant note, which is CLOSED as of 2026-09-16); long form with Lean declaration names in STATEMENT_NOTES.md section 5. Modeling choices are enumerated as C1-C12 in STATEMENT_NOTES.md section 3; the material ones under v4: (C4) the paper's pair notion (phi, P) is formalized verbatim as KyleModel.IsEquilibrium and is the headline's subject, with the strategy-only predicate PROVED equivalent to its exists-P projection; (C5) expected profit as a Bochner integral, with the junk-value risk closed by proved integrability lemmas for every version that matters; (C7, retired as an apology) v4 section 2.2 DEFINES the pricing rule by the explicit Bayes quotient, and the bridge to condExp is proved for every Borel strategy (lemma21_isPricingRule); (C8) the gamma-family (v2's quadratic-cost generalisation, deleted from the paper in v3) survives only as definitions, with its proved cubic layer fenced in BeyondPaper.lean outside the claim surface; (C11) = F2; (C12) = F3. No statement quantifies over fewer strategies, fewer models, or weaker conclusions than the paper's. No `sorry` and no admitted placeholder in any Lean statement or proof in the tree. (Unrelated to the Lean artifact: this claim package is itself a draft and deliberately carries unresolved text placeholders -- the project name above, and <REPO-URL> / <DOI> in the sibling drafts.)"
+review:
+  status: "pre-publication — statement-and-proof faithfulness review against the paper's v4 text by an independent adversarial auditor (2026-09-16, verdict: pass), on top of per-wave adversarial verification of every module; no external human review yet"
+  reviewers:
+    - Mohammad Ali Shehral
+  notes: "The full audit output (build evidence, sorry/unsafe-construct evidence, axiom evidence, the paper-result -> Lean-declaration ledger, the F1-F12 deviations, and the vacuity analysis) is recorded in PROVING_LOG.md, Session 3 Wave 3. The honest deviation ledger is published in STATEMENT_NOTES.md section 5 rather than summarized away, and what is NOT formalized is listed explicitly in section 6. The definitional-fidelity gate (both canaries proved with zero definition changes) is documented in CANARY_REPORT.md (historical, v3-keyed)."
+alignment:
+  namespace: KyleUniqueness
+  statements:
+    - source: "Section 1 general model + Theorem 1.1 (Monteiro-Tourky arXiv:2607.23585 v4)"
+      lean: "KyleModel, orderFlow, IsPricingRule, expectedProfit, IsEquilibrium (pair), IsEquilibriumStrategy, kyleStrategy, kylePricingRule, kyle_equilibrium_pair_iff, kyle_unique_equilibrium, kyle_existsUnique_equilibrium, isEquilibrium_eq_kyleStrategy, kyleStrategy_isEquilibrium, kyleStrategy_kylePricingRule_isEquilibrium, pricingRule_ae_eq_kylePricingRule, eq_kylePricingRule_of_continuous"
+      module: KyleUniqueness/Definitions.lean + KyleUniqueness/Statement.lean + KyleUniqueness/Main.lean
+      status: proved (both directions, pair form and both projections)
+      note: "per-object map in STATEMENT_NOTES.md section 2; deviations F8 (explicit Measurable P), F12 (section 7 route), F3 (version quantifier)"
+    - source: "Section 2 normalised model + Lemmas 2.1-2.3 (regularity)"
+      lean: "stdNormalPDF, stdModel, flowDensity, inverseRegression, gaussianSmoothing, jointDensity, map_value_orderFlow, lemma21_flowDensity_pos, lemma21_isPricingRule, lemma21_continuous, lemma21_unique_continuous_version, lemma22_memLp_two, lemma23_integrable, hasDerivAt_gaussianSmoothing, continuous_deriv_gaussianSmoothing, gaussianSmoothing_eq_convolution, deriv_gaussianSmoothing, gaussianSmoothing_comp_ae_eq_condExp_condExp, posterior, isProbabilityMeasure_posterior, inverseRegression_eq_integral_posterior"
+      module: KyleUniqueness/Definitions.lean + KyleUniqueness/Statement.lean + KyleUniqueness/Regularity.lean + KyleUniqueness/Posterior.lean + KyleUniqueness/Resampling.lean
+      status: proved
+      note: "inverseRegression is the explicit Bayes quotient BY WHICH v4 section 2.2 defines P -- paper-canonical. Deviations F3, F4."
+    - source: "Lemmas 2.4-2.6 (value function, posterior monotonicity, conditional resampling)"
+      lean: "insiderProfit, valueFunction, insiderProfit_eq_iSup, firstOrderCondition, insiderProfit_eq_sq_mul_deriv, ae_hasDerivAt_insiderProfit, insiderProfit_sub_eq_intervalIntegral, insiderProfit_subgradient, convexOn_insiderProfit, strictMono_of_isGammaSolution, memLp_id_posterior, memLp_strategy_posterior, deriv_inverseRegression_eq_cov, deriv_inverseRegression_pos, deriv_gaussianSmoothing_pos, resamplingMeasure, resamplingMeasure_map_swap, resamplingMeasure_map_fst, resamplingMeasure_map_snd, integral_v1_mul_eq_inverseRegression, integral_v1_mul_comp_eq_gaussianSmoothing"
+      module: KyleUniqueness/ValueFunction.lean + KyleUniqueness/Posterior.lean + KyleUniqueness/PosteriorDeriv.lean + KyleUniqueness/Resampling.lean
+      status: proved
+      note: "deviations F5 (continuity of P' not stated), F6 (explicit R^3 resampling measure, test-function form), F7 (W in attainment form). v4 Lemma 2.7 (Cacoullos) has NO counterpart -- deviation F1."
+    - source: "Lemmas 3.1-3.2 + Proposition 4.1 (the Gamma pivot and the sharp bound)"
+      lean: "noiseTraderLoss, integrable_noiseTraderLoss, noiseTraderLoss_eq_integral_deriv, integral_noise_mul_sub_value_eq_noiseTraderLoss, covariance_noise_condExp_eq_noiseTraderLoss, insiderProfit_apply, measurable_insiderProfit, expectedProfit_inverseRegression, objective_eq_expectedProfit, noiseTraderLoss_le_half, noiseTraderLoss_eq_half_iff, noiseTraderLoss_eq_neg_half_iff, noiseTraderLoss_id"
+      module: KyleUniqueness/Definitions.lean + KyleUniqueness/Loss.lean + KyleUniqueness/Statement.lean
+      status: proved
+      note: "Proposition 4.1 is stated for EVERY Borel phi, exactly as the paper. Deviations F2, F3."
+    - source: "Propositions 5.1 and 6.1 (accounting identity, covariance saturation) + the signed-root construction"
+      lean: "accounting_identity, replica_identity, clampAt, tendsto_clamp_replica, integrable_insiderProfit_of_isGammaSolution, noiseTraderLoss_eq_integral_insiderProfit, criticalPoint, posteriorSlope, noiseTraderLoss_eq_integral_posteriorSlope, noiseTraderLoss_pos, signedRoot, signedRoot_sq, ae_hasDerivAt_signedRoot, rootSlope, inv_rootSlope_sq, integral_sq_signedRoot, integral_inv_sq_rootSlope, one_le_two_mul_noiseTraderLoss, gamma_eq_half"
+      module: KyleUniqueness/Accounting.lean + KyleUniqueness/SignedRoot.lean + KyleUniqueness/SteinInequality.lean + KyleUniqueness/Main.lean
+      status: proved
+      note: "Proposition 5.1 by the full v4 Section 5 route. Deviations F1 (Stein instead of Cacoullos -- the ONLY place the formalized proof is v3's rather than v4's), F9, F10."
+    - source: "Theorem 7.1 (rigidity) + the Section 7 standardisation"
+      lean: "isGammaSolution_zero_iff, existsUnique_zeroSolution, monotone_eq_of_ae_eq_continuous, equilibrium_iff_zeroSolution, inverseRegression_affine, gaussianSmoothing_affine, KyleModel.map_std_valueLaw, KyleModel.map_std_noiseLaw, flowPDF_mul_sigma, flowNum_mul_sigma, bayesPrice_mul_sigma, expectedProfit_bayesPrice"
+      module: KyleUniqueness/Main.lean + KyleUniqueness/Statement.lean
+      status: proved
+      note: "deviations F10 (Lean stronger), F12 (laws standardised, not the space)"
+    - source: "v4 Appendix B (a.e. maximisation, quasi-equilibrium)"
+      lean: "-- none --"
+      module: "-- none --"
+      status: NOT FORMALIZED — explicit scope exclusion, deviation F11
+      note: "blueprint node R3, deferred as optional post-headline content"
+    - source: "v2-only material (quadratic-cost family, deleted from the paper in v3)"
+      lean: "cubic_strictMonoOn, cubic_pos_root_existsUnique, betaGamma + 5 spec lemmas, lambdaGamma, lambdaGamma_zero"
+      module: KyleUniqueness/BeyondPaper.lean
+      status: fully proved · BEYOND-PAPER — fenced as our own extension anchored to v2's deleted Theorem 3.2; not part of the v4 claim set
+      note: see the module header of BeyondPaper.lean for the fencing statement
+acknowledgements: "Disclosure format and axiom-audit pattern adopted from Raphael Coelho's formal-mathfin (https://github.com/formal-applied-math/formal-mathfin, Apache-2.0); attribution sentence style after Tang's sum-product counterexample paper (arXiv:2603.29992). The theorem is Monteiro & Tourky's."

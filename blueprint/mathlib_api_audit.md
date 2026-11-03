@@ -189,7 +189,7 @@ canonical example of this failure mode).
 
 Corrections discovered while PROVING against the pin during the canary phase
 (source: `../CANARY_REPORT.md`), plus the effect of the paper's v3 rewrite
-(source: `../V3_RECONCILIATION_PLAN.md`). These supersede the corresponding
+(source: the v2 → v3 reconciliation plan (private working archive)). These supersede the corresponding
 rows above; the sections above are otherwise left as the historical v2-keyed
 audit record.
 

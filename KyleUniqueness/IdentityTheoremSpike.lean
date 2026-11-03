@@ -42,7 +42,7 @@ longer exists in the v3 or the v4 proof plan.
 
 The file is retained as proved, Mathlib-only infrastructure (potential
 upstream material); it is **NOT part of the claim surface of v3 or v4**.
-Crosswalk: `V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+Crosswalk: `STATEMENT_NOTES.md` §1; policy:
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1.
 -/
 

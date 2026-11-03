@@ -18,7 +18,7 @@ equilibrium* (arXiv:2607.23585, **v4** of 2026-08-20).
 were keyed to the v2 title ("The One-Period Kyle Model Has a Unique
 Equilibrium") and to v2's flat equation numbering; it is re-keyed to v4 here.
 Earlier sessions of this development were keyed to v3; the full v3 → v4
-crosswalk is `V4_DELTA_REPORT_2026-09-16.md` §1, and the repo-wide policy is
+crosswalk is `STATEMENT_NOTES.md` §1, and the repo-wide policy is
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1.
 
 This file is the environment smoke test: it imports the Mathlib modules the

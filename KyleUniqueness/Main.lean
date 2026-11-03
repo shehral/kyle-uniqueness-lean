@@ -22,7 +22,7 @@ the six declarations *moved here from* `KyleUniqueness.Statement` now carry
 v4 numbers too; `STATEMENT_NOTES.md` still catalogues them under v3 numbers.
 The crosswalk is: v3 Theorem 3 = **v4 Prop 6.1**, v3 Theorem 4 = **v4
 Theorem 7.1**, v3 Theorem 1 = **v4 Theorem 1.1**, v3 Proposition 2 = **v4
-Prop 4.1**; the full map is `V4_DELTA_REPORT_2026-09-16.md` §1.
+Prop 4.1**; the full map is `STATEMENT_NOTES.md` §1.
 
 ## Main results
 

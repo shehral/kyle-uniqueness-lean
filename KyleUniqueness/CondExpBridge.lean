@@ -68,7 +68,7 @@ holding an older PDF:
 The machinery in this file is what v4's Lemma 2.2 and the converse half of
 v4 Theorem 1.1 state as paper content. Full v2 ↔ v3 map:
 `STATEMENT_NOTES.md` §1; v3 → v4 crosswalk:
-`V4_DELTA_REPORT_2026-09-16.md` §1 (policy:
+`STATEMENT_NOTES.md` §1 (policy:
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1).
 -/
 

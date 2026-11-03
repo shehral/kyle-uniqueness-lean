@@ -13,7 +13,7 @@ Keyed to Monteiro & Tourky, *The one-period Kyle model has one equilibrium*
 session against **v3 Lemma 4.1**, which v4 renumbered to **Lemma 2.5** and
 moved from §4 into §2.5 ("Monotonicity of the inverse regression and its
 smoothing"); its two displays are v4 eqs. (2.7) and (2.8). Crosswalk:
-`V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+`STATEMENT_NOTES.md` §1; policy:
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1.
 
 Two v4 changes beyond the number, neither of which touches what is proved

@@ -1,7 +1,7 @@
 # Proof blueprint — Monteiro–Tourky, "The one-period Gaussian Kyle model has exactly one equilibrium"
 
 > ## ⬛ CAMPAIGN COMPLETE — 2026-09-16 (working tree, uncommitted on top of
-> commit `f975dbc`; figures below do not hold at that commit — re-pin the hash
+> commit `1570bff`; figures below do not hold at that commit — re-pin the hash
 > once the closeout is committed)
 >
 > **Every node on this DAG is closed.** Session 1 (2026-08-12) and Session 2
@@ -12,7 +12,7 @@
 >
 > **This document is v3-keyed and is kept as the historical proof plan.** The
 > artifact is keyed to arXiv:2607.23585 **v4**; the crosswalk is
-> `../STATEMENT_NOTES.md` §1 and `../V4_DELTA_REPORT_2026-09-16.md` §1, and the
+> `../STATEMENT_NOTES.md` §1, and the
 > binding route decisions taken at the v4 re-baseline are
 > `LANE_C_DECISIONS_2026-09-16.md` (D1–D9). Where a node name below says
 > "Lemma 2.5" or "Proposition 6", read the crosswalk first.
@@ -55,7 +55,7 @@ item is a general-parameter `KyleModel` inhabitant.
 
 
 **Source:** arXiv:2607.23585 **v3** (2026-08-10), fetched and diffed against v2
-in full on 2026-08-12 (`../V3_RECONCILIATION_PLAN.md` — the authoritative
+in full on 2026-08-12 (the v2 → v3 reconciliation plan, private working archive — the authoritative
 v2 → v3 delta; this blueprint is the post-reconciliation revision). All
 section / equation numbers below are **v3's**. Companion documents:
 `mathlib_api_audit.md` (API surface verified against the pin

@@ -1,7 +1,7 @@
 # Attack order — proving plan for the Kyle-uniqueness formalization (v3 revision)
 
 > ## ⬛ CAMPAIGN COMPLETE — 2026-09-16 (working tree, uncommitted on top of
-> commit `f975dbc`; figures below do not hold at that commit — re-pin the hash
+> commit `1570bff`; figures below do not hold at that commit — re-pin the hash
 > once the closeout is committed)
 >
 > **Every node on this DAG is closed.** Session 1 (2026-08-12) and Session 2
@@ -12,7 +12,7 @@
 >
 > **This document is v3-keyed and is kept as the historical proof plan.** The
 > artifact is keyed to arXiv:2607.23585 **v4**; the crosswalk is
-> `../STATEMENT_NOTES.md` §1 and `../V4_DELTA_REPORT_2026-09-16.md` §1, and the
+> `../STATEMENT_NOTES.md` §1, and the
 > binding route decisions taken at the v4 re-baseline are
 > `LANE_C_DECISIONS_2026-09-16.md` (D1–D9). Where a node name below says
 > "Lemma 2.5" or "Proposition 6", read the crosswalk first.
@@ -56,7 +56,7 @@ item is a general-parameter `KyleModel` inhabitant.
 
 **Inputs:** `blueprint.md` (v3 lemma DAG + difficulty grades),
 `mathlib_api_audit.md` (verified API surface + §12 canary-phase addendum),
-`../V3_RECONCILIATION_PLAN.md` (the v2 → v3 delta), `../CANARY_REPORT.md`
+the v2 → v3 reconciliation plan (private working archive), `../CANARY_REPORT.md`
 (what is already proved). Toolchain: Lean v4.32.0 / mathlib `81a5d257`, warm
 cache, `lake build` ~30 s. Estimate horizon: **5–10 weeks** to a 0-sorry
 artifact (down from v2's 6–12 — v3 deleted ~30–35 % of the planned work,
@@ -183,7 +183,7 @@ new `sorry` outside the tracked inventory.
   axioms` lines, exhaustive over every public named declaration; single
   distinct axiom list `[propext, Classical.choice, Quot.sound]`). Raised to 405
   lines on 2026-09-16 by the six `generalModel` declarations.
-- [x] sorry count → 0 — **DONE** 2026-09-16, commit `f975dbc`; from-scratch
+- [x] sorry count → 0 — **DONE** 2026-09-16, commit `1570bff`; from-scratch
   `lake build` green, 3149 jobs, zero `declaration uses 'sorry'`.
 - [x] `formalization.yaml` refresh — **DONE** in the documents closeout
   (2026-09-16), together with `STATEMENT_NOTES.md`, `README_draft.md`, the

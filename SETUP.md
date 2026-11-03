@@ -3,10 +3,10 @@
 Lean 4 formalization of Monteiro & Tourky, "The one-period Kyle model has one
 equilibrium" (arXiv:2607.23585, **v4** of 2026-08-20). Every Lean module is
 keyed to v4 numbering as of the 2026-09-16 closeout wave; the v3 → v4
-crosswalk is `V4_DELTA_REPORT_2026-09-16.md` §1 and the repo policy is
+crosswalk is `STATEMENT_NOTES.md` §1 and the repo policy is
 `blueprint/LANE_C_DECISIONS_2026-09-16.md` (decision D1). `STATEMENT_NOTES.md`
 was re-keyed to v4 in the same closeout wave. Earlier reports
-(`RECONCILIATION_REPORT.md`, `V3_RECONCILIATION_PLAN.md`, `CANARY_REPORT.md`)
+(`CANARY_REPORT.md`)
 are keyed to v3 or v2, have **not** been re-keyed, and are kept as historical
 records.
 Bootstrapped 2026-08-12 on macOS (Darwin 25.5.0, arm64).
@@ -50,7 +50,7 @@ anonymous `instance`s cannot be cited by name.
 ```bash
 export PATH="$HOME/.elan/bin:$PATH"     # required in EVERY shell
 
-cd /Users/shehral/quant-moonshot/problems/3-lean-mathfin/kyle-formalization
+cd kyle-uniqueness-lean
 
 # 1. Full build (the verification command). Expect:
 #    "Build completed successfully (3149 jobs)."
@@ -109,7 +109,7 @@ export PATH="$HOME/.elan/bin:$PATH"
 elan toolchain install leanprover/lean4:v4.32.0
 
 # 3. Project (math template; toolchain forced with +)
-cd /Users/shehral/quant-moonshot/problems/3-lean-mathfin
+cd ..
 lake +leanprover/lean4:v4.32.0 new kyle-formalization math.lean
 # then renamed package/lib KyleFormalization -> KyleUniqueness
 # (lakefile.lean, KyleUniqueness.lean, KyleUniqueness/ dir)
@@ -179,11 +179,10 @@ probability measure, conditional-expectation import. The current tree builds
   — added 2026-09-16 and verified: `lake lint` runs and passes at this pin.
 - axiom-audit module (`#print axioms` harness): `KyleUniqueness/AxiomAudit.lean`,
   now exhaustive over every public named declaration (405 lines).
-- `formalization.yaml` disclosure file: `claim-package/formalization.yaml`,
-  refreshed at the 2026-09-16 closeout (`sorry_count: 0`, the six headline
-  carriers filed under `KyleUniqueness/Main.lean`, the F1–F12 ledger inline).
-  It still carries its "DRAFT — DO NOT POST/PUBLISH" header and must be
-  re-verified against a fresh build before any external step.
+- `formalization.yaml` disclosure file at the repository root
+  (`sorry_count: 0`, the six headline carriers filed under
+  `KyleUniqueness/Main.lean`, the F1–F12 ledger inline), re-verified against
+  the from-scratch build of the v1.0.0 release tree.
 
 **Still to adopt.**
 

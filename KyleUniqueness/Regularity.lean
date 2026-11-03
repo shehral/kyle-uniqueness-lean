@@ -11,7 +11,7 @@ import KyleUniqueness.Statement
 Keyed to Monteiro & Tourky, *The one-period Kyle model has one equilibrium*
 (arXiv:2607.23585, **v4** of 2026-08-20). This module was written in the v3
 session; its numbering is re-keyed to v4 here (crosswalk:
-`V4_DELTA_REPORT_2026-09-16.md` §1; policy:
+`STATEMENT_NOTES.md` §1; policy:
 `blueprint/LANE_C_DECISIONS_2026-09-16.md`, decision D1). Lemma 2.3 keeps its
 number from v3, but v3's eq. (4) is v4's **(2.2)** and v3's eq. (5) is v4's
 **(2.3)** — and v4 tags only the FIRST line of that split display, so the
