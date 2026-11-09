@@ -5,7 +5,6 @@
 [![sorries](https://img.shields.io/badge/sorries-0-brightgreen)](KyleUniqueness/AxiomAudit.lean)
 [![axioms](https://img.shields.io/badge/axioms-propext,_Classical.choice,_Quot.sound-blue)](KyleUniqueness/AxiomAudit.lean)
 [![license](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23912107.svg)](https://doi.org/10.5281/zenodo.23912107)
 [![arXiv](https://img.shields.io/badge/source_paper-2607.23585v4-b31b1b)](https://arxiv.org/abs/2607.23585v4)
 
 > A **complete** Lean 4 / Mathlib formalization of **Monteiro & Tourky, *"The
@@ -232,7 +231,8 @@ before the first commit was banked into it.
 | 2026-08-18 | Session 2: the Stein pipeline (`SteinInequality.lean`), `F ∈ C¹`, differentiation under the integral. First commits in this repository |
 | 2026-08-20 | arXiv v4 posted (rewritten §4 proof apparatus) |
 | 2026-09-16 | v4 reconciliation, then Session 3 in three waves: the remaining two headline carriers closed, **0 `sorry`**; closeout audit and the general-parameter inhabitant |
-| 2026-11-03 | Public release v1.0.0, archived on Zenodo |
+| 2026-11-03 | Release `v1.0.0` tagged; its commit hash is timestamped in Bitcoin block 974376 via OpenTimestamps (see [`timestamps/`](timestamps/)) |
+| 2026-11-08 | Repository made public |
 
 The session-by-session record, including routes taken and dead ends, is
 [`PROVING_LOG.md`](PROVING_LOG.md); the proof plan node by node is
@@ -274,9 +274,8 @@ The headline is closed, so the open work is breadth and upstreaming:
 ## Citation and license
 
 Apache 2.0 (see [LICENSE](LICENSE)). The mathematics is Monteiro and Tourky's;
-this repository is a formalization of it. If you use this artifact, cite the
-Zenodo deposit ([doi:10.5281/zenodo.23912107](https://doi.org/10.5281/zenodo.23912107); see
-[`CITATION.cff`](CITATION.cff)) and the source paper:
+this repository is a formalization of it. If you use this artifact, cite this
+repository (see [`CITATION.cff`](CITATION.cff)) and the source paper:
 
 > P. K. Monteiro, R. Tourky. *The one-period Kyle model has one equilibrium.*
 > arXiv:2607.23585v4, 2026.

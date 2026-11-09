@@ -9,7 +9,6 @@ authors:
     affiliation: "Khoury College of Computer Sciences, Northeastern University, San Jose"
 version: v1.0.0
 date-released: 2026-11-03
-doi: 10.5281/zenodo.23912107
 license: Apache-2.0
 repository-code: "https://github.com/shehral/kyle-uniqueness-lean"
 keywords:
